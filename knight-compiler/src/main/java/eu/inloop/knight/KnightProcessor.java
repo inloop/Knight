@@ -20,8 +20,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
-import eu.inloop.knight.builder.app.AppBuilders;
 import eu.inloop.knight.builder.activity.ActivityBuilders;
+import eu.inloop.knight.builder.app.AppBuilders;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -70,9 +70,10 @@ public class KnightProcessor extends AbstractProcessor {
             Map<ClassName, ActivityBuilders> activityBuildersMap = new HashMap<>();
             for (Element e : scopedActivities) {
                 ClassName scoped = ClassName.get((TypeElement) e);
-                activityBuildersMap.put(scoped, new ActivityBuilders(scoped));
+                ActivityBuilders activityBuilders = new ActivityBuilders(scoped);
+                activityBuildersMap.put(scoped, activityBuilders);
 
-                appBuilders.Knight.addFromMethod(scoped);
+                appBuilders.add(scoped, activityBuilders);
             }
 
 

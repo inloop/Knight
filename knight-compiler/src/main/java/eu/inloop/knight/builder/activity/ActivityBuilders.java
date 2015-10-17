@@ -38,6 +38,8 @@ public class ActivityBuilders {
         AC = new ActivityComponentBuilder(className);
         AC.addModule(AM.getClassName());
         ACF = new ActivityComponentFactoryBuilder(AC.getClassName());
+
+        SC.addPlusMethod(AC.getClassName(), AM.getClassName());
     }
 
     public void buildAll(Filer filer) throws IOException, ProcessorError {
@@ -48,5 +50,9 @@ public class ActivityBuilders {
         AM.build(filer);
         AC.build(filer);
         ACF.build(filer);
+    }
+
+    public ClassName[] getScreenModules() {
+        return new ClassName[]{SM.getClassName()};
     }
 }
