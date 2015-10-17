@@ -18,13 +18,17 @@ public @interface Injectable {
 
     /**
      * <p>
-     * List of Activities that can contain class annotated with this @{@link Injectable}.
+     * List of Activity classes that can contain class annotated with this @{@link Injectable}.
+     * </p>
+     * <p>
+     * <b> NOTE: </b>
+     * If left empty, class will be injectable only from Application Scope.
      * </p>
      * <p>
      * <b> WARNING: </b>
-     * Each of these Activities must be annotated with @{@link Scoped}.
+     * Each of these Activity classes must be annotated with @{@link Scoped}.
      * </p>
      */
-    Class<?>[] fromScoped(); // TODO : Class<? extends Activity>
+    Class<?>[] from() default {};
 
 }

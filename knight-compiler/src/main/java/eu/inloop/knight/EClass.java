@@ -12,6 +12,8 @@ public enum EClass {
 
     Context(ClassName.get("android.content", "Context")),
     Application(ClassName.get("android.app", "Application")),
+    Activity(ClassName.get("android.app", "Activity")),
+    AppCompatActivity(ClassName.get("android.support.v7.app", "AppCompatActivity")),
     Log(ClassName.get("android.util", "Log")),
 
     Module(ClassName.get("dagger", "Module")),

@@ -16,7 +16,7 @@ import eu.inloop.knight.util.ProcessorError;
  */
 public class ActivityBuilders {
 
-    public ClassName className;
+    public ClassName activityName;
 
     public ScreenModuleBuilder SM;
     public ScreenComponentBuilder SC;
@@ -26,20 +26,21 @@ public class ActivityBuilders {
     public ActivityComponentBuilder AC;
     public ActivityComponentFactoryBuilder ACF;
 
-    public ActivityBuilders(ClassName className) throws ProcessorError {
-        this.className = className;
+    public ActivityBuilders(ClassName activityName) throws ProcessorError {
+        this.activityName = activityName;
 
-        SM = new ScreenModuleBuilder(className);
-        SC = new ScreenComponentBuilder(className);
+        SM = new ScreenModuleBuilder(activityName);
+        SC = new ScreenComponentBuilder(activityName);
         SC.addModule(SM.getClassName());
         SCF = new ScreenComponentFactoryBuilder(SC.getClassName());
 
-        AM = new ActivityModuleBuilder(className);
-        AC = new ActivityComponentBuilder(className);
+        AM = new ActivityModuleBuilder(activityName);
+        AC = new ActivityComponentBuilder(activityName);
         AC.addModule(AM.getClassName());
         ACF = new ActivityComponentFactoryBuilder(AC.getClassName());
 
         SC.addPlusMethod(AC.getClassName(), AM.getClassName());
+        AC.addInjectMethod(activityName);
     }
 
     public void buildAll(Filer filer) throws IOException, ProcessorError {

@@ -23,14 +23,14 @@ import javax.lang.model.type.TypeMirror;
  */
 public class ProcessorUtils {
 
-    public interface IGetter<T> {
-        T get(Element element);
+    public interface IGetter<A, T> {
+        T get(A obj);
     }
 
     /**
      * Discovers if {@code element} is annotated with {@code needed} annotation.
      */
-    public static boolean isAnnotated(Element element, TypeName needed) {
+    public static boolean isAnnotated(final Element element, final TypeName needed) {
         List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
         // if given element has no annotation => end now
         if (annotationMirrors == null || annotationMirrors.size() == 0) return false;
@@ -46,10 +46,10 @@ public class ProcessorUtils {
     /**
      * Retrieves {@link ClassName} from {@code element} with {@code getter} and if exception is thrown, retrieves it from the exception.
      */
-    public static ClassName getParamClass(Element element, IGetter<Class<?>> getter) {
+    public static <A> ClassName getParamClass(final A annotation, final IGetter<A, Class<?>> getter) {
         ClassName className;
         try {
-            className = ClassName.get(getter.get(element));
+            className = ClassName.get(getter.get(annotation));
         } catch (MirroredTypeException mte) {
             try {
                 className = (ClassName) ClassName.get(((DeclaredType) mte.getTypeMirror()).asElement().asType());
@@ -63,10 +63,10 @@ public class ProcessorUtils {
     /**
      * Retrieves {@link ClassName}s from {@code element} with {@code getter} and if exception is thrown, retrieves it from the exception.
      */
-    public static List<ClassName> getParamClasses(Element element, IGetter<Class<?>[]> getter) {
+    public static <A> List<ClassName> getParamClasses(final A annotation, final IGetter<A, Class<?>[]> getter) {
         List<ClassName> className = new ArrayList<>();
         try {
-            Class<?>[] classes = getter.get(element);
+            Class<?>[] classes = getter.get(annotation);
             for (Class<?> cls : classes) {
                 className.add(ClassName.get(cls));
             }
@@ -92,7 +92,20 @@ public class ProcessorUtils {
         return false;
     }
 
-    public static String getParamName(ClassName className) {
+    public static boolean isSubClassOf(final TypeElement element, final ClassName... classes) {
+        TypeElement superClass = element;
+        do {
+            superClass = (TypeElement) ((Symbol.ClassSymbol) superClass).getSuperclass().asElement();
+            for (ClassName cls : classes) {
+                if (superClass != null && ClassName.get(superClass).equals(cls)) {
+                    return true;
+                }
+            }
+        } while (superClass != null);
+        return false;
+    }
+
+    public static String getParamName(final ClassName className) {
         return className.simpleName().substring(0, 1).toLowerCase()
                 + className.simpleName().substring(1).replaceAll("_", "");
     }
