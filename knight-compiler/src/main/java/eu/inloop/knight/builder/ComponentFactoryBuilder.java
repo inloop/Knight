@@ -7,15 +7,15 @@ import javax.lang.model.element.Modifier;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
- * Class {@link BaseFactoryBuilder}
+ * Class {@link ComponentFactoryBuilder}
  *
  * @author FrantisekGazo
  * @version 2015-10-17
  */
-public abstract class BaseFactoryBuilder extends BaseClassBuilder {
+public class ComponentFactoryBuilder extends BaseClassBuilder {
 
-    public BaseFactoryBuilder(ClassName componentName) throws ProcessorError {
-        super(GCN.FACTORY, componentName, GPN.KNIGHT, GPN.DI, GPN.FACTORIES);
+    public ComponentFactoryBuilder(ClassName componentName) throws ProcessorError {
+        super(GCN.COMPONENT_FACTORY, componentName, GPN.KNIGHT, GPN.DI, GPN.FACTORIES);
     }
 
     @Override
