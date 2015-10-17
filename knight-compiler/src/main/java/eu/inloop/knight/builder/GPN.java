@@ -1,4 +1,4 @@
-package eu.inloop.knight.generator;
+package eu.inloop.knight.builder;
 
 /**
  * Enum {@link GPN}
@@ -12,6 +12,7 @@ public enum GPN {
     DI("di"),
     COMPONENTS("component"),
     MODULES("module"),
+    FACTORIES("factory"),
     ;
 
     private String mName;

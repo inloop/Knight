@@ -1,21 +1,23 @@
-package eu.inloop.knight.generator;
+package eu.inloop.knight.builder.app;
 
 import com.squareup.javapoet.ClassName;
 
 import javax.lang.model.element.Modifier;
 
-import eu.inloop.knight.Scoped;
+import eu.inloop.knight.builder.BaseClassBuilder;
+import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.builder.GPN;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
- * Class {@link KnightGenerator}
+ * Class {@link KnightBuilder}
  *
  * @author FrantisekGazo
  * @version 2015-10-15
  */
-public class KnightGenerator extends BaseClassGenerator {
+public class KnightBuilder extends BaseClassBuilder {
 
-    public KnightGenerator() throws ProcessorError {
+    public KnightBuilder() throws ProcessorError {
         super(GCN.KNIGHT, GPN.KNIGHT);
     }
 

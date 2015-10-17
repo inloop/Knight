@@ -6,7 +6,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "eu.inloop.knight"
+        applicationId "eu.inloop.knight.sample"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
@@ -25,6 +25,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
 
     // Knight
-    compile project(':knight-annotations')
+    compile project(':knight')
     apt project(':knight-compiler')
 }

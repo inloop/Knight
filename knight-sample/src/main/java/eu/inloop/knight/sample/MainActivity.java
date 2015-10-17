@@ -1,9 +1,11 @@
-package eu.inloop.knight;
+package eu.inloop.knight.sample;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import eu.inloop.knight.Scoped;
 
 @Scoped
 public class MainActivity extends AppCompatActivity {

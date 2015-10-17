@@ -4,7 +4,6 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,11 +20,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
-import eu.inloop.knight.generator.AppScopedGenerators;
-import eu.inloop.knight.generator.ApplicationComponentGenerator;
-import eu.inloop.knight.generator.ApplicationModuleGenerator;
-import eu.inloop.knight.generator.KnightGenerator;
-import eu.inloop.knight.generator.ScopedGenerators;
+import eu.inloop.knight.builder.app.AppBuilders;
+import eu.inloop.knight.builder.activity.ActivityBuilders;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -69,24 +65,24 @@ public class KnightProcessor extends AbstractProcessor {
             }
 
             // create generators for application scope
-            AppScopedGenerators gensAppScoped = new AppScopedGenerators();
+            AppBuilders appBuilders = new AppBuilders();
             // create generators for scoped Activities
-            Map<ClassName, ScopedGenerators> gensScoped = new HashMap<>();
+            Map<ClassName, ActivityBuilders> activityBuildersMap = new HashMap<>();
             for (Element e : scopedActivities) {
                 ClassName scoped = ClassName.get((TypeElement) e);
-                gensScoped.put(scoped, new ScopedGenerators(scoped));
+                activityBuildersMap.put(scoped, new ActivityBuilders(scoped));
 
-                gensAppScoped.knight.addFromMethod(scoped);
+                appBuilders.Knight.addFromMethod(scoped);
             }
 
 
 
 
             // build everything
-            for (Map.Entry<ClassName, ScopedGenerators> entry : gensScoped.entrySet()) {
-                entry.getValue().buildAll(mFiler);
+            for (Map.Entry<ClassName, ActivityBuilders> activityBuilders : activityBuildersMap.entrySet()) {
+                activityBuilders.getValue().buildAll(mFiler);
             }
-            gensAppScoped.buildAll(mFiler);
+            appBuilders.buildAll(mFiler);
         } catch (ProcessorError pe) {
             error(pe);
         } catch (IOException ioe) {

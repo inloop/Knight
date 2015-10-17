@@ -13,6 +13,14 @@ public enum EClass {
     Context(ClassName.get("android.content", "Context")),
     Application(ClassName.get("android.app", "Application")),
     Log(ClassName.get("android.util", "Log")),
+
+    Module(ClassName.get("dagger", "Module")),
+    Component(ClassName.get("dagger", "Component")),
+    Subcomponent(ClassName.get("dagger", "Subcomponent")),
+
+    AppScope(ClassName.get("eu.inloop.knight.scope", "AppScope")),
+    ScreenScope(ClassName.get("eu.inloop.knight.scope", "ScreenScope")),
+    ActivityScope(ClassName.get("eu.inloop.knight.scope", "ActivityScope")),
     ;
 
     private ClassName mClassName;

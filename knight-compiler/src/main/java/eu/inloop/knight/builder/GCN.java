@@ -1,4 +1,4 @@
-package eu.inloop.knight.generator;
+package eu.inloop.knight.builder;
 
 /**
  * Enum {@link GCN}
@@ -15,6 +15,7 @@ public enum GCN {
     ACTIVITY_COMPONENT("%s_ActivityComponent"),
     SCREEN_MODULE("%s_ScreenModule"),
     ACTIVITY_MODULE("%s_ActivityModule"),
+    FACTORY("%s_Factory"),
     ;
 
     private String mName;

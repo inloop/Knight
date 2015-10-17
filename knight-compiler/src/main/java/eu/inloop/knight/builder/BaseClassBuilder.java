@@ -1,4 +1,4 @@
-package eu.inloop.knight.generator;
+package eu.inloop.knight.builder;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -10,7 +10,7 @@ import javax.annotation.processing.Filer;
 
 import eu.inloop.knight.util.ProcessorError;
 
-public abstract class BaseClassGenerator {
+public abstract class BaseClassBuilder {
 
     private static final String FULL_NAME_FORMAT = "%s.%s";
 
@@ -20,16 +20,28 @@ public abstract class BaseClassGenerator {
     private final ClassName mGenClassNameArg;
     private final GPN[] mGenPackageName;
 
-    public BaseClassGenerator(GCN genClassName, ClassName arg, GPN... genPackageNames) throws ProcessorError {
+    public BaseClassBuilder(boolean isClass, GCN genClassName, ClassName arg, GPN... genPackageNames) throws ProcessorError {
         mGenClassName = genClassName;
         mGenClassNameArg = arg;
         mGenPackageName = genPackageNames;
-        mBuilder = TypeSpec.classBuilder(getClassName().simpleName());
+        if (isClass) {
+            mBuilder = TypeSpec.classBuilder(getClassName().simpleName());
+        } else {
+            mBuilder = TypeSpec.interfaceBuilder(getClassName().simpleName());
+        }
         start();
     }
 
-    public BaseClassGenerator(GCN genClassName, GPN... genPackageNames) throws ProcessorError {
-        this(genClassName, null, genPackageNames);
+    public BaseClassBuilder(GCN genClassName, ClassName arg, GPN... genPackageNames) throws ProcessorError {
+        this(true, genClassName, arg, genPackageNames);
+    }
+
+    public BaseClassBuilder(GCN genClassName, GPN... genPackageNames) throws ProcessorError {
+        this(true, genClassName, null, genPackageNames);
+    }
+
+    public BaseClassBuilder(boolean isClass, GCN genClassName, GPN... genPackageNames) throws ProcessorError {
+        this(isClass, genClassName, null, genPackageNames);
     }
 
     public TypeSpec.Builder getBuilder() {
@@ -55,8 +67,11 @@ public abstract class BaseClassGenerator {
         return String.format(FULL_NAME_FORMAT, getClassName().packageName(), getClassName().simpleName());
     }
 
-    public abstract void start() throws ProcessorError;
-    public abstract void end() throws ProcessorError;
+    public void start() throws ProcessorError {
+    }
+
+    public void end() throws ProcessorError {
+    }
 
     public void build(Filer filer) throws ProcessorError, IOException {
         end();
