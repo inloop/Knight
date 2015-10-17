@@ -14,12 +14,12 @@ import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
 
 /**
- * Class {@link BaseComponentBuilder}
+ * Class {@link ComponentBuilder}
  *
  * @author FrantisekGazo
  * @version 2015-10-17
  */
-public abstract class BaseComponentBuilder extends BaseClassBuilder {
+public class ComponentBuilder extends BaseClassBuilder {
 
     private static final String METHOD_NAME_INJECT = "inject";
     private static final String METHOD_NAME_PLUS = "plus";
@@ -27,12 +27,12 @@ public abstract class BaseComponentBuilder extends BaseClassBuilder {
     private final EClass mScope;
     private final List<ClassName> mModules = new ArrayList<>();
 
-    public BaseComponentBuilder(EClass scope, GCN genClassName, ClassName className) throws ProcessorError {
+    public ComponentBuilder(EClass scope, GCN genClassName, ClassName className) throws ProcessorError {
         super(false, genClassName, className, GPN.KNIGHT, GPN.DI, GPN.COMPONENTS);
         mScope = scope;
     }
 
-    public BaseComponentBuilder(EClass scope, GCN genClassName) throws ProcessorError {
+    public ComponentBuilder(EClass scope, GCN genClassName) throws ProcessorError {
         this(scope, genClassName, null);
     }
 

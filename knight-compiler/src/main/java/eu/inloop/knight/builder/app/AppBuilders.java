@@ -6,6 +6,9 @@ import java.io.IOException;
 
 import javax.annotation.processing.Filer;
 
+import eu.inloop.knight.EClass;
+import eu.inloop.knight.builder.ComponentBuilder;
+import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.builder.activity.ActivityBuilders;
 import eu.inloop.knight.util.ProcessorError;
 
@@ -18,15 +21,15 @@ import eu.inloop.knight.util.ProcessorError;
 public class AppBuilders {
 
     public KnightBuilder Knight;
-    public ApplicationComponentBuilder AppC;
+    public ComponentBuilder AppC;
     public ApplicationComponentFactoryBuilder AppCF;
     public ApplicationModuleBuilder AppM;
 
     public AppBuilders() throws ProcessorError {
         Knight = new KnightBuilder();
-
+        // Application Scope
         AppM = new ApplicationModuleBuilder();
-        AppC = new ApplicationComponentBuilder();
+        AppC = new ComponentBuilder(EClass.AppScope, GCN.APPLICATION_COMPONENT);
         AppC.addModule(AppM.getClassName());
         AppCF = new ApplicationComponentFactoryBuilder(AppC.getClassName());
 
