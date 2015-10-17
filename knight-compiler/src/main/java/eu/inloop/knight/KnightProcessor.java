@@ -115,14 +115,14 @@ public class KnightProcessor extends AbstractProcessor {
 
     private void addInjectable(ActivityBuilders activityBuilders, TypeElement e) throws ProcessorError {
         if (activityBuilders == null) {
-            throw new ProcessorError(e, "@%s can contain only Activity classes annotated with @%s.", Injectable.class.getName(), Scoped.class.getName());
+            throw new ProcessorError(e, ErrorMsg.Injectable_can_contain_only_Scoped_Activities);
         }
         activityBuilders.AC.addInjectMethod(ClassName.get(e));
     }
 
     private ClassName getScopedActivityName(TypeElement e) throws ProcessorError {
         if (!ProcessorUtils.isSubClassOf(e, EClass.AppCompatActivity.getName(), EClass.Activity.getName())) {
-            throw new ProcessorError(e, "Only Activity class can be annotated with @%s.", Scoped.class.getName());
+            throw new ProcessorError(e, ErrorMsg.Scoped_can_be_only_Activity);
         }
         return ClassName.get(e);
     }
@@ -131,8 +131,8 @@ public class KnightProcessor extends AbstractProcessor {
         mMessager.printMessage(Diagnostic.Kind.ERROR, error.getMessage(), error.getmElement());
     }
 
-    private void error(Element e, String msg, Object... args) {
-        mMessager.printMessage(Diagnostic.Kind.ERROR, String.format(msg, args), e);
+    private void error(Element e, ErrorMsg msg, Object... args) {
+        mMessager.printMessage(Diagnostic.Kind.ERROR, String.format(msg.toString(), args), e);
     }
 
 }
