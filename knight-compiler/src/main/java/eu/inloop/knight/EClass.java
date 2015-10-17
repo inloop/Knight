@@ -15,10 +15,6 @@ public enum EClass {
     Activity(ClassName.get("android.app", "Activity")),
     AppCompatActivity(ClassName.get("android.support.v7.app", "AppCompatActivity")),
     Log(ClassName.get("android.util", "Log")),
-
-    AppScope(ClassName.get("eu.inloop.knight.scope", "AppScope")),
-    ScreenScope(ClassName.get("eu.inloop.knight.scope", "ScreenScope")),
-    ActivityScope(ClassName.get("eu.inloop.knight.scope", "ActivityScope")),
     ;
 
     private ClassName mClassName;

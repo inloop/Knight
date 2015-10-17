@@ -11,7 +11,7 @@ import javax.lang.model.element.Modifier;
 
 import dagger.Component;
 import dagger.Subcomponent;
-import eu.inloop.knight.EClass;
+import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
 
@@ -26,15 +26,15 @@ public class ComponentBuilder extends BaseClassBuilder {
     private static final String METHOD_NAME_INJECT = "inject";
     private static final String METHOD_NAME_PLUS = "plus";
 
-    private final EClass mScope;
+    private final Class mScope;
     private final List<ClassName> mModules = new ArrayList<>();
 
-    public ComponentBuilder(EClass scope, GCN genClassName, ClassName className) throws ProcessorError {
+    public ComponentBuilder(Class scope, GCN genClassName, ClassName className) throws ProcessorError {
         super(false, genClassName, className, GPN.KNIGHT, GPN.DI, GPN.COMPONENTS);
         mScope = scope;
     }
 
-    public ComponentBuilder(EClass scope, GCN genClassName) throws ProcessorError {
+    public ComponentBuilder(Class scope, GCN genClassName) throws ProcessorError {
         this(scope, genClassName, null);
     }
 
@@ -48,7 +48,7 @@ public class ComponentBuilder extends BaseClassBuilder {
         super.end();
 
         // set to Scope Scope
-        getBuilder().addAnnotation(mScope.getName());
+        getBuilder().addAnnotation(mScope);
 
         // add Component Annotation
         StringBuilder modulesFormat = new StringBuilder();
@@ -59,7 +59,7 @@ public class ComponentBuilder extends BaseClassBuilder {
         modulesFormat.append("}");
 
         getBuilder().addAnnotation(
-                AnnotationSpec.builder((mScope == EClass.AppScope) ? Component.class : Subcomponent.class)
+                AnnotationSpec.builder((mScope == AppScope.class) ? Component.class : Subcomponent.class)
                         .addMember("modules", modulesFormat.toString(), mModules.toArray())
                         .build()
         );

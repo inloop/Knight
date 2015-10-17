@@ -6,10 +6,10 @@ import java.io.IOException;
 
 import javax.annotation.processing.Filer;
 
-import eu.inloop.knight.EClass;
 import eu.inloop.knight.builder.ComponentBuilder;
 import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.builder.activity.ActivityBuilders;
+import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -29,7 +29,7 @@ public class AppBuilders {
         Knight = new KnightBuilder();
         // Application Scope
         AppM = new ApplicationModuleBuilder();
-        AppC = new ComponentBuilder(EClass.AppScope, GCN.APPLICATION_COMPONENT);
+        AppC = new ComponentBuilder(AppScope.class, GCN.APPLICATION_COMPONENT);
         AppC.addModule(AppM.getClassName());
         AppCF = new ApplicationComponentFactoryBuilder(AppC.getClassName());
 
