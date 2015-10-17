@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
+import dagger.Component;
+import dagger.Subcomponent;
 import eu.inloop.knight.EClass;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
@@ -56,9 +58,8 @@ public class ComponentBuilder extends BaseClassBuilder {
         }
         modulesFormat.append("}");
 
-        EClass a = (mScope == EClass.AppScope) ? EClass.Component : EClass.Subcomponent;
         getBuilder().addAnnotation(
-                AnnotationSpec.builder(a.getName())
+                AnnotationSpec.builder((mScope == EClass.AppScope) ? Component.class : Subcomponent.class)
                         .addMember("modules", modulesFormat.toString(), mModules.toArray())
                         .build()
         );

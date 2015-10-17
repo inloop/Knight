@@ -4,7 +4,7 @@ import com.squareup.javapoet.ClassName;
 
 import javax.lang.model.element.Modifier;
 
-import eu.inloop.knight.EClass;
+import dagger.Module;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -26,7 +26,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
     @Override
     public void start() throws ProcessorError {
         getBuilder().addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-        getBuilder().addAnnotation(EClass.Module.getName());
+        getBuilder().addAnnotation(Module.class);
     }
 
 }
