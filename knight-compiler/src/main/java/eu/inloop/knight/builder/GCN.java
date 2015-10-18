@@ -16,6 +16,7 @@ public enum GCN {
     SCREEN_MODULE("%s_ScreenModule"),
     ACTIVITY_MODULE("%s_ActivityModule"),
     COMPONENT_FACTORY("%s_ComponentFactory"),
+    EXTENDED_MODULE("Extended_%s"),
     ;
 
     private String mName;

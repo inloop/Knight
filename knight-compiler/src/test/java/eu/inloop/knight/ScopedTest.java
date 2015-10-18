@@ -36,7 +36,7 @@ public class ScopedTest {
                 .that(activity)
                 .processedWith(new KnightProcessor())
                 .failsToCompile()
-                .withErrorContaining(ErrorMsg.Scoped_can_be_only_Activity.toString());
+                .withErrorContaining(ErrorMsg.Scoped_invalid.toString());
     }
 
     @Test

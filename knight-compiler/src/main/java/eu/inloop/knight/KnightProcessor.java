@@ -135,7 +135,7 @@ public class KnightProcessor extends AbstractProcessor {
                 for (ClassName activity : in) {
                     activityBuilders = activityBuildersMap.get(activity);
                     if (activityBuilders == null) {
-                        throw new ProcessorError(e, ErrorMsg.Provided_can_contain_only_Scoped_Activities);
+                        throw new ProcessorError(e, ErrorMsg.Provided_outside_Scoped_Activity);
                     }
                     switch (e.getKind()) {
                         case CONSTRUCTOR:
@@ -145,7 +145,7 @@ public class KnightProcessor extends AbstractProcessor {
                             activityBuilders.SM.addProvidesMethod((ExecutableElement) e);
                             break;
                         case CLASS:
-                            // TODO
+                            activityBuilders.SC.addModule((TypeElement) e);
                             break;
                     }
                 }
@@ -162,7 +162,7 @@ public class KnightProcessor extends AbstractProcessor {
                 for (ClassName activity : in) {
                     activityBuilders = activityBuildersMap.get(activity);
                     if (activityBuilders == null) {
-                        throw new ProcessorError(e, ErrorMsg.Provided_can_contain_only_Scoped_Activities);
+                        throw new ProcessorError(e, ErrorMsg.Provided_outside_Scoped_Activity);
                     }
                     switch (e.getKind()) {
                         case CONSTRUCTOR:
@@ -196,14 +196,14 @@ public class KnightProcessor extends AbstractProcessor {
 
     private void addInjectable(ActivityBuilders activityBuilders, TypeElement e) throws ProcessorError {
         if (activityBuilders == null) {
-            throw new ProcessorError(e, ErrorMsg.Injectable_can_contain_only_Scoped_Activities);
+            throw new ProcessorError(e, ErrorMsg.Injectable_outside_Scoped_Activity);
         }
         activityBuilders.AC.addInjectMethod(ClassName.get(e));
     }
 
     private ClassName getScopedActivityName(TypeElement e) throws ProcessorError {
         if (!ProcessorUtils.isSubClassOf(e, EClass.AppCompatActivity.getName(), EClass.Activity.getName())) {
-            throw new ProcessorError(e, ErrorMsg.Scoped_can_be_only_Activity);
+            throw new ProcessorError(e, ErrorMsg.Scoped_invalid);
         }
         return ClassName.get(e);
     }

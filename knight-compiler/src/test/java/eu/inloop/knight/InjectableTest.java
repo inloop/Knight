@@ -58,7 +58,7 @@ public class InjectableTest {
                 .that(files(activity, injectable))
                 .processedWith(new KnightProcessor())
                 .failsToCompile()
-                .withErrorContaining(ErrorMsg.Injectable_can_contain_only_Scoped_Activities.toString());
+                .withErrorContaining(ErrorMsg.Injectable_outside_Scoped_Activity.toString());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class InjectableTest {
                 .that(files(activity1, activity2, injectable))
                 .processedWith(new KnightProcessor())
                 .failsToCompile()
-                .withErrorContaining(ErrorMsg.Injectable_can_contain_only_Scoped_Activities.toString());
+                .withErrorContaining(ErrorMsg.Injectable_outside_Scoped_Activity.toString());
     }
 
     @Test

@@ -71,7 +71,7 @@ public class ModuleBuilder extends BaseClassBuilder {
 
     public void addProvidesConstructor(ExecutableElement e) throws ProcessorError {
         if (!e.getModifiers().contains(Modifier.PUBLIC)) {
-            throw new ProcessorError(e, ErrorMsg.Provided_constructor_has_to_be_public);
+            throw new ProcessorError(e, ErrorMsg.Provided_constructor_not_public);
         }
         Attr attr = getAnnotationAttributes(e);
 
@@ -86,7 +86,7 @@ public class ModuleBuilder extends BaseClassBuilder {
 
     public void addProvidesMethod(ExecutableElement e) throws ProcessorError {
         if (!e.getModifiers().containsAll(Arrays.asList(Modifier.PUBLIC, Modifier.STATIC))) {
-            throw new ProcessorError(e, ErrorMsg.Provided_method_has_to_be_public_static);
+            throw new ProcessorError(e, ErrorMsg.Provided_method_not_public_static);
         }
         Attr attr = getAnnotationAttributes(e);
 
