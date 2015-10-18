@@ -152,4 +152,8 @@ public class ComponentBuilder extends BaseClassBuilder {
         }
         super.build(filer);
     }
+
+    public Class<? extends Annotation> getScope() {
+        return mScope;
+    }
 }

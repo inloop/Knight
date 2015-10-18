@@ -33,6 +33,9 @@ public class AppBuilders {
     }
 
     public void buildAll(Filer filer) throws IOException, ProcessorError {
+        // create factory methods
+        AppCF.addBuildMethod(AppC, AppM);
+        // build
         Knight.build(filer);
         AppM.build(filer);
         AppC.build(filer);

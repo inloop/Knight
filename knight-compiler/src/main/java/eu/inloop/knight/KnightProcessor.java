@@ -182,7 +182,7 @@ public class KnightProcessor extends AbstractProcessor {
             for (Map.Entry<ClassName, ActivityBuilders> activityBuildersEntry : activityBuildersMap.entrySet()) {
                 appBuilders.add(activityBuildersEntry.getValue());
 
-                activityBuildersEntry.getValue().buildAll(mFiler);
+                activityBuildersEntry.getValue().buildAll(appBuilders, mFiler);
             }
             appBuilders.buildAll(mFiler);
         } catch (ProcessorError pe) {

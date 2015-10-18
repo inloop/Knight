@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @author Frantisek Gazo
  * @version 2015-09-22
  */
-@Target({CONSTRUCTOR, METHOD, TYPE}) // TODO : allow also 'TYPE' -> but must have also dagger.@Module
+@Target({CONSTRUCTOR, METHOD, TYPE})
 @Retention(SOURCE)
 public @interface ScreenProvided {
 

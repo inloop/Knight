@@ -2,6 +2,8 @@ package eu.inloop.knight;
 
 import com.squareup.javapoet.ClassName;
 
+import eu.inloop.knight.builder.GPN;
+
 /**
  * Class {@link EClass}.
  *
@@ -15,6 +17,9 @@ public enum EClass {
     Activity(ClassName.get("android.app", "Activity")),
     AppCompatActivity(ClassName.get("android.support.v7.app", "AppCompatActivity")),
     Log(ClassName.get("android.util", "Log")),
+    Bundle(ClassName.get("android.os", "Bundle")),
+
+    DaggerApplicationComponent(ClassName.get(GPN.toString(GPN.KNIGHT, GPN.DI, GPN.COMPONENTS), "DaggerApplicationComponent")),
     ;
 
     private ClassName mClassName;

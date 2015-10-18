@@ -42,24 +42,22 @@ public class ActivityBuilders {
         CF = new ComponentFactoryBuilder(activityName);
     }
 
-    public void buildAll(Filer filer) throws IOException, ProcessorError {
+    public void buildAll(AppBuilders appBuilders, Filer filer) throws IOException, ProcessorError {
         // sub component
         SC.addPlusMethod(AC);
         // add inject for Activity
         AC.addInjectMethod(activityName);
 
+        // create factory methods
+        CF.addBuildMethod(appBuilders.AppC, SC, SM);
+        CF.addBuildMethod(SC, AC, AM);
+
         // build
         SM.build(filer);
         SC.build(filer);
-
         AM.build(filer);
         AC.build(filer);
-
         CF.build(filer);
-    }
-
-    public ClassName[] getScreenModules() {
-        return new ClassName[]{SM.getClassName()};
     }
 
     public ClassName getActivityName() {

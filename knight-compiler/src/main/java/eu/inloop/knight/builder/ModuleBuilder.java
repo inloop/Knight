@@ -40,6 +40,7 @@ import eu.inloop.knight.util.StringUtils;
 public class ModuleBuilder extends BaseClassBuilder {
 
     // TODO : Implement save state mechanism into PROVIDES methods
+    // TODO : Implement App, Screen & Activity specific fields, methods, etc.
 
     private static class Attr {
         boolean scoped;
