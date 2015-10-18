@@ -156,4 +156,13 @@ public class ComponentBuilder extends BaseClassBuilder {
     public Class<? extends Annotation> getScope() {
         return mScope;
     }
+
+    public boolean isExtended(ClassName module) {
+        for (ExtendedScreenModuleBuilder esm : mESMBuilders) {
+            if (esm.getClassName().equals(module)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

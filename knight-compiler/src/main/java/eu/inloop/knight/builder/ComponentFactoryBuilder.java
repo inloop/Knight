@@ -67,7 +67,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
             if (module.equals(mainModuleBuilder.getClassName())) {
                 // main module with Application parameter
                 method.addCode("\t.$N(new $T($N))",
-                        StringUtils.startLowerCase(mainModuleBuilder.getClassName().simpleName()), mainModuleBuilder.getClassName(), app);
+                        StringUtils.startLowerCase(module.simpleName()), module, app);
             } else {
                 // other modules with empty constructor
                 method.addCode("\t.$N(new $T())",
@@ -95,9 +95,9 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 method.addCode(",\n");
             }
             module = componentBuilder.getModules().get(i);
-            if (module.equals(mainModuleBuilder.getClassName())) {
-                // main module with Bundle parameter
-                method.addCode("\tnew $T($N)", mainModuleBuilder.getClassName(), bundle);
+            if (module.equals(mainModuleBuilder.getClassName()) || componentBuilder.isExtended(module)) {
+                // main module + extended modules with Bundle parameter
+                method.addCode("\tnew $T($N)", module, bundle);
             } else {
                 // other modules with empty constructor
                 method.addCode("\tnew $T()", module);
@@ -125,7 +125,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
             module = componentBuilder.getModules().get(i);
             if (module.equals(mainModuleBuilder.getClassName())) {
                 // main module with Activity parameter
-                method.addCode("\tnew $T($N)", mainModuleBuilder.getClassName(), activity);
+                method.addCode("\tnew $T($N)", module, activity);
             } else {
                 // other modules with empty constructor
                 method.addCode("\tnew $T()", module);
