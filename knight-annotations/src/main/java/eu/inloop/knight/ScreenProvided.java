@@ -4,6 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -13,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @author Frantisek Gazo
  * @version 2015-09-22
  */
-@Target({CONSTRUCTOR, TYPE}) // TODO : allow also 'TYPE' -> but must have also dagger.@Module
+@Target({CONSTRUCTOR, METHOD, TYPE}) // TODO : allow also 'TYPE' -> but must have also dagger.@Module
 @Retention(SOURCE)
 public @interface ScreenProvided {
 

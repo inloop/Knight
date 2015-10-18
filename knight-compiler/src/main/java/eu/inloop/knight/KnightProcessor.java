@@ -125,7 +125,60 @@ public class KnightProcessor extends AbstractProcessor {
                         break;
                 }
             }
-
+            elements = roundEnv.getElementsAnnotatedWith(ScreenProvided.class);
+            for (Element e : elements) {
+                List<ClassName> in = ProcessorUtils.getParamClasses(e.getAnnotation(ScreenProvided.class), new ProcessorUtils.IGetter<ScreenProvided, Class<?>[]>() {
+                    @Override
+                    public Class<?>[] get(ScreenProvided annotation) {
+                        return annotation.in();
+                    }
+                });
+                ActivityBuilders activityBuilders;
+                for (ClassName activity : in) {
+                    activityBuilders = activityBuildersMap.get(activity);
+                    if (activityBuilders == null) {
+                        throw new ProcessorError(e, ErrorMsg.Provided_can_contain_only_Scoped_Activities);
+                    }
+                    switch (e.getKind()) {
+                        case CONSTRUCTOR:
+                            activityBuilders.SM.addProvidesConstructor((ExecutableElement) e);
+                            break;
+                        case METHOD:
+                            activityBuilders.SM.addProvidesMethod((ExecutableElement) e);
+                            break;
+                        case CLASS:
+                            // TODO
+                            break;
+                    }
+                }
+            }
+            elements = roundEnv.getElementsAnnotatedWith(ActivityProvided.class);
+            for (Element e : elements) {
+                List<ClassName> in = ProcessorUtils.getParamClasses(e.getAnnotation(ActivityProvided.class), new ProcessorUtils.IGetter<ActivityProvided, Class<?>[]>() {
+                    @Override
+                    public Class<?>[] get(ActivityProvided annotation) {
+                        return annotation.in();
+                    }
+                });
+                ActivityBuilders activityBuilders;
+                for (ClassName activity : in) {
+                    activityBuilders = activityBuildersMap.get(activity);
+                    if (activityBuilders == null) {
+                        throw new ProcessorError(e, ErrorMsg.Provided_can_contain_only_Scoped_Activities);
+                    }
+                    switch (e.getKind()) {
+                        case CONSTRUCTOR:
+                            activityBuilders.AM.addProvidesConstructor((ExecutableElement) e);
+                            break;
+                        case METHOD:
+                            activityBuilders.AM.addProvidesMethod((ExecutableElement) e);
+                            break;
+                        case CLASS:
+                            // TODO
+                            break;
+                    }
+                }
+            }
 
             // build everything
             for (Map.Entry<ClassName, ActivityBuilders> activityBuilders : activityBuildersMap.entrySet()) {
