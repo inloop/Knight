@@ -1,13 +1,10 @@
-package eu.inloop.knight.builder.app;
+package eu.inloop.knight.builder;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 
 import javax.lang.model.element.Modifier;
 
-import eu.inloop.knight.builder.BaseClassBuilder;
-import eu.inloop.knight.builder.GCN;
-import eu.inloop.knight.builder.GPN;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
 

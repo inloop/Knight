@@ -1,4 +1,4 @@
-package eu.inloop.knight.builder.activity;
+package eu.inloop.knight.builder;
 
 import com.squareup.javapoet.ClassName;
 
@@ -6,10 +6,6 @@ import java.io.IOException;
 
 import javax.annotation.processing.Filer;
 
-import eu.inloop.knight.builder.ComponentBuilder;
-import eu.inloop.knight.builder.ComponentFactoryBuilder;
-import eu.inloop.knight.builder.GCN;
-import eu.inloop.knight.builder.ModuleBuilder;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;

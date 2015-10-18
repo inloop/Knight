@@ -22,8 +22,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
-import eu.inloop.knight.builder.activity.ActivityBuilders;
-import eu.inloop.knight.builder.app.AppBuilders;
+import eu.inloop.knight.builder.ActivityBuilders;
+import eu.inloop.knight.builder.AppBuilders;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
 
