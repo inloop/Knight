@@ -40,14 +40,15 @@ public class ActivityBuilders {
         AC.addModule(AM.getClassName());
 
         CF = new ComponentFactoryBuilder(activityName);
-
-        // sub component
-        SC.addPlusMethod(AC.getClassName(), AM.getClassName());
-        // add inject for Activity
-        AC.addInjectMethod(activityName);
     }
 
     public void buildAll(Filer filer) throws IOException, ProcessorError {
+        // sub component
+        SC.addPlusMethod(AC);
+        // add inject for Activity
+        AC.addInjectMethod(activityName);
+
+        // build
         SM.build(filer);
         SC.build(filer);
 
@@ -59,5 +60,9 @@ public class ActivityBuilders {
 
     public ClassName[] getScreenModules() {
         return new ClassName[]{SM.getClassName()};
+    }
+
+    public ClassName getActivityName() {
+        return activityName;
     }
 }

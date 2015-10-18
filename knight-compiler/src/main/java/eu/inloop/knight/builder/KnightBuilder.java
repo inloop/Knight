@@ -33,12 +33,12 @@ public class KnightBuilder extends BaseClassBuilder {
 
     }
 
-    public void addFromMethod(ClassName scopedActivity, ClassName activityComponent) {
+    public void addFromMethod(ActivityBuilders activityBuilders) {
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_FROM)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                        .addParameter(scopedActivity, ProcessorUtils.getParamName(scopedActivity))
-                        .returns(activityComponent)
+                        .addParameter(activityBuilders.getActivityName(), ProcessorUtils.getParamName(activityBuilders.getActivityName()))
+                        .returns(activityBuilders.AC.getClassName())
                         .addStatement("// TODO")
                         .addStatement("return null")
                         .build()

@@ -1,5 +1,7 @@
 package eu.inloop.knight;
 
+import dagger.Module;
+
 /**
  * Enum {@link ErrorMsg}
  *
@@ -13,6 +15,7 @@ public enum ErrorMsg {
     Provided_can_contain_only_Scoped_Activities("@Provided can contain only Activity classes annotated with @%s.", Scoped.class.getSimpleName()),
     Provided_constructor_has_to_be_public("@Provided constructor has to be public."),
     Provided_method_has_to_be_public_static("@Provided method has to be public static."),
+    Missing_Module_annotation("Provided class has to be annotated with @%s.", Module.class.getSimpleName()),
     ;
 
     private String mMessage;

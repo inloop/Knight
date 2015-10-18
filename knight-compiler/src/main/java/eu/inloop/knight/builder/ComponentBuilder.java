@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 
 import dagger.Component;
+import dagger.Module;
 import dagger.Subcomponent;
+import eu.inloop.knight.ErrorMsg;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.scope.ScreenScope;
@@ -71,12 +74,19 @@ public class ComponentBuilder extends BaseClassBuilder {
         );
     }
 
-    protected List<ClassName> getmModules() {
+    protected List<ClassName> getModules() {
         return mModules;
     }
 
     public void addModule(ClassName module) {
         mModules.add(module);
+    }
+
+    public void addModule(TypeElement e) throws ProcessorError {
+        if (e.getAnnotation(Module.class) == null) {
+            throw new ProcessorError(e, ErrorMsg.Missing_Module_annotation);
+        }
+        addModule(ClassName.get(e));
     }
 
     public void addInjectMethod(ClassName className) {
@@ -88,11 +98,11 @@ public class ComponentBuilder extends BaseClassBuilder {
         );
     }
 
-    public void addPlusMethod(ClassName component, ClassName... modules) {
+    public void addPlusMethod(ComponentBuilder componentBuilder) {
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_PLUS)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(component);
-        for (ClassName module : modules) {
+                .returns(componentBuilder.getClassName());
+        for (ClassName module : componentBuilder.getModules()) {
             method.addParameter(module, ProcessorUtils.getParamName(module));
         }
         getBuilder().addMethod(method.build());

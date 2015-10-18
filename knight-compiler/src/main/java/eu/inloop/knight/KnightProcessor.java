@@ -86,8 +86,6 @@ public class KnightProcessor extends AbstractProcessor {
                 ClassName activityName = getScopedActivityName((TypeElement) e);
                 ActivityBuilders activityBuilders = new ActivityBuilders(activityName);
                 activityBuildersMap.put(activityName, activityBuilders);
-
-                appBuilders.add(activityName, activityBuilders);
             }
 
             // add Injectable classes
@@ -121,7 +119,7 @@ public class KnightProcessor extends AbstractProcessor {
                         appBuilders.AppM.addProvidesMethod((ExecutableElement) e);
                         break;
                     case CLASS:
-                        // TODO
+                        appBuilders.AppC.addModule((TypeElement) e);
                         break;
                 }
             }
@@ -174,15 +172,17 @@ public class KnightProcessor extends AbstractProcessor {
                             activityBuilders.AM.addProvidesMethod((ExecutableElement) e);
                             break;
                         case CLASS:
-                            // TODO
+                            activityBuilders.AC.addModule((TypeElement) e);
                             break;
                     }
                 }
             }
 
             // build everything
-            for (Map.Entry<ClassName, ActivityBuilders> activityBuilders : activityBuildersMap.entrySet()) {
-                activityBuilders.getValue().buildAll(mFiler);
+            for (Map.Entry<ClassName, ActivityBuilders> activityBuildersEntry : activityBuildersMap.entrySet()) {
+                appBuilders.add(activityBuildersEntry.getValue());
+
+                activityBuildersEntry.getValue().buildAll(mFiler);
             }
             appBuilders.buildAll(mFiler);
         } catch (ProcessorError pe) {

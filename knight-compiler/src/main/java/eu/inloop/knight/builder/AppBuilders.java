@@ -1,7 +1,5 @@
 package eu.inloop.knight.builder;
 
-import com.squareup.javapoet.ClassName;
-
 import java.io.IOException;
 
 import javax.annotation.processing.Filer;
@@ -41,8 +39,8 @@ public class AppBuilders {
         AppCF.build(filer);
     }
 
-    public void add(ClassName scopedActivity, eu.inloop.knight.builder.ActivityBuilders activityBuilders) {
-        Knight.addFromMethod(scopedActivity, activityBuilders.AC.getClassName());
-        AppC.addPlusMethod(activityBuilders.SC.getClassName(), activityBuilders.getScreenModules());
+    public void add(ActivityBuilders activityBuilders) {
+        Knight.addFromMethod(activityBuilders);
+        AppC.addPlusMethod(activityBuilders.SC);
     }
 }
