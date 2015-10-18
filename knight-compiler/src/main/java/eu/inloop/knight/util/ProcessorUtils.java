@@ -106,8 +106,7 @@ public class ProcessorUtils {
     }
 
     public static String getParamName(final ClassName className) {
-        return className.simpleName().substring(0, 1).toLowerCase()
-                + className.simpleName().substring(1).replaceAll("_", "");
+        return StringUtils.startLowerCase(className.simpleName()).replaceAll("_", "");
     }
 
 }

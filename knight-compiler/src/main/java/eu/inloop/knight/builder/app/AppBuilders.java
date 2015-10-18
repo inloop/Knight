@@ -10,6 +10,7 @@ import eu.inloop.knight.EClass;
 import eu.inloop.knight.builder.ComponentBuilder;
 import eu.inloop.knight.builder.ComponentFactoryBuilder;
 import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.builder.ModuleBuilder;
 import eu.inloop.knight.builder.activity.ActivityBuilders;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.util.ProcessorError;
@@ -25,12 +26,12 @@ public class AppBuilders {
     public KnightBuilder Knight;
     public ComponentBuilder AppC;
     public ComponentFactoryBuilder AppCF;
-    public ApplicationModuleBuilder AppM;
+    public ModuleBuilder AppM;
 
     public AppBuilders() throws ProcessorError {
         Knight = new KnightBuilder();
         // Application Scope
-        AppM = new ApplicationModuleBuilder();
+        AppM = new ModuleBuilder(AppScope.class, GCN.APPLICATION_MODULE);
         AppC = new ComponentBuilder(AppScope.class, GCN.APPLICATION_COMPONENT);
         AppC.addModule(AppM.getClassName());
         AppCF = new ComponentFactoryBuilder(EClass.Application.getName());

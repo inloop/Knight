@@ -4,6 +4,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import javax.lang.model.element.Modifier;
 
 import dagger.Component;
 import dagger.Subcomponent;
+import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.AppScope;
+import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
 
@@ -26,15 +29,18 @@ public class ComponentBuilder extends BaseClassBuilder {
     private static final String METHOD_NAME_INJECT = "inject";
     private static final String METHOD_NAME_PLUS = "plus";
 
-    private final Class mScope;
+    private final Class<? extends Annotation> mScope;
     private final List<ClassName> mModules = new ArrayList<>();
 
-    public ComponentBuilder(Class scope, GCN genClassName, ClassName className) throws ProcessorError {
+    public ComponentBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
         super(false, genClassName, className, GPN.KNIGHT, GPN.DI, GPN.COMPONENTS);
+        if (scope != AppScope.class && scope != ScreenScope.class && scope != ActivityScope.class) {
+            throw new IllegalStateException("Unsupported Scope class.");
+        }
         mScope = scope;
     }
 
-    public ComponentBuilder(Class scope, GCN genClassName) throws ProcessorError {
+    public ComponentBuilder(Class<? extends Annotation> scope, GCN genClassName) throws ProcessorError {
         this(scope, genClassName, null);
     }
 

@@ -18,6 +18,7 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
@@ -52,10 +53,21 @@ public class KnightProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotations = new HashSet<>();
-        annotations.add(Scoped.class.getCanonicalName());
-        annotations.add(Injectable.class.getCanonicalName());
-        return annotations;
+        return annotations(
+                Scoped.class,
+                Injectable.class,
+                AppProvided.class,
+                ScreenProvided.class,
+                ActivityProvided.class
+        );
+    }
+
+    private Set<String> annotations(Class... annotations) {
+        Set<String> set = new HashSet<>();
+        for (Class a : annotations) {
+            set.add(a.getCanonicalName());
+        }
+        return set;
     }
 
     @Override
@@ -95,6 +107,22 @@ public class KnightProcessor extends AbstractProcessor {
                     for (ClassName activity : activities) {
                         addInjectable(activityBuildersMap.get(activity), (TypeElement) e);
                     }
+                }
+            }
+
+            // add Provided
+            elements = roundEnv.getElementsAnnotatedWith(AppProvided.class);
+            for (Element e : elements) {
+                switch (e.getKind()) {
+                    case CONSTRUCTOR:
+                        appBuilders.AppM.addProvidesConstructor((ExecutableElement) e);
+                        break;
+                    case METHOD:
+                        appBuilders.AppM.addProvidesMethod((ExecutableElement) e);
+                        break;
+                    case CLASS:
+                        // TODO
+                        break;
                 }
             }
 

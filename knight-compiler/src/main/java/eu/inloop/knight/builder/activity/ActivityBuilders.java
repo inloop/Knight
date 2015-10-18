@@ -9,6 +9,7 @@ import javax.annotation.processing.Filer;
 import eu.inloop.knight.builder.ComponentBuilder;
 import eu.inloop.knight.builder.ComponentFactoryBuilder;
 import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.builder.ModuleBuilder;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
@@ -23,10 +24,10 @@ public class ActivityBuilders {
 
     public ClassName activityName;
 
-    public ScreenModuleBuilder SM;
+    public ModuleBuilder SM;
     public ComponentBuilder SC;
 
-    public ActivityModuleBuilder AM;
+    public ModuleBuilder AM;
     public ComponentBuilder AC;
 
     public ComponentFactoryBuilder CF;
@@ -34,11 +35,11 @@ public class ActivityBuilders {
     public ActivityBuilders(ClassName activityName) throws ProcessorError {
         this.activityName = activityName;
         // Screen Scope
-        SM = new ScreenModuleBuilder(activityName);
+        SM = new ModuleBuilder(ScreenScope.class, GCN.SCREEN_MODULE, activityName);
         SC = new ComponentBuilder(ScreenScope.class, GCN.SCREEN_COMPONENT, activityName);
         SC.addModule(SM.getClassName());
         // Activity Scope
-        AM = new ActivityModuleBuilder(activityName);
+        AM = new ModuleBuilder(ActivityScope.class, GCN.ACTIVITY_MODULE, activityName);
         AC = new ComponentBuilder(ActivityScope.class, GCN.ACTIVITY_COMPONENT, activityName);
         AC.addModule(AM.getClassName());
 
