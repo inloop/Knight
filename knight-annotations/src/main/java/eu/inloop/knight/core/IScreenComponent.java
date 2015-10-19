@@ -6,6 +6,6 @@ package eu.inloop.knight.core;
  * @author FrantisekGazo
  * @version 2015-10-19
  */
-public interface IScreenComponent extends eu.inloop.knight.IComponent {
+public interface IScreenComponent extends IComponent {
 }
 

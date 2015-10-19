@@ -23,9 +23,9 @@ import eu.inloop.knight.util.StringUtils;
  */
 public class ComponentFactoryBuilder extends BaseClassBuilder {
 
-    private static final String METHOD_NAME_BUILD_APPC = "buildComponent";
-    private static final String METHOD_NAME_BUILD_SC = "buildScreenComponent";
-    private static final String METHOD_NAME_BUILD_AC = "buildActivityComponent";
+    public static final String METHOD_NAME_BUILD_APPC = "buildComponent";
+    public static final String METHOD_NAME_BUILD_SC = "buildScreenComponent";
+    public static final String METHOD_NAME_BUILD_AC = "buildActivityComponent";
 
     public ComponentFactoryBuilder(ClassName componentName) throws ProcessorError {
         super(GCN.COMPONENT_FACTORY, componentName, GPN.KNIGHT, GPN.DI, GPN.FACTORIES);
@@ -40,7 +40,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         String app = "app";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_APPC)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .addParameter(EClass.Application.getName(), app)
                 .returns(componentBuilder.getClassName());
 
@@ -71,7 +71,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         String bundle = "bundle";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_SC)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .addParameter(parentComponentBuilder.getClassName(), appC)
                 .addParameter(EClass.Bundle.getName(), bundle)
                 .returns(componentBuilder.getClassName());
@@ -101,7 +101,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         String activity = "activity";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_AC)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .addParameter(parentComponentBuilder.getClassName(), sc)
                 .addParameter(EClass.Activity.getName(), activity)
                 .returns(componentBuilder.getClassName());

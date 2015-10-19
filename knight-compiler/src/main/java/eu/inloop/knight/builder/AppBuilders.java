@@ -31,7 +31,7 @@ public class AppBuilders {
         AppC.addModule(AppM.getClassName());
         AppCF = new ComponentFactoryBuilder(EClass.Application.getName());
 
-        Knight.addFromAppMethod(AppC.getClassName());
+        Knight.setupAppComponent(AppC.getClassName(), AppCF.getClassName());
     }
 
     public void buildAll(Filer filer) throws IOException, ProcessorError {
@@ -45,7 +45,7 @@ public class AppBuilders {
     }
 
     public void add(Collection<ActivityBuilders> activityBuildersList) {
-        Knight.addFromMethods(activityBuildersList);
+        Knight.setupActivities(activityBuildersList);
         for (ActivityBuilders builders : activityBuildersList) {
             AppC.addPlusMethod(builders.SC);
         }
