@@ -20,6 +20,7 @@ import dagger.Component;
 import dagger.Module;
 import dagger.Subcomponent;
 import eu.inloop.knight.ErrorMsg;
+import eu.inloop.knight.builder.module.ExtendedScreenModuleBuilder;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.scope.ScreenScope;

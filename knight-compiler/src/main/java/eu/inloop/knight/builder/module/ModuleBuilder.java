@@ -1,8 +1,7 @@
-package eu.inloop.knight.builder;
+package eu.inloop.knight.builder.module;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
@@ -22,11 +21,10 @@ import javax.lang.model.element.VariableElement;
 
 import dagger.Module;
 import dagger.Provides;
-import eu.inloop.knight.ActivityProvided;
-import eu.inloop.knight.AppProvided;
-import eu.inloop.knight.EClass;
 import eu.inloop.knight.ErrorMsg;
-import eu.inloop.knight.ScreenProvided;
+import eu.inloop.knight.builder.BaseClassBuilder;
+import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.builder.GPN;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.scope.ScreenScope;
@@ -39,18 +37,18 @@ import eu.inloop.knight.util.StringUtils;
  * @author FrantisekGazo
  * @version 2015-10-17
  */
-public class ModuleBuilder extends BaseClassBuilder {
+public abstract class ModuleBuilder extends BaseClassBuilder {
 
     // TODO : Implement save state mechanism into PROVIDES methods
 
-    private static class Attr {
+    protected static class Attr {
         boolean scoped;
         String name;
     }
 
     private static final String METHOD_NAME_PROVIDES = "provides%s";
 
-    private final Map<String, Integer> mProvidesMethodNames = new HashMap<>();
+    protected final Map<String, Integer> mProvidesMethodNames = new HashMap<>();
     private Class<? extends Annotation> mScope;
 
     public ModuleBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
@@ -59,13 +57,7 @@ public class ModuleBuilder extends BaseClassBuilder {
             throw new IllegalStateException("Unsupported Scope class.");
         }
         mScope = scope;
-        if (mScope == AppScope.class) {
-            addAppModuleSpecific();
-        } else if (mScope == ScreenScope.class) {
-            addScreenModuleSpecific();
-        } else {
-            addActivityModuleSpecific();
-        }
+        addScopeSpecificPart();
     }
 
     public ModuleBuilder(Class<? extends Annotation> scope, GCN genClassName) throws ProcessorError {
@@ -167,89 +159,15 @@ public class ModuleBuilder extends BaseClassBuilder {
     }
 
     private Attr getAnnotationAttributes(Element e) {
-        Attr attr = new Attr();
-        if (mScope == AppScope.class) {
-            AppProvided a = e.getAnnotation(AppProvided.class);
-            attr.scoped = a.scoped();
-            attr.name = a.named();
-        } else if (mScope == ScreenScope.class) {
-            ScreenProvided a = e.getAnnotation(ScreenProvided.class);
-            attr.scoped = a.scoped();
-            attr.name = a.named();
-        } else if (mScope == ActivityScope.class) {
-            ActivityProvided a = e.getAnnotation(ActivityProvided.class);
-            attr.scoped = a.scoped();
-            attr.name = a.named();
-        }
+        Attr attr = getScopeSpecificAnnotationAttributes(e);
         if (attr.name == null || attr.name.isEmpty()) {
             attr.name = null;
         }
         return attr;
     }
 
-    private void addAppModuleSpecific() {
-        // Application attribute
-        FieldSpec appField = FieldSpec.builder(EClass.Application.getName(), "mApplication",
-                Modifier.PRIVATE, Modifier.FINAL).build();
-        getBuilder().addField(appField);
-        // constructor
-        String app = "application";
-        MethodSpec constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(EClass.Application.getName(), app)
-                .addStatement("$N = $N", appField, app)
-                .build();
-        getBuilder().addMethod(constructor);
-        // provides method for Application
-        String name = "providesApplication";
-        mProvidesMethodNames.put(name, 1);
-        MethodSpec providesApp = MethodSpec.methodBuilder(name)
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Provides.class)
-                .addStatement("return $N", appField)
-                .returns(EClass.Application.getName())
-                .build();
-        getBuilder().addMethod(providesApp);
-    }
+    protected abstract void addScopeSpecificPart();
 
-    private void addScreenModuleSpecific() {
-        // Application attribute
-        FieldSpec stateField = FieldSpec.builder(EClass.Bundle.getName(), "mState",
-                Modifier.PRIVATE, Modifier.FINAL).build();
-        getBuilder().addField(stateField);
-        // constructor
-        String state = "state";
-        MethodSpec constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(EClass.Bundle.getName(), state)
-                .addStatement("$N = $N", stateField, state)
-                .build();
-        getBuilder().addMethod(constructor);
-    }
-
-    private void addActivityModuleSpecific() {
-        // Activity attribute
-        FieldSpec activityField = FieldSpec.builder(EClass.Activity.getName(), "mActivity",
-                Modifier.PRIVATE, Modifier.FINAL).build();
-        getBuilder().addField(activityField);
-        // constructor
-        String activity = "activity";
-        MethodSpec constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(EClass.Activity.getName(), activity)
-                .addStatement("$N = $N", activityField, activity)
-                .build();
-        getBuilder().addMethod(constructor);
-        // provides method for Activity
-        String name = "providesActivity";
-        mProvidesMethodNames.put(name, 1);
-        MethodSpec providesActivity = MethodSpec.methodBuilder(name)
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Provides.class)
-                .addStatement("return $N", activityField)
-                .returns(EClass.Activity.getName())
-                .build();
-        getBuilder().addMethod(providesActivity);
-    }
+    protected abstract Attr getScopeSpecificAnnotationAttributes(Element e);
 
 }

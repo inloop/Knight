@@ -1,10 +1,10 @@
-package eu.inloop.knight.builder;
+package eu.inloop.knight.builder.module;
 
 import com.squareup.javapoet.ClassName;
 
 import javax.lang.model.element.TypeElement;
 
-import eu.inloop.knight.scope.ScreenScope;
+import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -13,12 +13,12 @@ import eu.inloop.knight.util.ProcessorError;
  * @author FrantisekGazo
  * @version 2015-10-18
  */
-public class ExtendedScreenModuleBuilder extends ModuleBuilder {
+public class ExtendedScreenModuleBuilder extends ScreenModuleBuilder {
 
     private final TypeElement mSuperClass;
 
     public ExtendedScreenModuleBuilder(TypeElement superClass) throws ProcessorError {
-        super(ScreenScope.class, GCN.EXTENDED_MODULE, ClassName.get(superClass));
+        super(GCN.EXTENDED_MODULE, ClassName.get(superClass));
         mSuperClass = superClass;
     }
 
@@ -29,4 +29,5 @@ public class ExtendedScreenModuleBuilder extends ModuleBuilder {
         getBuilder().superclass(ClassName.get(mSuperClass));
         // TODO : override methods for save state mechanism
     }
+
 }

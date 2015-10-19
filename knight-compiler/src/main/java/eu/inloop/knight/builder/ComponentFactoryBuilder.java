@@ -32,11 +32,11 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         getBuilder().addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
-    public void addBuildMethod(ComponentBuilder componentBuilder, ModuleBuilder mainModuleBuilder) {
+    public void addBuildMethod(ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
         addBuildMethod(null, componentBuilder, mainModuleBuilder);
     }
 
-    public void addBuildMethod(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, ModuleBuilder mainModuleBuilder) {
+    public void addBuildMethod(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
         MethodSpec.Builder method;
         if (componentBuilder.getScope() == AppScope.class) {
             method = buildAppC(componentBuilder, mainModuleBuilder);
@@ -52,7 +52,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         getBuilder().addMethod(method.build());
     }
 
-    private MethodSpec.Builder buildAppC(ComponentBuilder componentBuilder, ModuleBuilder mainModuleBuilder) {
+    private MethodSpec.Builder buildAppC(ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
         String app = "app";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_APPC)
@@ -80,7 +80,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         return method;
     }
 
-    private MethodSpec.Builder buildSC(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, ModuleBuilder mainModuleBuilder) {
+    private MethodSpec.Builder buildSC(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
         String appC = "appComponent";
         String bundle = "bundle";
 
@@ -108,7 +108,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         return method;
     }
 
-    private MethodSpec.Builder buildAC(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, ModuleBuilder mainModuleBuilder) {
+    private MethodSpec.Builder buildAC(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
         String sc = "screenComponent";
         String activity = "activity";
 
