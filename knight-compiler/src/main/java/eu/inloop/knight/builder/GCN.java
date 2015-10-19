@@ -11,11 +11,11 @@ public enum GCN {
     KNIGHT("Knight"),
     APPLICATION_COMPONENT("ApplicationComponent"),
     APPLICATION_MODULE("ApplicationModule"),
-    SCREEN_COMPONENT("%s_ScreenComponent"),
-    ACTIVITY_COMPONENT("%s_ActivityComponent"),
-    SCREEN_MODULE("%s_ScreenModule"),
-    ACTIVITY_MODULE("%s_ActivityModule"),
-    COMPONENT_FACTORY("%s_ComponentFactory"),
+    SCREEN_COMPONENT("ScreenComponentFor%s"),
+    ACTIVITY_COMPONENT("ActivityComponentFor%s"),
+    SCREEN_MODULE("ScreenModuleFor%s"),
+    ACTIVITY_MODULE("ActivityModuleFor%s"),
+    COMPONENT_FACTORY("ComponentFactoryFor%s"),
     EXTENDED_MODULE("Extended_%s"),
     ;
 

@@ -18,6 +18,7 @@ public enum EClass {
     AppCompatActivity(ClassName.get("android.support.v7.app", "AppCompatActivity")),
     Log(ClassName.get("android.util", "Log")),
     Bundle(ClassName.get("android.os", "Bundle")),
+    ActivityLifecycleCallbacks(ClassName.get("android.app.Application", "ActivityLifecycleCallbacks")),
 
     DaggerApplicationComponent(ClassName.get(GPN.toString(GPN.KNIGHT, GPN.DI, GPN.COMPONENTS), "DaggerApplicationComponent")),
     ;

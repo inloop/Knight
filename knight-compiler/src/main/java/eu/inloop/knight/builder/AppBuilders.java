@@ -1,6 +1,7 @@
 package eu.inloop.knight.builder;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.annotation.processing.Filer;
 
@@ -43,8 +44,10 @@ public class AppBuilders {
         AppCF.build(filer);
     }
 
-    public void add(ActivityBuilders activityBuilders) {
-        Knight.addFromMethod(activityBuilders);
-        AppC.addPlusMethod(activityBuilders.SC);
+    public void add(Collection<ActivityBuilders> activityBuildersList) {
+        Knight.addFromMethods(activityBuildersList);
+        for (ActivityBuilders builders : activityBuildersList) {
+            AppC.addPlusMethod(builders.SC);
+        }
     }
 }
