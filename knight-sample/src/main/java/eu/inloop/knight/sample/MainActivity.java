@@ -4,24 +4,25 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-import eu.inloop.knight.Injectable;
+import javax.inject.Inject;
+
 import eu.inloop.knight.Scoped;
 
 @Scoped
 public class MainActivity extends AppCompatActivity {
 
-
-    @Injectable
-    public class TestInjectable {
-
-    }
-
+    @Inject
+    String injectedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TextView tv = (TextView) findViewById(R.id.testText);
+        tv.setText(injectedText);
     }
 
     @Override

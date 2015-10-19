@@ -1,6 +1,8 @@
 package eu.inloop.knight.sample;
 
-import eu.inloop.knight.AppProvided;
+import java.util.Random;
+
+import eu.inloop.knight.ScreenProvided;
 
 /**
  * Class {@link Test}
@@ -12,29 +14,12 @@ public class Test {
 
     private static final String NAMED_1 = "123";
 
-    @AppProvided
-    public Test() {
-
-    }
-
-    @AppProvided(scoped = true, named = NAMED_1)
-    public Test(int i) {
-
-    }
-
-    @AppProvided
-    public static int test(int a, String b) {
-        return 0;
-    }
-
-    @AppProvided(named = "else")
-    public static int something(int a, String b) {
-        return 0;
-    }
-
-    @AppProvided
-    public static int something2(int a, String b) {
-        return 0;
+    @ScreenProvided(
+            in = MainActivity.class,
+            scoped = false
+    )
+    public static String getString() {
+        return "Hello My World! " + new Random().nextInt();
     }
 
 }
