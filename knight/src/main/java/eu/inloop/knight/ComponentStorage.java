@@ -31,45 +31,45 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
         this.mApplicationComponent = mApplicationComponent;
     }
 
-    public C getApplicationComponent() {
+    protected C getApplicationComponent() {
         return mApplicationComponent;
     }
 
-    public IScreenComponent getScreenComponent(String uuid) {
+    protected IScreenComponent getScreenComponent(String uuid) {
         return mScreenComponents.get(uuid);
     }
 
-    public IActivityComponent getActivityComponent(String uuid) {
+    protected IActivityComponent getActivityComponent(String uuid) {
         return mActivityComponents.get(uuid);
     }
 
-    public void putScreenComponent(String uuid, IScreenComponent component) {
+    protected void putScreenComponent(String uuid, IScreenComponent component) {
         mScreenComponents.put(uuid, component);
     }
 
-    public void putActivityComponent(String uuid, IActivityComponent component) {
+    protected void putActivityComponent(String uuid, IActivityComponent component) {
         mActivityComponents.put(uuid, component);
     }
 
-    public void removeScreenComponent(String uuid) {
+    protected void removeScreenComponent(String uuid) {
         mScreenComponents.remove(uuid);
     }
 
-    public void removeActivityComponent(String uuid) {
+    protected void removeActivityComponent(String uuid) {
         mActivityComponents.remove(uuid);
-    }
-
-    private void removeUuidMappingFor(Activity activity) {
-        mHashToUUID.remove(getActivityHash(activity));
     }
 
     protected abstract boolean isScoped(Class activityClass);
 
-    protected abstract void callbackOnActivityCreated(Activity activity, Bundle savedInstanceState, String uuid);
+    protected abstract void onActivityCreated(Activity activity, Bundle savedInstanceState, String uuid);
 
-    protected abstract void callbackOnActivityDestroyed(Activity activity, String uuid);
+    protected abstract void onActivityDestroyed(Activity activity, String uuid);
 
-    protected abstract void callbackOnActivitySaved(Activity activity, Bundle outState, String uuid);
+    protected abstract void onActivitySaved(Activity activity, Bundle outState, String uuid);
+
+    private void removeUuidMappingFor(Activity activity) {
+        mHashToUUID.remove(getActivityHash(activity));
+    }
 
     private String getActivityHash(Activity activity) {
         return activity.toString(); // TODO : find better way to get unique id from activity -> .hashCode() is 'int' ?
@@ -86,7 +86,7 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
                 uuid = UUID.randomUUID().toString();
             }
             mHashToUUID.put(getActivityHash(activity), uuid);
-            callbackOnActivityCreated(activity, savedInstanceState, uuid);
+            onActivityCreated(activity, savedInstanceState, uuid);
         }
     }
 
@@ -96,7 +96,7 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
             String uuid = mHashToUUID.get(getActivityHash(activity));
             if (uuid != null) {
                 outState.putString(EXTRA_ACTIVITY_ID, uuid);
-                callbackOnActivitySaved(activity, outState, uuid);
+                onActivitySaved(activity, outState, uuid);
             }
         }
     }
@@ -106,7 +106,7 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
         if (isScoped(activity.getClass())) {
             String uuid = mHashToUUID.get(getActivityHash(activity));
             if (uuid != null) {
-                callbackOnActivityDestroyed(activity, uuid);
+                onActivityDestroyed(activity, uuid);
                 removeUuidMappingFor(activity); // TODO : check if onDestroy() is called after onSaveInstanceState()
             }
         }

@@ -37,8 +37,8 @@ import eu.inloop.knight.util.ProcessorUtils;
  */
 public abstract class BaseComponentBuilder extends BaseClassBuilder {
 
-    private static final String METHOD_NAME_INJECT = "inject";
-    private static final String METHOD_NAME_PLUS = "plus";
+    public static final String METHOD_NAME_INJECT = "inject";
+    public static final String METHOD_NAME_PLUS = "plus";
 
     private final Class<? extends Annotation> mScope;
     private final List<ClassName> mModules = new ArrayList<>();

@@ -40,7 +40,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         String app = "app";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_APPC)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(EClass.Application.getName(), app)
                 .returns(componentBuilder.getClassName());
 
@@ -71,7 +71,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         String bundle = "bundle";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_SC)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(parentComponentBuilder.getClassName(), appC)
                 .addParameter(EClass.Bundle.getName(), bundle)
                 .returns(componentBuilder.getClassName());
@@ -101,7 +101,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         String activity = "activity";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_AC)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(parentComponentBuilder.getClassName(), sc)
                 .addParameter(EClass.Activity.getName(), activity)
                 .returns(componentBuilder.getClassName());

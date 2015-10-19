@@ -6,14 +6,11 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.lang.model.element.Modifier;
 
 import eu.inloop.knight.EClass;
-import eu.inloop.knight.core.IActivityComponent;
+import eu.inloop.knight.builder.component.BaseComponentBuilder;
 import eu.inloop.knight.core.IScreenComponent;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
@@ -27,41 +24,36 @@ import eu.inloop.knight.util.ProcessorUtils;
 public class KnightBuilder extends BaseClassBuilder {
 
     /**
-     * All have parameters: (Activity activity)
+     * Overridden method with parameters: (Activity activity, Bundle bundle, String uuid)
      */
-    private static final String[] EMPTY_IMPLEMENTATIONS = new String[]{
-            "onActivityPaused",
-            "onActivityResumed",
-            "onActivityStarted",
-            "onActivityStopped",
-    };
+    private static final String METHOD_NAME_ON_ACTIVITY_CREATED = "onActivityCreated";
     /**
-     * Parameters: (Activity activity, Bundle bundle)
+     * Overridden method with parameters: (Activity activity, String uuid)
      */
-    private static final String METHOD_NAME_ON_CREATED = "onActivityCreated";
+    private static final String METHOD_NAME_ON_ACTIVITY_DESTROYED = "onActivityDestroyed";
     /**
-     * Parameters: (Activity activity)
+     * Overridden method with parameters: (Activity activity, Bundle outState, String uuid)
      */
-    private static final String METHOD_NAME_ON_DESTROYED = "onActivityDestroyed";
+    private static final String METHOD_NAME_ON_ACTIVITY_SAVED = "onActivitySaved";
     /**
-     * Parameters: (Activity activity, Bundle outState)
+     * Overridden method with parameters: (Activity activity)
      */
-    private static final String METHOD_NAME_ON_SAVED = "onActivitySaveInstanceState";
+    private static final String METHOD_NAME_IS_SCOPED = "isScoped";
+
+    private static final String METHOD_NAME_GET_APPC = "getApplicationComponent";
+    private static final String METHOD_NAME_GET_AC = "getActivityComponent";
+    private static final String METHOD_NAME_GET_SC = "getScreenComponent";
+    private static final String METHOD_NAME_PUT_SC = "putScreenComponent";
+    private static final String METHOD_NAME_PUT_AC = "putActivityComponent";
+    private static final String METHOD_NAME_REMOVE_SC = "removeScreenComponent";
+    private static final String METHOD_NAME_REMOVE_AC = "removeActivityComponent";
 
     private static final String METHOD_NAME_INIT = "braceYourselfFor";
     private static final String METHOD_NAME_FROM = "from";
     private static final String METHOD_NAME_FROM_APP = "fromApp";
 
     private static final String METHOD_NAME_GET_INSTANCE = "getInstance";
-    private static final String METHOD_NAME_IS_SCOPED = "isScoped";
 
-    private static final String FIELD_NAME_APPC = "mApplicationComponent";
-    private static final String FIELD_NAME_SC_STORAGE = "mScreenComponents";
-    private static final String FIELD_NAME_AC_STORAGE = "mActivityComponents";
-    private static final String METHOD_NAME_GET_AC = "getActivityComponent";
-    private static final String METHOD_NAME_GET_SC = "getScreenComponent";
-
-    private static final String CONSTANT_ACTIVITY_ID = "EXTRA_ACTIVITY_ID";
     private static final String CONSTANT_SCOPED_ACTIVITY_CLASSES = "SCOPED_ACTIVITY_CLASSES";
 
     public KnightBuilder() throws ProcessorError {
@@ -70,19 +62,8 @@ public class KnightBuilder extends BaseClassBuilder {
 
     @Override
     public void start() throws ProcessorError {
-        getBuilder().addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                .addSuperinterface(EClass.ActivityLifecycleCallbacks.getName());
-        addConstants();
+        getBuilder().addModifiers(Modifier.FINAL, Modifier.PUBLIC);
         addInitMethod();
-        addEmptyMethods();
-    }
-
-    private void addConstants() {
-        getBuilder().addField(
-                FieldSpec.builder(String.class, CONSTANT_ACTIVITY_ID, Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                        .initializer("$S", String.format("%s.ACTIVITY_ID", getClassName()))
-                        .build()
-        );
     }
 
     private void addInitMethod() {
@@ -117,73 +98,61 @@ public class KnightBuilder extends BaseClassBuilder {
                 MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PRIVATE)
                         .addParameter(EClass.Application.getName(), app)
-                        .addStatement("$N = $T.$N($N)", FIELD_NAME_APPC, appComponentFactoryName, ComponentFactoryBuilder.METHOD_NAME_BUILD_APPC, app)
+                        .addStatement("super($T.$N($N))", appComponentFactoryName, ComponentFactoryBuilder.METHOD_NAME_BUILD_APPC, app)
                         .build()
         );
-    }
-
-    private void addComponentStorageFields(ClassName appComponentName) {
-        // Application Component
-        getBuilder().addField(
-                FieldSpec.builder(appComponentName, FIELD_NAME_APPC, Modifier.PRIVATE).build()
-        );
-        // Screen Component map
-        getBuilder().addField(
-                FieldSpec.builder(ParameterizedTypeName.get(Map.class, String.class, IScreenComponent.class), FIELD_NAME_SC_STORAGE, Modifier.PRIVATE)
-                        .initializer("new $T<>()", HashMap.class)
-                        .build()
-        );
-        // Activity Component map
-        getBuilder().addField(
-                FieldSpec.builder(ParameterizedTypeName.get(Map.class, String.class, IActivityComponent.class), FIELD_NAME_AC_STORAGE, Modifier.PRIVATE)
-                        .initializer("new $T<>()", HashMap.class)
-                        .build()
-        );
-    }
-
-    private void addEmptyMethods() {
-        for (String methodName : EMPTY_IMPLEMENTATIONS) {
-            getBuilder().addMethod(
-                    MethodSpec.methodBuilder(methodName)
-                            .addAnnotation(Override.class)
-                            .addModifiers(Modifier.PUBLIC)
-                            .addParameter(EClass.Activity.getName(), "activity")
-                            .addCode("// do nothing\n")
-                            .build()
-            );
-        }
     }
 
     private void addOnActivityCreatedMethod(Collection<ActivityBuilders> activityBuildersList) { // TODO
         String activity = "activity";
         String bundle = "bundle";
+        String uuid = "uuid";
 
-        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_ON_CREATED)
+        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_ON_ACTIVITY_CREATED)
                 .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PROTECTED)
                 .addParameter(EClass.Activity.getName(), activity)
                 .addParameter(EClass.Bundle.getName(), bundle)
-                        // execute only for scoped Activities
-                .beginControlFlow("if (!$N($N.getClass()))", METHOD_NAME_IS_SCOPED, activity)
-                .addStatement("return")
-                .endControlFlow()
-                .addCode("// TODO\n");
+                .addParameter(String.class, uuid);
 
-        String activityId = "activityId";
         String sc = "screenComponent";
         String ac = "activityComponent";
-        method.addStatement("$T $N", IActivityComponent.class, ac);
-        method.addStatement("$T $N = $N.getString($N)", String.class, activityId, bundle, CONSTANT_ACTIVITY_ID);
-
-        method.beginControlFlow("if ($N == null)", activityId)
-                .addStatement("$N = $T.randomUUID().toString()", activityId, UUID.class)
-                .endControlFlow();
-        method.addStatement("$T $N = $N.get($N)", IScreenComponent.class, sc, FIELD_NAME_SC_STORAGE, activityId);
         for (ActivityBuilders activityBuilders : activityBuildersList) {
+            MethodSpec activityMethod = MethodSpec.methodBuilder(String.format("inject%s", activityBuilders.getActivityName().simpleName()))
+                    .addModifiers(Modifier.PRIVATE)
+                    .addParameter(EClass.Activity.getName(), activity)
+                    .addParameter(EClass.Bundle.getName(), bundle)
+                    .addParameter(String.class, uuid)
+                    .addCode("// get Screen Component\n")
+                    .addStatement("$T $N = $N($N)", IScreenComponent.class, sc, METHOD_NAME_GET_SC, uuid)
+                    .beginControlFlow("if ($N == null)", sc)
+                    .addCode("// create Screen Component\n")
+                    .addStatement("$N = $T.$N($N(), $N)",
+                            sc,
+                            activityBuilders.CF.getClassName(), ComponentFactoryBuilder.METHOD_NAME_BUILD_SC,
+                            METHOD_NAME_GET_APPC,
+                            bundle)
+                    .addStatement("$N($N, $N)", METHOD_NAME_PUT_SC, uuid, sc)
+                    .endControlFlow()
+                    .addCode("// create Activity Component\n")
+                    .addStatement("$T $N = $T.$N(($T) $N, $N)",
+                            activityBuilders.AC.getClassName(), ac,
+                            activityBuilders.CF.getClassName(), ComponentFactoryBuilder.METHOD_NAME_BUILD_AC,
+                            activityBuilders.SC.getClassName(), sc,
+                            activity)
+                    .addStatement("$N($N, $N)", METHOD_NAME_PUT_AC, uuid, ac)
+                    .addCode("// inject the Activity\n")
+                    .addStatement("$N.$N(($T) $N)",
+                            ac, BaseComponentBuilder.METHOD_NAME_INJECT,
+                            activityBuilders.getActivityName(), activity)
+                    .build();
+
+            getBuilder().addMethod(activityMethod);
+
             method.beginControlFlow("if ($N instanceof $T)", activity, activityBuilders.getActivityName())
+                    .addStatement("$N($N, $N, $N)", activityMethod, activity, bundle, uuid)
                     .endControlFlow();
         }
-
 
         getBuilder().addMethod(method.build());
     }
@@ -191,17 +160,15 @@ public class KnightBuilder extends BaseClassBuilder {
     private void addOnActivitySavedMethod() { // TODO
         String activity = "activity";
         String outState = "outState";
+        String uuid = "uuid";
 
         getBuilder().addMethod(
-                MethodSpec.methodBuilder(METHOD_NAME_ON_SAVED)
+                MethodSpec.methodBuilder(METHOD_NAME_ON_ACTIVITY_SAVED)
                         .addAnnotation(Override.class)
-                        .addModifiers(Modifier.PUBLIC)
+                        .addModifiers(Modifier.PROTECTED)
                         .addParameter(EClass.Activity.getName(), activity)
                         .addParameter(EClass.Bundle.getName(), outState)
-                                // execute only for scoped Activities
-                        .beginControlFlow("if (!$N($N.getClass()))", METHOD_NAME_IS_SCOPED, activity)
-                        .addStatement("return")
-                        .endControlFlow()
+                        .addParameter(String.class, uuid)
                         .addCode("// TODO\n")
                         .build()
         );
@@ -209,16 +176,14 @@ public class KnightBuilder extends BaseClassBuilder {
 
     private void addOnActivityDestroyedMethod() { // TODO
         String activity = "activity";
+        String uuid = "uuid";
 
         getBuilder().addMethod(
-                MethodSpec.methodBuilder(METHOD_NAME_ON_DESTROYED)
+                MethodSpec.methodBuilder(METHOD_NAME_ON_ACTIVITY_DESTROYED)
                         .addAnnotation(Override.class)
-                        .addModifiers(Modifier.PUBLIC)
+                        .addModifiers(Modifier.PROTECTED)
                         .addParameter(EClass.Activity.getName(), activity)
-                                // execute only for scoped Activities
-                        .beginControlFlow("if (!$N($N.getClass()))", METHOD_NAME_IS_SCOPED, activity)
-                        .addStatement("return")
-                        .endControlFlow()
+                        .addParameter(String.class, uuid)
                         .addCode("// TODO\n")
                         .build()
         );
@@ -227,7 +192,7 @@ public class KnightBuilder extends BaseClassBuilder {
     private void addFromMethod(ActivityBuilders activityBuilders) { // TODO
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_FROM)
-                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         .addParameter(activityBuilders.getActivityName(), ProcessorUtils.getParamName(activityBuilders.getActivityName()))
                         .returns(activityBuilders.AC.getClassName())
                         .addStatement("// TODO")
@@ -239,16 +204,16 @@ public class KnightBuilder extends BaseClassBuilder {
     private void addFromAppMethod(ClassName appComponent) {
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_FROM_APP)
-                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         .returns(appComponent)
-                        .addStatement("return $N().$N", METHOD_NAME_GET_INSTANCE, FIELD_NAME_APPC)
+                        .addStatement("return $N().$N()", METHOD_NAME_GET_INSTANCE, METHOD_NAME_GET_APPC)
                         .build()
         );
     }
 
     public void setupAppComponent(ClassName appComponent, ClassName appComponentFactory) {
+        getBuilder().superclass(ParameterizedTypeName.get(EClass.ComponentStorage.getName(), appComponent));
         addConstructor(appComponentFactory);
-        addComponentStorageFields(appComponent);
         addFromAppMethod(appComponent);
     }
 
@@ -286,7 +251,8 @@ public class KnightBuilder extends BaseClassBuilder {
         String activityClass = "activityClass";
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_IS_SCOPED)
-                        .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PROTECTED)
                         .addParameter(Class.class, activityClass)
                         .returns(boolean.class)
                         .beginControlFlow("for ($T $N : $N)", Class.class, cls, CONSTANT_SCOPED_ACTIVITY_CLASSES)
