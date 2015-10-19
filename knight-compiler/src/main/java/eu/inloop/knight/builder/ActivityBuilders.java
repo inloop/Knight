@@ -51,8 +51,7 @@ public class ActivityBuilders {
         AC.addInjectMethod(activityName);
 
         // create factory methods
-        CF.addBuildMethod(appBuilders.AppC, SC, SM);
-        CF.addBuildMethod(SC, AC, AM);
+        CF.addBuildMethods(appBuilders.AppC, SC, SM, AC, AM);
 
         // build
         SM.build(filer);

@@ -72,7 +72,7 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
     }
 
     private String getActivityHash(Activity activity) {
-        return activity.toString(); // TODO : find better way to get unique id from activity -> .hashCode() is 'int' ?
+        return activity.hashCode() + ""; // TODO : find better way to get unique id from activity -> .hashCode() is 'int' ?
     }
 
     @Override

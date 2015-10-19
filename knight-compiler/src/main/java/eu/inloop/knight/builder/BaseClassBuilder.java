@@ -48,6 +48,10 @@ public abstract class BaseClassBuilder {
         return mBuilder;
     }
 
+    protected ClassName getArgClassName() {
+        return mGenClassNameArg;
+    }
+
     public ClassName getClassName() {
         if (mClassName == null) {
             // build CLASS name

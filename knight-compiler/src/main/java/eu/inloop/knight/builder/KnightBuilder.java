@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder;
 
+import android.util.Pair;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -10,7 +12,7 @@ import java.util.Collection;
 import javax.lang.model.element.Modifier;
 
 import eu.inloop.knight.EClass;
-import eu.inloop.knight.builder.component.BaseComponentBuilder;
+import eu.inloop.knight.core.IActivityComponent;
 import eu.inloop.knight.core.IScreenComponent;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
@@ -98,7 +100,7 @@ public class KnightBuilder extends BaseClassBuilder {
                 MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PRIVATE)
                         .addParameter(EClass.Application.getName(), app)
-                        .addStatement("super($T.$N($N))", appComponentFactoryName, ComponentFactoryBuilder.METHOD_NAME_BUILD_APPC, app)
+                        .addStatement("super($T.$N($N))", appComponentFactoryName, ComponentFactoryBuilder.METHOD_NAME_BUILD, app)
                         .build()
         );
     }
@@ -116,43 +118,33 @@ public class KnightBuilder extends BaseClassBuilder {
                 .addParameter(String.class, uuid);
 
         String sc = "screenComponent";
-        String ac = "activityComponent";
+        String pair = "components";
+
+        method.addStatement("$T<? extends $T, ? extends $T> $N", Pair.class, IScreenComponent.class, IActivityComponent.class, pair);
+        method.addStatement("$T $N = $N($N)", IScreenComponent.class, sc, METHOD_NAME_GET_SC, uuid);
+
+        boolean first = true;
         for (ActivityBuilders activityBuilders : activityBuildersList) {
-            MethodSpec activityMethod = MethodSpec.methodBuilder(String.format("inject%s", activityBuilders.getActivityName().simpleName()))
-                    .addModifiers(Modifier.PRIVATE)
-                    .addParameter(EClass.Activity.getName(), activity)
-                    .addParameter(EClass.Bundle.getName(), bundle)
-                    .addParameter(String.class, uuid)
-                    .addCode("// get Screen Component\n")
-                    .addStatement("$T $N = $N($N)", IScreenComponent.class, sc, METHOD_NAME_GET_SC, uuid)
-                    .beginControlFlow("if ($N == null)", sc)
-                    .addCode("// create Screen Component\n")
-                    .addStatement("$N = $T.$N($N(), $N)",
-                            sc,
-                            activityBuilders.CF.getClassName(), ComponentFactoryBuilder.METHOD_NAME_BUILD_SC,
+            String s = (first) ? "if" : "else if";
+            method.beginControlFlow(s + " ($N instanceof $T)", activity, activityBuilders.getActivityName())
+                    .addStatement("$N = $T.$N($N(), $N, $N, ($T) $N)",
+                            pair,
+                            activityBuilders.CF.getClassName(), ComponentFactoryBuilder.METHOD_NAME_BUILD_AND_INJECT,
                             METHOD_NAME_GET_APPC,
-                            bundle)
-                    .addStatement("$N($N, $N)", METHOD_NAME_PUT_SC, uuid, sc)
-                    .endControlFlow()
-                    .addCode("// create Activity Component\n")
-                    .addStatement("$T $N = $T.$N(($T) $N, $N)",
-                            activityBuilders.AC.getClassName(), ac,
-                            activityBuilders.CF.getClassName(), ComponentFactoryBuilder.METHOD_NAME_BUILD_AC,
-                            activityBuilders.SC.getClassName(), sc,
-                            activity)
-                    .addStatement("$N($N, $N)", METHOD_NAME_PUT_AC, uuid, ac)
-                    .addCode("// inject the Activity\n")
-                    .addStatement("$N.$N(($T) $N)",
-                            ac, BaseComponentBuilder.METHOD_NAME_INJECT,
+                            sc,
+                            bundle,
                             activityBuilders.getActivityName(), activity)
-                    .build();
-
-            getBuilder().addMethod(activityMethod);
-
-            method.beginControlFlow("if ($N instanceof $T)", activity, activityBuilders.getActivityName())
-                    .addStatement("$N($N, $N, $N)", activityMethod, activity, bundle, uuid)
                     .endControlFlow();
+            first = false;
         }
+
+        method.beginControlFlow("else")
+                .addStatement("return")
+                .endControlFlow();
+        method.beginControlFlow("if ($N == null)", sc)
+                .addStatement("$N($N, $N.first)", METHOD_NAME_PUT_SC, uuid, pair)
+                .endControlFlow();
+        method.addStatement("$N($N, $N.second)", METHOD_NAME_PUT_AC, uuid, pair);
 
         getBuilder().addMethod(method.build());
     }

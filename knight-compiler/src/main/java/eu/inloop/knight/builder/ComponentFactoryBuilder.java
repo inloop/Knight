@@ -2,16 +2,19 @@ package eu.inloop.knight.builder;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 
 import javax.lang.model.element.Modifier;
 
 import eu.inloop.knight.EClass;
 import eu.inloop.knight.builder.component.ActivityComponentBuilder;
 import eu.inloop.knight.builder.component.AppComponentBuilder;
+import eu.inloop.knight.builder.component.BaseComponentBuilder;
 import eu.inloop.knight.builder.component.ScreenComponentBuilder;
 import eu.inloop.knight.builder.module.ActivityModuleBuilder;
 import eu.inloop.knight.builder.module.AppModuleBuilder;
 import eu.inloop.knight.builder.module.ScreenModuleBuilder;
+import eu.inloop.knight.core.IScreenComponent;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -23,12 +26,11 @@ import eu.inloop.knight.util.StringUtils;
  */
 public class ComponentFactoryBuilder extends BaseClassBuilder {
 
-    public static final String METHOD_NAME_BUILD_APPC = "buildComponent";
-    public static final String METHOD_NAME_BUILD_SC = "buildScreenComponent";
-    public static final String METHOD_NAME_BUILD_AC = "buildActivityComponent";
+    public static final String METHOD_NAME_BUILD = "build";
+    public static final String METHOD_NAME_BUILD_AND_INJECT = "buildAndInject";
 
-    public ComponentFactoryBuilder(ClassName componentName) throws ProcessorError {
-        super(GCN.COMPONENT_FACTORY, componentName, GPN.KNIGHT, GPN.DI, GPN.FACTORIES);
+    public ComponentFactoryBuilder(ClassName className) throws ProcessorError {
+        super(GCN.COMPONENT_FACTORY, className, GPN.KNIGHT, GPN.DI, GPN.FACTORIES);
     }
 
     @Override
@@ -39,9 +41,9 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
     public void addBuildMethod(AppComponentBuilder componentBuilder, AppModuleBuilder mainModuleBuilder) {
         String app = "app";
 
-        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_APPC)
+        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addParameter(EClass.Application.getName(), app)
+                .addParameter(EClass.Application.getName(), app, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         // get component builder
@@ -66,14 +68,14 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         getBuilder().addMethod(method.build());
     }
 
-    public void addBuildMethod(AppComponentBuilder parentComponentBuilder, ScreenComponentBuilder componentBuilder, ScreenModuleBuilder mainModuleBuilder) {
+    private void addBuildMethod(AppComponentBuilder parentComponentBuilder, ScreenComponentBuilder componentBuilder, ScreenModuleBuilder mainModuleBuilder) {
         String appC = "appComponent";
         String bundle = "bundle";
 
-        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_SC)
+        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addParameter(parentComponentBuilder.getClassName(), appC)
-                .addParameter(EClass.Bundle.getName(), bundle)
+                .addParameter(parentComponentBuilder.getClassName(), appC, Modifier.FINAL)
+                .addParameter(EClass.Bundle.getName(), bundle, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", appC);
@@ -96,14 +98,14 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         getBuilder().addMethod(method.build());
     }
 
-    public void addBuildMethod(ScreenComponentBuilder parentComponentBuilder, ActivityComponentBuilder componentBuilder, ActivityModuleBuilder mainModuleBuilder) {
+    private void addBuildMethod(ScreenComponentBuilder parentComponentBuilder, ActivityComponentBuilder componentBuilder, ActivityModuleBuilder mainModuleBuilder) {
         String sc = "screenComponent";
         String activity = "activity";
 
-        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_AC)
+        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addParameter(parentComponentBuilder.getClassName(), sc)
-                .addParameter(EClass.Activity.getName(), activity)
+                .addParameter(parentComponentBuilder.getClassName(), sc, Modifier.FINAL)
+                .addParameter(EClass.Activity.getName(), activity, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", sc);
@@ -126,4 +128,39 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         getBuilder().addMethod(method.build());
     }
 
+    public void addBuildMethods(AppComponentBuilder appcBuilder, ScreenComponentBuilder scBuilder, ScreenModuleBuilder smBuilder, ActivityComponentBuilder acBuilder, ActivityModuleBuilder amBuilder) {
+        addBuildMethod(appcBuilder, scBuilder, smBuilder);
+        addBuildMethod(scBuilder, acBuilder, amBuilder);
+
+        String appC = "appComponent";
+        String sc = "screenComponent";
+        String localSc = "sc";
+        String ac = "activityComponent";
+        String bundle = "bundle";
+        String activity = "activity";
+
+        MethodSpec method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_AND_INJECT)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addParameter(appcBuilder.getClassName(), appC, Modifier.FINAL)
+                .addParameter(IScreenComponent.class, sc, Modifier.FINAL)
+                .addParameter(EClass.Bundle.getName(), bundle, Modifier.FINAL)
+                .addParameter(getArgClassName(), activity, Modifier.FINAL)
+                .returns(ParameterizedTypeName.get(EClass.Pair.getName(), scBuilder.getClassName(), acBuilder.getClassName()))
+                .addStatement("$T $N", scBuilder.getClassName(), localSc)
+                .addCode("// create Screen Component if necessary\n")
+                .beginControlFlow("if ($N == null)", sc)
+                .addStatement("$N = $N($N, $N)", localSc, METHOD_NAME_BUILD, appC, bundle)
+                .endControlFlow()
+                .beginControlFlow("else")
+                .addStatement("$N = ($T) $N", localSc, scBuilder.getClassName(), sc)
+                .endControlFlow()
+                .addCode("// create Activity Component\n")
+                .addStatement("$T $N = $N($N, $N)", acBuilder.getClassName(), ac, METHOD_NAME_BUILD, localSc, activity)
+                .addCode("// inject the Activity\n")
+                .addStatement("$N.$N($N)", ac, BaseComponentBuilder.METHOD_NAME_INJECT, activity)
+                .addStatement("return new $T<>($N, $N)", EClass.Pair.getName(), localSc, ac)
+                .build();
+
+        getBuilder().addMethod(method);
+    }
 }
