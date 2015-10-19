@@ -32,12 +32,12 @@ import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
 /**
- * Class {@link ModuleBuilder}
+ * Class {@link BaseModuleBuilder}
  *
  * @author FrantisekGazo
  * @version 2015-10-17
  */
-public abstract class ModuleBuilder extends BaseClassBuilder {
+public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
     // TODO : Implement save state mechanism into PROVIDES methods
 
@@ -51,7 +51,7 @@ public abstract class ModuleBuilder extends BaseClassBuilder {
     protected final Map<String, Integer> mProvidesMethodNames = new HashMap<>();
     private Class<? extends Annotation> mScope;
 
-    public ModuleBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
+    public BaseModuleBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
         super(genClassName, className, GPN.KNIGHT, GPN.DI, GPN.MODULES);
         if (scope != AppScope.class && scope != ScreenScope.class && scope != ActivityScope.class) {
             throw new IllegalStateException("Unsupported Scope class.");
@@ -60,7 +60,7 @@ public abstract class ModuleBuilder extends BaseClassBuilder {
         addScopeSpecificPart();
     }
 
-    public ModuleBuilder(Class<? extends Annotation> scope, GCN genClassName) throws ProcessorError {
+    public BaseModuleBuilder(Class<? extends Annotation> scope, GCN genClassName) throws ProcessorError {
         this(scope, genClassName, null);
     }
 

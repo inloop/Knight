@@ -6,8 +6,8 @@ import java.util.Collection;
 import javax.annotation.processing.Filer;
 
 import eu.inloop.knight.EClass;
+import eu.inloop.knight.builder.component.AppComponentBuilder;
 import eu.inloop.knight.builder.module.AppModuleBuilder;
-import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -19,7 +19,7 @@ import eu.inloop.knight.util.ProcessorError;
 public class AppBuilders {
 
     public KnightBuilder Knight;
-    public ComponentBuilder AppC;
+    public AppComponentBuilder AppC;
     public ComponentFactoryBuilder AppCF;
     public AppModuleBuilder AppM;
 
@@ -27,7 +27,7 @@ public class AppBuilders {
         Knight = new KnightBuilder();
         // Application Scope
         AppM = new AppModuleBuilder();
-        AppC = new ComponentBuilder(AppScope.class, GCN.APPLICATION_COMPONENT);
+        AppC = new AppComponentBuilder();
         AppC.addModule(AppM.getClassName());
         AppCF = new ComponentFactoryBuilder(EClass.Application.getName());
 

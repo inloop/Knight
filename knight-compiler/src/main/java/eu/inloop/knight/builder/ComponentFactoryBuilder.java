@@ -6,8 +6,12 @@ import com.squareup.javapoet.MethodSpec;
 import javax.lang.model.element.Modifier;
 
 import eu.inloop.knight.EClass;
-import eu.inloop.knight.scope.AppScope;
-import eu.inloop.knight.scope.ScreenScope;
+import eu.inloop.knight.builder.component.ActivityComponentBuilder;
+import eu.inloop.knight.builder.component.AppComponentBuilder;
+import eu.inloop.knight.builder.component.ScreenComponentBuilder;
+import eu.inloop.knight.builder.module.ActivityModuleBuilder;
+import eu.inloop.knight.builder.module.AppModuleBuilder;
+import eu.inloop.knight.builder.module.ScreenModuleBuilder;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -32,31 +36,13 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         getBuilder().addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
-    public void addBuildMethod(ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
-        addBuildMethod(null, componentBuilder, mainModuleBuilder);
-    }
-
-    public void addBuildMethod(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
-        MethodSpec.Builder method;
-        if (componentBuilder.getScope() == AppScope.class) {
-            method = buildAppC(componentBuilder, mainModuleBuilder);
-        } else if (componentBuilder.getScope() == ScreenScope.class) {
-            method = buildSC(parentComponentBuilder, componentBuilder, mainModuleBuilder);
-        } else {
-            method = buildAC(parentComponentBuilder, componentBuilder, mainModuleBuilder);
-        }
-
-        method.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-        method.returns(componentBuilder.getClassName());
-
-        getBuilder().addMethod(method.build());
-    }
-
-    private MethodSpec.Builder buildAppC(ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
+    public void addBuildMethod(AppComponentBuilder componentBuilder, AppModuleBuilder mainModuleBuilder) {
         String app = "app";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_APPC)
-                .addParameter(EClass.Application.getName(), app);
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addParameter(EClass.Application.getName(), app)
+                .returns(componentBuilder.getClassName());
 
         // get component builder
         method.addCode("return $T.builder()", EClass.DaggerApplicationComponent.getName());
@@ -77,16 +63,18 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         // build component
         method.addCode("\n\t.build();\n");
 
-        return method;
+        getBuilder().addMethod(method.build());
     }
 
-    private MethodSpec.Builder buildSC(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
+    public void addBuildMethod(AppComponentBuilder parentComponentBuilder, ScreenComponentBuilder componentBuilder, ScreenModuleBuilder mainModuleBuilder) {
         String appC = "appComponent";
         String bundle = "bundle";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_SC)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addParameter(parentComponentBuilder.getClassName(), appC)
-                .addParameter(EClass.Bundle.getName(), bundle);
+                .addParameter(EClass.Bundle.getName(), bundle)
+                .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", appC);
         ClassName module;
@@ -105,16 +93,18 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         }
         method.addCode("\n);\n");
 
-        return method;
+        getBuilder().addMethod(method.build());
     }
 
-    private MethodSpec.Builder buildAC(ComponentBuilder parentComponentBuilder, ComponentBuilder componentBuilder, eu.inloop.knight.builder.module.ModuleBuilder mainModuleBuilder) {
+    public void addBuildMethod(ScreenComponentBuilder parentComponentBuilder, ActivityComponentBuilder componentBuilder, ActivityModuleBuilder mainModuleBuilder) {
         String sc = "screenComponent";
         String activity = "activity";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_AC)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addParameter(parentComponentBuilder.getClassName(), sc)
-                .addParameter(EClass.Activity.getName(), activity);
+                .addParameter(EClass.Activity.getName(), activity)
+                .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", sc);
         ClassName module;
@@ -133,7 +123,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         }
         method.addCode("\n);\n");
 
-        return method;
+        getBuilder().addMethod(method.build());
     }
 
 }

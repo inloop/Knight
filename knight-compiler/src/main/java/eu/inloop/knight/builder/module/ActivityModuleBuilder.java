@@ -20,7 +20,7 @@ import eu.inloop.knight.util.ProcessorError;
  * @author FrantisekGazo
  * @version 2015-10-19
  */
-public class ActivityModuleBuilder extends ModuleBuilder {
+public class ActivityModuleBuilder extends BaseModuleBuilder {
 
     public ActivityModuleBuilder(ClassName className) throws ProcessorError {
         super(ActivityScope.class, GCN.ACTIVITY_MODULE, className);

@@ -19,7 +19,7 @@ import eu.inloop.knight.util.ProcessorError;
  * @author FrantisekGazo
  * @version 2015-10-19
  */
-public class ScreenModuleBuilder extends ModuleBuilder {
+public class ScreenModuleBuilder extends BaseModuleBuilder {
 
     public ScreenModuleBuilder(ClassName className) throws ProcessorError {
         super(ScreenScope.class, GCN.SCREEN_MODULE, className);

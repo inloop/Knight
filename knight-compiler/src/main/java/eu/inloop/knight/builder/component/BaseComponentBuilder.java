@@ -1,4 +1,4 @@
-package eu.inloop.knight.builder;
+package eu.inloop.knight.builder.component;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -16,11 +16,13 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 
-import dagger.Component;
 import dagger.Module;
-import dagger.Subcomponent;
 import eu.inloop.knight.ErrorMsg;
+import eu.inloop.knight.builder.BaseClassBuilder;
+import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.builder.GPN;
 import eu.inloop.knight.builder.module.ExtendedScreenModuleBuilder;
+import eu.inloop.knight.core.IComponent;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.scope.ScreenScope;
@@ -28,12 +30,12 @@ import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
 
 /**
- * Class {@link ComponentBuilder}
+ * Class {@link BaseComponentBuilder}
  *
  * @author FrantisekGazo
  * @version 2015-10-17
  */
-public class ComponentBuilder extends BaseClassBuilder {
+public abstract class BaseComponentBuilder extends BaseClassBuilder {
 
     private static final String METHOD_NAME_INJECT = "inject";
     private static final String METHOD_NAME_PLUS = "plus";
@@ -42,7 +44,7 @@ public class ComponentBuilder extends BaseClassBuilder {
     private final List<ClassName> mModules = new ArrayList<>();
     private final List<ExtendedScreenModuleBuilder> mESMBuilders = new ArrayList<>();
 
-    public ComponentBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
+    public BaseComponentBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
         super(false, genClassName, className, GPN.KNIGHT, GPN.DI, GPN.COMPONENTS);
         if (scope != AppScope.class && scope != ScreenScope.class && scope != ActivityScope.class) {
             throw new IllegalStateException("Unsupported Scope class.");
@@ -50,13 +52,17 @@ public class ComponentBuilder extends BaseClassBuilder {
         mScope = scope;
     }
 
-    public ComponentBuilder(Class<? extends Annotation> scope, GCN genClassName) throws ProcessorError {
+    public BaseComponentBuilder(Class<? extends Annotation> scope, GCN genClassName) throws ProcessorError {
         this(scope, genClassName, null);
     }
 
+    protected abstract Class<? extends Annotation> getComponentAnnotation();
+    protected abstract Class<? extends IComponent> getComponentInterface();
+
     @Override
     public void start() throws ProcessorError {
-        getBuilder().addModifiers(Modifier.PUBLIC);
+        getBuilder().addModifiers(Modifier.PUBLIC)
+                .addSuperinterface(getComponentInterface());
     }
 
     @Override
@@ -75,13 +81,13 @@ public class ComponentBuilder extends BaseClassBuilder {
         modulesFormat.append("}");
 
         getBuilder().addAnnotation(
-                AnnotationSpec.builder((mScope == AppScope.class) ? Component.class : Subcomponent.class)
+                AnnotationSpec.builder(getComponentAnnotation())
                         .addMember("modules", modulesFormat.toString(), mModules.toArray())
                         .build()
         );
     }
 
-    protected List<ClassName> getModules() {
+    public List<ClassName> getModules() {
         return mModules;
     }
 
@@ -136,7 +142,7 @@ public class ComponentBuilder extends BaseClassBuilder {
         );
     }
 
-    public void addPlusMethod(ComponentBuilder componentBuilder) {
+    public void addPlusMethod(BaseComponentBuilder componentBuilder) {
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_PLUS)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(componentBuilder.getClassName());

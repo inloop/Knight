@@ -19,7 +19,7 @@ import eu.inloop.knight.util.ProcessorError;
  * @author FrantisekGazo
  * @version 2015-10-19
  */
-public class AppModuleBuilder extends ModuleBuilder {
+public class AppModuleBuilder extends BaseModuleBuilder {
 
     public AppModuleBuilder() throws ProcessorError {
         super(AppScope.class, GCN.APPLICATION_MODULE);
