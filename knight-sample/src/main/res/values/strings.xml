@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Knight</string>
 
+    <string name="goto_new">NEW</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 </resources>

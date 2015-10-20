@@ -32,11 +32,11 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
         this.mApplicationComponent = mApplicationComponent;
     }
 
-    protected C getApplicationComponent() {
+    protected final C getApplicationComponent() {
         return mApplicationComponent;
     }
 
-    protected IActivityComponent getActivityComponent(Activity activity) {
+    protected final IActivityComponent getActivityComponent(Activity activity) {
         return mActivityComponents.get(getActivityUUID(activity));
     }
 
@@ -51,7 +51,7 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
     }
 
     private String getActivityHash(Activity activity) {
-        return activity.hashCode() + ""; // TODO : find better way to get unique id from activity -> .hashCode() is 'int' ?
+        return String.valueOf(activity.hashCode()); // TODO : find better way to get unique id from activity -> .hashCode() is 'int' ?
     }
 
     private String getActivityUUID(Activity activity) {
@@ -59,32 +59,39 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+    public final void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         if (isScoped(activity.getClass())) {
+            //LogHelper.d("activity - %s with hash %s", activity, getActivityHash(activity));
             String uuid = null;
+            LogHelper.d("onActivityCreated - hasState : %b", savedInstanceState != null);
             if (savedInstanceState != null) {
                 uuid = savedInstanceState.getString(EXTRA_ACTIVITY_ID);
             }
+            LogHelper.d("onActivityCreated - found UUID : %s", uuid);
             if (uuid == null) {
                 uuid = UUID.randomUUID().toString();
+                LogHelper.d("onActivityCreated - created UUID : %s", uuid);
             }
             mHashToUUID.put(getActivityHash(activity), uuid);
             IScreenComponent sc = mScreenComponents.get(uuid);
             Pair<IScreenComponent, IActivityComponent> pair = onActivityCreated(activity, savedInstanceState, sc);
             if (pair != null) {
                 if (sc == null) {
+                    LogHelper.d("onActivityCreated - build SC for UUID : %s", uuid);
                     mScreenComponents.put(uuid, pair.first);
                 }
+                LogHelper.d("onActivityCreated - build AC for UUID : %s", uuid);
                 mActivityComponents.put(uuid, pair.second);
             }
         }
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+    public final void onActivitySaveInstanceState(Activity activity, Bundle outState) {
         if (isScoped(activity.getClass())) {
             String uuid = getActivityUUID(activity);
             if (uuid != null) {
+                LogHelper.d("onActivitySaveInstanceState - saving UUID : %s", uuid);
                 outState.putString(EXTRA_ACTIVITY_ID, uuid);
                 onActivitySaved(activity, outState, mScreenComponents.get(uuid));
             }
@@ -92,34 +99,38 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
     }
 
     @Override
-    public void onActivityDestroyed(Activity activity) {
+    public final void onActivityDestroyed(Activity activity) {
         if (isScoped(activity.getClass())) {
             String uuid = getActivityUUID(activity);
             if (uuid != null) {
-                // TODO : removeScreenComponent(uuid);
+                if (activity.isFinishing()) {
+                    LogHelper.d("onActivityDestroyed - removing SC for UUID : %s", uuid);
+                    removeUuidMappingFor(activity);
+                    mScreenComponents.remove(uuid);
+                }
+                LogHelper.d("onActivityDestroyed - removing AC for UUID : %s", uuid);
                 mActivityComponents.remove(uuid);
-                removeUuidMappingFor(activity); // TODO : check if onDestroy() is called after onSaveInstanceState()
             }
         }
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {
-
+    public final void onActivityStarted(Activity activity) {
+        // do nothing
     }
 
     @Override
-    public void onActivityResumed(Activity activity) {
-
+    public final void onActivityResumed(Activity activity) {
+        // do nothing
     }
 
     @Override
-    public void onActivityPaused(Activity activity) {
-
+    public final void onActivityPaused(Activity activity) {
+        // do nothing
     }
 
     @Override
-    public void onActivityStopped(Activity activity) {
-
+    public final void onActivityStopped(Activity activity) {
+        // do nothing
     }
 }

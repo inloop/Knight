@@ -38,7 +38,8 @@ public class ScreenComponentBuilder extends BaseComponentBuilder {
         return IScreenComponent.class;
     }
 
-    @Override protected boolean checkModuleElement(TypeElement moduleElement) throws ProcessorError {
+    @Override
+    protected boolean checkModuleElement(TypeElement moduleElement) throws ProcessorError {
         super.checkModuleElement(moduleElement);
         // Screen Module cannot be final
         if (moduleElement.getModifiers().contains(Modifier.FINAL)) {
