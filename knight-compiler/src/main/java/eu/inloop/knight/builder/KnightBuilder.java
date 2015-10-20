@@ -25,29 +25,16 @@ import eu.inloop.knight.util.ProcessorError;
 public class KnightBuilder extends BaseClassBuilder {
 
     /**
-     * Overridden method with parameters: (Activity activity, Bundle bundle, String uuid)
+     * Overridden method with parameters: (Activity activity, StateManager manager, IScreenComponent sc)
      */
-    private static final String METHOD_NAME_ON_ACTIVITY_CREATED = "onActivityCreated";
+    private static final String METHOD_NAME_ON_BUILD_AND_INJECT = "buildComponentsAndInject";
     /**
-     * Overridden method with parameters: (Activity activity, String uuid)
-     */
-    private static final String METHOD_NAME_ON_ACTIVITY_DESTROYED = "onActivityDestroyed";
-    /**
-     * Overridden method with parameters: (Activity activity, Bundle outState, String uuid)
-     */
-    private static final String METHOD_NAME_ON_ACTIVITY_SAVED = "onActivitySaved";
-    /**
-     * Overridden method with parameters: (Activity activity)
+     * Overridden method with parameters: (Class activityClass)
      */
     private static final String METHOD_NAME_IS_SCOPED = "isScoped";
 
     private static final String METHOD_NAME_GET_APPC = "getApplicationComponent";
     private static final String METHOD_NAME_GET_AC = "getActivityComponent";
-    private static final String METHOD_NAME_GET_SC = "getScreenComponent";
-    private static final String METHOD_NAME_PUT_SC = "putScreenComponent";
-    private static final String METHOD_NAME_PUT_AC = "putActivityComponent";
-    private static final String METHOD_NAME_REMOVE_SC = "removeScreenComponent";
-    private static final String METHOD_NAME_REMOVE_AC = "removeActivityComponent";
 
     private static final String METHOD_NAME_INIT = "braceYourselfFor";
     private static final String METHOD_NAME_FROM = "from";
@@ -144,14 +131,14 @@ public class KnightBuilder extends BaseClassBuilder {
 
     private void addOnActivityCreatedMethod(Collection<ActivityBuilders> activityBuildersList) {
         String activity = "activity";
-        String bundle = "bundle";
+        String stateManager = "stateManager";
         String sc = "sc";
 
-        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_ON_ACTIVITY_CREATED)
+        MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_ON_BUILD_AND_INJECT)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PROTECTED)
                 .addParameter(EClass.Activity.getName(), activity)
-                .addParameter(EClass.Bundle.getName(), bundle)
+                .addParameter(EClass.StateManager.getName(), stateManager)
                 .addParameter(IScreenComponent.class, sc)
                 .returns(ParameterizedTypeName.get(Pair.class, IScreenComponent.class, IActivityComponent.class));
 
@@ -164,7 +151,7 @@ public class KnightBuilder extends BaseClassBuilder {
                             METHOD_NAME_GET_APPC,
                             sc,
                             activityBuilders.getActivityName(), activity,
-                            bundle)
+                            stateManager)
                     .endControlFlow();
             first = false;
         }
@@ -172,23 +159,6 @@ public class KnightBuilder extends BaseClassBuilder {
         method.addStatement("return null");
 
         getBuilder().addMethod(method.build());
-    }
-
-    private void addOnActivitySavedMethod() { // TODO
-        String activity = "activity";
-        String outState = "outState";
-        String sc = "sc";
-
-        getBuilder().addMethod(
-                MethodSpec.methodBuilder(METHOD_NAME_ON_ACTIVITY_SAVED)
-                        .addAnnotation(Override.class)
-                        .addModifiers(Modifier.PROTECTED)
-                        .addParameter(EClass.Activity.getName(), activity)
-                        .addParameter(EClass.Bundle.getName(), outState)
-                        .addParameter(IScreenComponent.class, sc)
-                        .addCode("// TODO\n")
-                        .build()
-        );
     }
 
     private void addFromMethod(ActivityBuilders activityBuilders) {
@@ -234,6 +204,5 @@ public class KnightBuilder extends BaseClassBuilder {
         // implement abstract methods from superclass
         addIsScopedMethod(activityBuildersList);
         addOnActivityCreatedMethod(activityBuildersList);
-        addOnActivitySavedMethod();
     }
 }

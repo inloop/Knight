@@ -73,12 +73,12 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
 
     private void addBuildMethod(AppComponentBuilder parentComponentBuilder, ScreenComponentBuilder componentBuilder, ScreenModuleBuilder mainModuleBuilder) {
         String appC = "appComponent";
-        String bundle = "bundle";
+        String stateManager = "stateManager";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(parentComponentBuilder.getClassName(), appC, Modifier.FINAL)
-                .addParameter(EClass.Bundle.getName(), bundle, Modifier.FINAL)
+                .addParameter(EClass.StateManager.getName(), stateManager, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", appC);
@@ -90,7 +90,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
             module = componentBuilder.getModules().get(i);
             if (module.equals(mainModuleBuilder.getClassName()) || componentBuilder.isExtended(module)) {
                 // main module + extended modules with Bundle parameter
-                method.addCode("\tnew $T($N)", module, bundle);
+                method.addCode("\tnew $T($N)", module, stateManager);
             } else {
                 // other modules with empty constructor
                 method.addCode("\tnew $T()", module);
@@ -139,7 +139,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         String sc = "screenComponent";
         String localSc = "sc";
         String ac = "activityComponent";
-        String bundle = "bundle";
+        String stateManager = "stateManager";
         String activity = "activity";
 
         MethodSpec method = MethodSpec.methodBuilder(METHOD_NAME_BUILD_AND_INJECT)
@@ -147,12 +147,12 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 .addParameter(appcBuilder.getClassName(), appC, Modifier.FINAL)
                 .addParameter(IScreenComponent.class, sc, Modifier.FINAL)
                 .addParameter(getArgClassName(), activity, Modifier.FINAL)
-                .addParameter(EClass.Bundle.getName(), bundle, Modifier.FINAL)
+                .addParameter(EClass.StateManager.getName(), stateManager, Modifier.FINAL)
                 .returns(ParameterizedTypeName.get(Pair.class, IScreenComponent.class, IActivityComponent.class))
                 .addStatement("$T $N", scBuilder.getClassName(), localSc)
                 .addCode("// create Screen Component if necessary\n")
                 .beginControlFlow("if ($N == null)", sc)
-                .addStatement("$N = $N($N, $N)", localSc, METHOD_NAME_BUILD, appC, bundle)
+                .addStatement("$N = $N($N, $N)", localSc, METHOD_NAME_BUILD, appC, stateManager)
                 .endControlFlow()
                 .beginControlFlow("else")
                 .addStatement("$N = ($T) $N", localSc, scBuilder.getClassName(), sc)

@@ -32,15 +32,15 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     @Override
     protected void addScopeSpecificPart() {
         // Application attribute
-        FieldSpec stateField = FieldSpec.builder(EClass.Bundle.getName(), "mState",
+        FieldSpec stateField = FieldSpec.builder(EClass.StateManager.getName(), "mStateManager",
                 Modifier.PRIVATE, Modifier.FINAL).build();
         getBuilder().addField(stateField);
         // constructor
-        String state = "state";
+        String stateManager = "stateManager";
         MethodSpec constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(EClass.Bundle.getName(), state)
-                .addStatement("$N = $N", stateField, state)
+                .addParameter(EClass.StateManager.getName(), stateManager)
+                .addStatement("$N = $N", stateField, stateManager)
                 .build();
         getBuilder().addMethod(constructor);
     }

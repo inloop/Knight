@@ -21,6 +21,7 @@ public enum EClass {
     ActivityLifecycleCallbacks(ClassName.get("android.app.Application", "ActivityLifecycleCallbacks")),
 
     ComponentStorage(ClassName.get("eu.inloop.knight", "ComponentStorage")),
+    StateManager(ClassName.get("eu.inloop.knight", "StateManager")),
 
     DaggerApplicationComponent(ClassName.get(GPN.toString(GPN.KNIGHT, GPN.DI, GPN.COMPONENTS), "DaggerApplicationComponent")),
     ;

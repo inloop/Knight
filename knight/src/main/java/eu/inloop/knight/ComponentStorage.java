@@ -21,11 +21,27 @@ import eu.inloop.knight.core.IScreenComponent;
  */
 public abstract class ComponentStorage<C extends IAppComponent> implements Application.ActivityLifecycleCallbacks {
 
+    private class ScreenPair {
+
+        public IScreenComponent sc;
+        public StateManager manager;
+
+        public ScreenPair() {
+            manager = new StateManager();
+        }
+
+        public void clear() {
+            sc = null;
+            manager.clear();
+            manager = null;
+        }
+    }
+
     private static final String EXTRA_ACTIVITY_ID = "eu.inloop.knight.ACTIVITY_ID";
     private final Map<String, String> mHashToUUID = new HashMap<>();
 
     private C mApplicationComponent;
-    private final Map<String, IScreenComponent> mScreenComponents = new HashMap<>();
+    private final Map<String, ScreenPair> mScreenPairs = new HashMap<>();
     private final Map<String, IActivityComponent> mActivityComponents = new HashMap<>();
 
     public ComponentStorage(C mApplicationComponent) {
@@ -42,9 +58,7 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
 
     protected abstract boolean isScoped(Class activityClass);
 
-    protected abstract Pair<IScreenComponent, IActivityComponent> onActivityCreated(Activity activity, Bundle savedInstanceState, IScreenComponent sc);
-
-    protected abstract void onActivitySaved(Activity activity, Bundle outState, IScreenComponent sc);
+    protected abstract Pair<IScreenComponent, IActivityComponent> buildComponentsAndInject(Activity activity, StateManager manager, IScreenComponent sc);
 
     private void removeUuidMappingFor(Activity activity) {
         mHashToUUID.remove(getActivityHash(activity));
@@ -73,12 +87,20 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
                 LogHelper.d("onActivityCreated - created UUID : %s", uuid);
             }
             mHashToUUID.put(getActivityHash(activity), uuid);
-            IScreenComponent sc = mScreenComponents.get(uuid);
-            Pair<IScreenComponent, IActivityComponent> pair = onActivityCreated(activity, savedInstanceState, sc);
+
+            ScreenPair sp = mScreenPairs.get(uuid);
+            if (sp == null) {
+                sp = new ScreenPair();
+                mScreenPairs.put(uuid, sp);
+            }
+            LogHelper.d("onActivityCreated - reset SC Bundle for UUID : %s", uuid);
+            sp.manager.setBundle(savedInstanceState);
+
+            Pair<IScreenComponent, IActivityComponent> pair = buildComponentsAndInject(activity, sp.manager, sp.sc);
             if (pair != null) {
-                if (sc == null) {
+                if (sp.sc == null) {
                     LogHelper.d("onActivityCreated - build SC for UUID : %s", uuid);
-                    mScreenComponents.put(uuid, pair.first);
+                    sp.sc = pair.first;
                 }
                 LogHelper.d("onActivityCreated - build AC for UUID : %s", uuid);
                 mActivityComponents.put(uuid, pair.second);
@@ -93,7 +115,7 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
             if (uuid != null) {
                 LogHelper.d("onActivitySaveInstanceState - saving UUID : %s", uuid);
                 outState.putString(EXTRA_ACTIVITY_ID, uuid);
-                onActivitySaved(activity, outState, mScreenComponents.get(uuid));
+                mScreenPairs.get(uuid).manager.saveInto(outState);
             }
         }
     }
@@ -106,7 +128,8 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
                 if (activity.isFinishing()) {
                     LogHelper.d("onActivityDestroyed - removing SC for UUID : %s", uuid);
                     removeUuidMappingFor(activity);
-                    mScreenComponents.remove(uuid);
+                    mScreenPairs.get(uuid).clear();
+                    mScreenPairs.remove(uuid);
                 }
                 LogHelper.d("onActivityDestroyed - removing AC for UUID : %s", uuid);
                 mActivityComponents.remove(uuid);
