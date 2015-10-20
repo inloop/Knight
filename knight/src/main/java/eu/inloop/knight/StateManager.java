@@ -34,9 +34,15 @@ public class StateManager {
         return objBundle;
     }
 
-    public void add(String id, IStateful obj) {
+    public <T> T manage(String id, T obj) {
+        // ignore
+        return obj;
+    }
+
+    public <T extends IStateful> T manage(String id, T obj) {
         mStatefulMap.put(id, obj);
         restoreState(id, obj);
+        return obj;
     }
 
     public void saveInto(Bundle outState) {

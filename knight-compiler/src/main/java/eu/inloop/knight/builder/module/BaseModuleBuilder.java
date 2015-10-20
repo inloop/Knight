@@ -79,7 +79,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         ClassName className = ClassName.get((TypeElement) e.getEnclosingElement());
 
         MethodSpec.Builder method = prepareProvidesMethodBuilder(className.simpleName(), attr);
-        method.addStatement(buildProvideStatement(e, method, "new $T"), className);
+        addProvideStatement(method, e, "new $T", className);
         method.returns(className);
 
         getBuilder().addMethod(method.build());
@@ -95,7 +95,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         TypeName returnTypeName = ClassName.get(e.getReturnType());
 
         MethodSpec.Builder method = prepareProvidesMethodBuilder(e.getSimpleName().toString(), attr);
-        method.addStatement(buildProvideStatement(e, method, "$T.$N"), className, e.getSimpleName().toString());
+        addProvideStatement(method, e, "$T.$N", className, e.getSimpleName().toString());
         method.returns(returnTypeName);
 
         getBuilder().addMethod(method.build());
@@ -135,16 +135,21 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         return name;
     }
 
-    private String buildProvideStatement(ExecutableElement e, MethodSpec.Builder method, String call) {
-        StringBuilder statement = new StringBuilder();
-        statement.append(String.format("return %s(", call));
+    protected void addProvideStatement(MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
+        addProvideStatement(true, method, e, callFormat, args);
+    }
+
+    protected void addProvideStatement(boolean isReturn, MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
+        if (isReturn) method.addCode("return ");
+
+        method.addCode(String.format("%s(", callFormat), args);
         for (int i = 0; i < e.getParameters().size(); i++) {
             VariableElement p = e.getParameters().get(i);
             Set<Modifier> modifiers = p.getModifiers();
 
-            statement.append(p.getSimpleName().toString());
+            method.addCode("$N", p.getSimpleName().toString());
             if (i < e.getParameters().size() - 1) {
-                statement.append(", ");
+                method.addCode(", ");
             }
 
             ParameterSpec.Builder param = ParameterSpec.builder(
@@ -154,13 +159,13 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
             );
             method.addParameter(param.build());
         }
-        statement.append(")");
-        return statement.toString();
+        method.addCode(")");
+        if (isReturn) method.addCode(";\n");
     }
 
     private Attr getAnnotationAttributes(Element e) {
         Attr attr = getScopeSpecificAnnotationAttributes(e);
-        if (attr.name == null || attr.name.isEmpty()) {
+        if (attr.name == null || attr.name.length() == 0) {
             attr.name = null;
         }
         return attr;
