@@ -57,6 +57,7 @@ public abstract class BaseComponentBuilder extends BaseClassBuilder {
     }
 
     protected abstract Class<? extends Annotation> getComponentAnnotation();
+
     protected abstract Class<? extends IComponent> getComponentInterface();
 
     @Override
@@ -91,11 +92,26 @@ public abstract class BaseComponentBuilder extends BaseClassBuilder {
         return mModules;
     }
 
+    protected void addExtendedModule(ExtendedScreenModuleBuilder module) {
+        mESMBuilders.add(module);
+    }
+
     public void addModule(ClassName module) {
         mModules.add(module);
     }
 
     public void addModule(TypeElement moduleElement) throws ProcessorError {
+        if (checkModuleElement(moduleElement)) {
+            addModule(ClassName.get(moduleElement));
+        }
+    }
+
+    /**
+     * Check if given element can be Module.
+     *
+     * @return <code>true</code> if Module should be added
+     */
+    protected boolean checkModuleElement(TypeElement moduleElement) throws ProcessorError {
         if (moduleElement.getAnnotation(Module.class) == null) {
             throw new ProcessorError(moduleElement, ErrorMsg.Missing_Module_annotation);
         }
@@ -118,19 +134,7 @@ public abstract class BaseComponentBuilder extends BaseClassBuilder {
         if (moduleElement.getModifiers().contains(Modifier.ABSTRACT)) {
             throw new ProcessorError(moduleElement, ErrorMsg.Module_is_abstract);
         }
-
-        if (mScope == ScreenScope.class) {
-            // Screen Module cannot be final
-            if (moduleElement.getModifiers().contains(Modifier.FINAL)) {
-                throw new ProcessorError(moduleElement, ErrorMsg.Screen_Module_is_final);
-            }
-
-            ExtendedScreenModuleBuilder esm = new ExtendedScreenModuleBuilder(moduleElement);
-            mESMBuilders.add(esm);
-            addModule(esm.getClassName());
-        } else {
-            addModule(ClassName.get(moduleElement));
-        }
+        return true;
     }
 
     public void addInjectMethod(ClassName className) {

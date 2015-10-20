@@ -71,16 +71,6 @@ public class KnightBuilder extends BaseClassBuilder {
         // singleton instance
         FieldSpec instance = FieldSpec.builder(getClassName(), "mInstance", Modifier.PRIVATE, Modifier.STATIC).build();
         getBuilder().addField(instance);
-        // initializer
-        String app = "application";
-        getBuilder().addMethod(
-                MethodSpec.methodBuilder(METHOD_NAME_INIT)
-                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .addParameter(EClass.Application.getName(), app)
-                        .addStatement("$N = new $T($N)", instance, getClassName(), app)
-                        .addStatement("$N.registerActivityLifecycleCallbacks($N)", app, instance)
-                        .build()
-        );
         // static method for getting instance
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_GET_INSTANCE)
@@ -90,6 +80,16 @@ public class KnightBuilder extends BaseClassBuilder {
                         .endControlFlow()
                         .addStatement("return $N", instance)
                         .returns(getClassName())
+                        .build()
+        );
+        // initializer
+        String app = "application";
+        getBuilder().addMethod(
+                MethodSpec.methodBuilder(METHOD_NAME_INIT)
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                        .addParameter(EClass.Application.getName(), app)
+                        .addStatement("$N = new $T($N)", instance, getClassName(), app)
+                        .addStatement("$N.registerActivityLifecycleCallbacks($N)", app, instance)
                         .build()
         );
     }
@@ -145,7 +145,7 @@ public class KnightBuilder extends BaseClassBuilder {
     private void addOnActivityCreatedMethod(Collection<ActivityBuilders> activityBuildersList) {
         String activity = "activity";
         String bundle = "bundle";
-        String sc = "screenComponent";
+        String sc = "sc";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_ON_ACTIVITY_CREATED)
                 .addAnnotation(Override.class)
@@ -177,7 +177,7 @@ public class KnightBuilder extends BaseClassBuilder {
     private void addOnActivitySavedMethod() { // TODO
         String activity = "activity";
         String outState = "outState";
-        String sc = "screenComponent";
+        String sc = "sc";
 
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_ON_ACTIVITY_SAVED)
@@ -227,13 +227,13 @@ public class KnightBuilder extends BaseClassBuilder {
     }
 
     public void setupActivities(Collection<ActivityBuilders> activityBuildersList) {
-        // implement abstract methods from superclass
-        addIsScopedMethod(activityBuildersList);
-        addOnActivityCreatedMethod(activityBuildersList);
-        addOnActivitySavedMethod();
         // for each scoped Activity add from() method
         for (ActivityBuilders activityBuilders : activityBuildersList) {
             addFromMethod(activityBuilders);
         }
+        // implement abstract methods from superclass
+        addIsScopedMethod(activityBuildersList);
+        addOnActivityCreatedMethod(activityBuildersList);
+        addOnActivitySavedMethod();
     }
 }
