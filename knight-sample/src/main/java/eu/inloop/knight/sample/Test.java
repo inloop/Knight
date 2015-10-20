@@ -16,7 +16,7 @@ public class Test {
 
     @ScreenProvided(
             in = MainActivity.class,
-            scoped = false
+            scoped = true
     )
     public static String getString() {
         return "Hello My World! " + new Random().nextInt();

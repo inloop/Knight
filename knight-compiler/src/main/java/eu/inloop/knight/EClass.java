@@ -17,7 +17,6 @@ public enum EClass {
     Activity(ClassName.get("android.app", "Activity")),
     AppCompatActivity(ClassName.get("android.support.v7.app", "AppCompatActivity")),
     Log(ClassName.get("android.util", "Log")),
-    Pair(ClassName.get("android.util", "Pair")),
     Bundle(ClassName.get("android.os", "Bundle")),
     ActivityLifecycleCallbacks(ClassName.get("android.app.Application", "ActivityLifecycleCallbacks")),
 

@@ -3,6 +3,7 @@ package eu.inloop.knight;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,37 +36,15 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
         return mApplicationComponent;
     }
 
-    protected IScreenComponent getScreenComponent(String uuid) {
-        return mScreenComponents.get(uuid);
-    }
-
-    protected IActivityComponent getActivityComponent(String uuid) {
-        return mActivityComponents.get(uuid);
-    }
-
-    protected void putScreenComponent(String uuid, IScreenComponent component) {
-        mScreenComponents.put(uuid, component);
-    }
-
-    protected void putActivityComponent(String uuid, IActivityComponent component) {
-        mActivityComponents.put(uuid, component);
-    }
-
-    protected void removeScreenComponent(String uuid) {
-        mScreenComponents.remove(uuid);
-    }
-
-    protected void removeActivityComponent(String uuid) {
-        mActivityComponents.remove(uuid);
+    protected IActivityComponent getActivityComponent(Activity activity) {
+        return mActivityComponents.get(getActivityUUID(activity));
     }
 
     protected abstract boolean isScoped(Class activityClass);
 
-    protected abstract void onActivityCreated(Activity activity, Bundle savedInstanceState, String uuid);
+    protected abstract Pair<IScreenComponent, IActivityComponent> onActivityCreated(Activity activity, Bundle savedInstanceState, IScreenComponent sc);
 
-    protected abstract void onActivityDestroyed(Activity activity, String uuid);
-
-    protected abstract void onActivitySaved(Activity activity, Bundle outState, String uuid);
+    protected abstract void onActivitySaved(Activity activity, Bundle outState, IScreenComponent sc);
 
     private void removeUuidMappingFor(Activity activity) {
         mHashToUUID.remove(getActivityHash(activity));
@@ -73,6 +52,10 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
 
     private String getActivityHash(Activity activity) {
         return activity.hashCode() + ""; // TODO : find better way to get unique id from activity -> .hashCode() is 'int' ?
+    }
+
+    private String getActivityUUID(Activity activity) {
+        return mHashToUUID.get(getActivityHash(activity));
     }
 
     @Override
@@ -86,17 +69,24 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
                 uuid = UUID.randomUUID().toString();
             }
             mHashToUUID.put(getActivityHash(activity), uuid);
-            onActivityCreated(activity, savedInstanceState, uuid);
+            IScreenComponent sc = mScreenComponents.get(uuid);
+            Pair<IScreenComponent, IActivityComponent> pair = onActivityCreated(activity, savedInstanceState, sc);
+            if (pair != null) {
+                if (sc == null) {
+                    mScreenComponents.put(uuid, pair.first);
+                }
+                mActivityComponents.put(uuid, pair.second);
+            }
         }
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
         if (isScoped(activity.getClass())) {
-            String uuid = mHashToUUID.get(getActivityHash(activity));
+            String uuid = getActivityUUID(activity);
             if (uuid != null) {
                 outState.putString(EXTRA_ACTIVITY_ID, uuid);
-                onActivitySaved(activity, outState, uuid);
+                onActivitySaved(activity, outState, mScreenComponents.get(uuid));
             }
         }
     }
@@ -104,9 +94,10 @@ public abstract class ComponentStorage<C extends IAppComponent> implements Appli
     @Override
     public void onActivityDestroyed(Activity activity) {
         if (isScoped(activity.getClass())) {
-            String uuid = mHashToUUID.get(getActivityHash(activity));
+            String uuid = getActivityUUID(activity);
             if (uuid != null) {
-                onActivityDestroyed(activity, uuid);
+                // TODO : removeScreenComponent(uuid);
+                mActivityComponents.remove(uuid);
                 removeUuidMappingFor(activity); // TODO : check if onDestroy() is called after onSaveInstanceState()
             }
         }

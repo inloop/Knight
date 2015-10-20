@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder;
 
+import android.util.Pair;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -14,6 +16,7 @@ import eu.inloop.knight.builder.component.ScreenComponentBuilder;
 import eu.inloop.knight.builder.module.ActivityModuleBuilder;
 import eu.inloop.knight.builder.module.AppModuleBuilder;
 import eu.inloop.knight.builder.module.ScreenModuleBuilder;
+import eu.inloop.knight.core.IActivityComponent;
 import eu.inloop.knight.core.IScreenComponent;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
@@ -143,9 +146,9 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(appcBuilder.getClassName(), appC, Modifier.FINAL)
                 .addParameter(IScreenComponent.class, sc, Modifier.FINAL)
-                .addParameter(EClass.Bundle.getName(), bundle, Modifier.FINAL)
                 .addParameter(getArgClassName(), activity, Modifier.FINAL)
-                .returns(ParameterizedTypeName.get(EClass.Pair.getName(), scBuilder.getClassName(), acBuilder.getClassName()))
+                .addParameter(EClass.Bundle.getName(), bundle, Modifier.FINAL)
+                .returns(ParameterizedTypeName.get(Pair.class, IScreenComponent.class, IActivityComponent.class))
                 .addStatement("$T $N", scBuilder.getClassName(), localSc)
                 .addCode("// create Screen Component if necessary\n")
                 .beginControlFlow("if ($N == null)", sc)
@@ -158,7 +161,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 .addStatement("$T $N = $N($N, $N)", acBuilder.getClassName(), ac, METHOD_NAME_BUILD, localSc, activity)
                 .addCode("// inject the Activity\n")
                 .addStatement("$N.$N($N)", ac, BaseComponentBuilder.METHOD_NAME_INJECT, activity)
-                .addStatement("return new $T<>($N, $N)", EClass.Pair.getName(), localSc, ac)
+                .addStatement("return new $T($N, $N)", ParameterizedTypeName.get(Pair.class, IScreenComponent.class, IActivityComponent.class), localSc, ac)
                 .build();
 
         getBuilder().addMethod(method);
