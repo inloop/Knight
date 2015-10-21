@@ -1,5 +1,6 @@
 package eu.inloop.knight.builder.module;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -58,14 +59,18 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         return attr;
     }
 
-    // TODO : only if annotated with @ScreenScope
     @Override
     protected void addProvideStatement(MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
         MethodSpec m = method.build();
-
-        method.addCode("return $N.manage($S, ", FIELD_NAME_STATE_MANAGER, String.format(STATEFUL_ID_FORMAT, m.returnType, m.name));
-        addProvideStatement(false, method, e, callFormat, args);
-        method.addCode(");\n");
+        // check if is screen scoped
+        if (m.annotations.contains(AnnotationSpec.builder(ScreenScope.class).build())) {
+            // manage state only if scoped
+            method.addCode("return $N.manage($S, ", FIELD_NAME_STATE_MANAGER, String.format(STATEFUL_ID_FORMAT, m.returnType, m.name));
+            addProvideCode(false, method, e, callFormat, args);
+            method.addCode(");\n");
+        } else {
+            addProvideCode(true, method, e, callFormat, args);
+        }
     }
 
 }

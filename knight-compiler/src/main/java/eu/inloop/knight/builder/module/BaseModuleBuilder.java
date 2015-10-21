@@ -136,11 +136,11 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
     }
 
     protected void addProvideStatement(MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
-        addProvideStatement(true, method, e, callFormat, args);
+        addProvideCode(true, method, e, callFormat, args);
     }
 
-    protected void addProvideStatement(boolean isReturn, MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
-        if (isReturn) method.addCode("return ");
+    protected void addProvideCode(boolean asReturnStatement, MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
+        if (asReturnStatement) method.addCode("return ");
 
         method.addCode(String.format("%s(", callFormat), args);
         for (int i = 0; i < e.getParameters().size(); i++) {
@@ -160,7 +160,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
             method.addParameter(param.build());
         }
         method.addCode(")");
-        if (isReturn) method.addCode(";\n");
+        if (asReturnStatement) method.addCode(";\n");
     }
 
     private Attr getAnnotationAttributes(Element e) {
