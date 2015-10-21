@@ -12,8 +12,8 @@ import android.support.annotation.Nullable;
  */
 public interface IStateful {
 
-    void onSave(@NonNull Bundle outState);
     void onCreate(@Nullable Bundle savedState);
+    void onSave(@NonNull Bundle outState);
 
 }
 
