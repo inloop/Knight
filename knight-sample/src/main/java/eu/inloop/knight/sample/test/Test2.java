@@ -1,8 +1,9 @@
-package eu.inloop.knight.sample;
+package eu.inloop.knight.sample.test;
 
 import java.util.Random;
 
 import eu.inloop.knight.ScreenProvided;
+import eu.inloop.knight.sample.MainActivity;
 
 /**
  * Class {@link Test2}

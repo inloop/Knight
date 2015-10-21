@@ -1,4 +1,4 @@
-package eu.inloop.knight.sample;
+package eu.inloop.knight.sample.test;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +8,7 @@ import java.util.Random;
 
 import eu.inloop.knight.IStateful;
 import eu.inloop.knight.ScreenProvided;
+import eu.inloop.knight.sample.MainActivity;
 
 /**
  * Class {@link Test}

@@ -13,19 +13,34 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.inloop.knight.Scoped;
+import eu.inloop.knight.sample.util.StringUtil;
 
 @Scoped
 public class MainActivity extends AppCompatActivity {
 
     @Inject
     int injectedNumber;
+    @Inject
+    StringUtil stringUtil;
 
-    @Bind(R.id.testText)
-    TextView testText;
+    @Bind(R.id.text1)
+    TextView text1;
+    @Bind(R.id.text2)
+    TextView text2;
 
-    @OnClick(R.id.btn)
+    @OnClick(R.id.btn_new)
     public void gotoNew() {
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    @OnClick(R.id.btn_second)
+    public void gotoSecond() {
+        startActivity(new Intent(this, SecondActivity.class));
+    }
+
+    @OnClick(R.id.btn_unscoped)
+    public void gotoUnscoped() {
+        startActivity(new Intent(this, UnScopedActivity.class));
     }
 
     @Override
@@ -34,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        testText.setText(String.valueOf(injectedNumber));
+        text1.setText(String.valueOf(injectedNumber));
+        text2.setText(stringUtil.doSomething());
     }
 
     @Override

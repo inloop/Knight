@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Knight</string>
-
-    <string name="goto_new">NEW</string>
+    <string name="action_settings">Settings</string>
+    <string name="unscoped">Unscoped Activity</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+
+    <string name="goto_new">Go to New</string>
+    <string name="goto_second">Go to Second Activity</string>
+    <string name="goto_unscoped">Go to Unscoped Activity</string>
 </resources>
