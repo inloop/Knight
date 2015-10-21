@@ -39,7 +39,7 @@ import eu.inloop.knight.util.StringUtils;
  */
 public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
-    // TODO : Implement save state mechanism into PROVIDES methods
+    // TODO : Implement save state mechanism into PROVIDES methods only for extended IStateful
 
     protected static class Attr {
         boolean scoped;
@@ -101,7 +101,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         getBuilder().addMethod(method.build());
     }
 
-    private MethodSpec.Builder prepareProvidesMethodBuilder(String methodNamePart, Attr attr) {
+    protected MethodSpec.Builder prepareProvidesMethodBuilder(String methodNamePart, Attr attr) {
         String methodName = formatProvidesName(methodNamePart, attr);
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(methodName)

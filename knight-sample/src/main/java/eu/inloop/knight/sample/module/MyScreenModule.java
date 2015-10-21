@@ -18,10 +18,10 @@ import eu.inloop.knight.scope.ScreenScope;
 @Module
 public class MyScreenModule {
 
+    // if @ScreenScope is present then cannot annotate with @Provides
     @Named("S")
-    @Provides
     @ScreenScope
-    public String getS() {
+    public String getString() {
         return "Sssssssssss";
     }
 

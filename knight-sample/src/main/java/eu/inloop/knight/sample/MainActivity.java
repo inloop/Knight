@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,6 +19,9 @@ import eu.inloop.knight.sample.util.StringUtil;
 @Scoped
 public class MainActivity extends AppCompatActivity {
 
+    @Named("S")
+    @Inject
+    String s;
     @Inject
     int injectedNumber;
     @Inject
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         text1.setText(String.valueOf(injectedNumber));
         text2.setText(stringUtil.doSomething());
+        text2.append("\n");
+        text2.append(s);
     }
 
     @Override
