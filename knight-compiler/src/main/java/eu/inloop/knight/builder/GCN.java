@@ -9,6 +9,7 @@ package eu.inloop.knight.builder;
 public enum GCN {
 
     KNIGHT("Knight"),
+    NAVIGATOR("I"),
     APPLICATION_COMPONENT("ApplicationComponent"),
     APPLICATION_MODULE("ApplicationModule"),
     SCREEN_COMPONENT("ScreenComponentFor%s"),

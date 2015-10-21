@@ -14,4 +14,8 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  */
 @Target(TYPE)
 @Retention(SOURCE)
-public @interface Scoped {}
+public @interface Scoped {
+
+    With[] value() default {};
+
+}

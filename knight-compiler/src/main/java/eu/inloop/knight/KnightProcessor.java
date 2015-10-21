@@ -86,6 +86,8 @@ public class KnightProcessor extends AbstractProcessor {
                 ClassName activityName = getScopedActivityName((TypeElement) e);
                 ActivityBuilders activityBuilders = new ActivityBuilders(activityName);
                 activityBuildersMap.put(activityName, activityBuilders);
+                // create navigator methods
+                appBuilders.Navigator.addMethod(activityName, e.getAnnotation(Scoped.class).value());
             }
 
             // add Injectable classes

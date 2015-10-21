@@ -44,9 +44,9 @@ public class ProcessorUtils {
     }
 
     /**
-     * Retrieves {@link ClassName} from {@code element} with {@code getter} and if exception is thrown, retrieves it from the exception.
+     * Retrieves {@link ClassName} from {@code annotation} with {@code getter} and if exception is thrown, retrieves it from the exception.
      */
-    public static <A> ClassName getParamClass(final A annotation, final IGetter<A, Class<?>> getter) {
+    public static <A> ClassName getClass(final A annotation, final IGetter<A, Class<?>> getter) {
         ClassName className;
         try {
             className = ClassName.get(getter.get(annotation));
@@ -61,7 +61,20 @@ public class ProcessorUtils {
     }
 
     /**
-     * Retrieves {@link ClassName}s from {@code element} with {@code getter} and if exception is thrown, retrieves it from the exception.
+     * Retrieves {@link TypeName} from {@code annotation} with {@code getter} and if exception is thrown, retrieves it from the exception.
+     */
+    public static <A> TypeName getType(final A annotation, final IGetter<A, Class<?>> getter) {
+        TypeName typeName;
+        try {
+            typeName = ClassName.get(getter.get(annotation));
+        } catch (MirroredTypeException mte) {
+            typeName = ClassName.get(mte.getTypeMirror());
+        }
+        return typeName;
+    }
+
+    /**
+     * Retrieves {@link ClassName}s from {@code annotation} with {@code getter} and if exception is thrown, retrieves it from the exception.
      */
     public static <A> List<ClassName> getParamClasses(final A annotation, final IGetter<A, Class<?>[]> getter) {
         List<ClassName> className = new ArrayList<>();

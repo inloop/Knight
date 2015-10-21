@@ -14,9 +14,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.inloop.knight.Scoped;
+import eu.inloop.knight.With;
 import eu.inloop.knight.sample.util.StringUtil;
+import the.knight.I;
 
-@Scoped
+@Scoped({
+        @With(name = "flag", type = boolean.class),
+        @With(name = "number", type = int.class)
+})
 public class MainActivity extends AppCompatActivity {
 
     @Named("S")
@@ -34,12 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_new)
     public void gotoNew() {
-        startActivity(new Intent(this, MainActivity.class));
+        I.startMainActivity(this, false, 4);
     }
 
     @OnClick(R.id.btn_second)
     public void gotoSecond() {
-        startActivity(new Intent(this, SecondActivity.class));
+        startActivity(I.forSecondActivity(this));
     }
 
     @OnClick(R.id.btn_unscoped)

@@ -19,12 +19,14 @@ import eu.inloop.knight.util.ProcessorError;
 public class AppBuilders {
 
     public KnightBuilder Knight;
+    public NavigatorBuilder Navigator;
     public AppComponentBuilder AppC;
     public ComponentFactoryBuilder AppCF;
     public AppModuleBuilder AppM;
 
     public AppBuilders() throws ProcessorError {
         Knight = new KnightBuilder();
+        Navigator = new NavigatorBuilder();
         // Application Scope
         AppM = new AppModuleBuilder();
         AppC = new AppComponentBuilder();
@@ -38,6 +40,7 @@ public class AppBuilders {
         // create factory methods
         AppCF.addBuildMethod(AppC, AppM);
         // build
+        Navigator.build(filer);
         Knight.build(filer);
         AppM.build(filer);
         AppC.build(filer);
