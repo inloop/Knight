@@ -74,11 +74,13 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
     private void addBuildMethod(AppComponentBuilder parentComponentBuilder, ScreenComponentBuilder componentBuilder, ScreenModuleBuilder mainModuleBuilder) {
         String appC = "appComponent";
         String stateManager = "stateManager";
+        String activity = "activity";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(parentComponentBuilder.getClassName(), appC, Modifier.FINAL)
                 .addParameter(EClass.StateManager.getName(), stateManager, Modifier.FINAL)
+                .addParameter(EClass.Activity.getName(), activity, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", appC);
@@ -88,8 +90,11 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 method.addCode(",\n");
             }
             module = componentBuilder.getModules().get(i);
-            if (module.equals(mainModuleBuilder.getClassName()) || componentBuilder.isExtended(module)) {
-                // main module + extended modules with Bundle parameter
+            if (module.equals(mainModuleBuilder.getClassName())) {
+                // main module with stateManager & activity parameters
+                method.addCode("\tnew $T($N, $N)", module, stateManager, activity);
+            } else if (componentBuilder.isExtended(module)) {
+                // extended modules with stateManager parameter
                 method.addCode("\tnew $T($N)", module, stateManager);
             } else {
                 // other modules with empty constructor
@@ -152,7 +157,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 .addStatement("$T $N", scBuilder.getClassName(), localSc)
                 .addCode("// create Screen Component if necessary\n")
                 .beginControlFlow("if ($N == null)", sc)
-                .addStatement("$N = $N($N, $N)", localSc, METHOD_NAME_BUILD, appC, stateManager)
+                .addStatement("$N = $N($N, $N, $N)", localSc, METHOD_NAME_BUILD, appC, stateManager, activity)
                 .endControlFlow()
                 .beginControlFlow("else")
                 .addStatement("$N = ($T) $N", localSc, scBuilder.getClassName(), sc)

@@ -22,7 +22,9 @@ public enum ErrorMsg {
     Module_is_abstract("@%s cannot be abstract class.", Module.class.getSimpleName()),
     Screen_Module_is_final("@%s Module cannot be final class if contains @%s methods.", ScreenProvided.class.getSimpleName(), ScreenScope.class.getSimpleName()),
     Screen_Module_without_empty_constructor("@%s Module has to have empty constructor.", ScreenProvided.class.getSimpleName()),
-    Screen_Scoped_module_method_with_Provides("@%s Module's method annotated with @%s cannot be also annotated with @%s.", ScreenProvided.class.getSimpleName(), ScreenScope.class.getSimpleName(), Provides.class.getSimpleName());
+    Screen_Scoped_module_method_with_Provides("@%s Module's method annotated with @%s cannot be also annotated with @%s.", ScreenProvided.class.getSimpleName(), ScreenScope.class.getSimpleName(), Provides.class.getSimpleName()),
+    With_name_not_unique("@%s must have unique name inside @%s.", With.class.getSimpleName(), Scoped.class.getSimpleName()),
+    ;
 
     private String mMessage;
 

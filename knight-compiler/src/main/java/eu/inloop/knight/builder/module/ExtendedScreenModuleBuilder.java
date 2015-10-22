@@ -33,6 +33,11 @@ public class ExtendedScreenModuleBuilder extends ScreenModuleBuilder {
     }
 
     @Override
+    protected void addToConstructor(MethodSpec.Builder method) {
+        // do not add anything
+    }
+
+    @Override
     public void end() throws ProcessorError {
         super.end();
         // set super class

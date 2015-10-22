@@ -20,7 +20,7 @@ import the.knight.I;
 
 @Scoped({
         @With(name = "flag", type = boolean.class),
-        @With(name = "number", type = int.class)
+        @With(name = "number", type = Double.class)
 })
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_new)
     public void gotoNew() {
-        I.startMainActivity(this, false, 4);
+        I.startMainActivity(this, false, null);
     }
 
     @OnClick(R.id.btn_second)

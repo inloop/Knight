@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import eu.inloop.knight.IStateful;
@@ -16,7 +17,7 @@ import eu.inloop.knight.sample.MainActivity;
  * @author FrantisekGazo
  * @version 2015-10-18
  */
-public class Test {
+public class Test implements Serializable {
 
     public static class A implements IStateful {
 

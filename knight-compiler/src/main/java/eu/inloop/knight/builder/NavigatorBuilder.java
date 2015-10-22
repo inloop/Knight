@@ -7,8 +7,14 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 
-import javax.lang.model.element.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+
+import eu.inloop.knight.ErrorMsg;
+import eu.inloop.knight.Scoped;
 import eu.inloop.knight.With;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
@@ -34,26 +40,39 @@ public class NavigatorBuilder extends BaseClassBuilder {
         getBuilder().addModifiers(Modifier.FINAL, Modifier.PUBLIC);
     }
 
-    public void addMethod(ClassName activityName, With[] withParams) {
-        // TODO : check @With names - must be distinct
+    public void integrate(TypeElement e, ActivityBuilders activityBuilders) throws ProcessorError {
+        With[] withParams = e.getAnnotation(Scoped.class).value();
 
+        // make sure that @With have distinct names
+        Set<String> names = new HashSet<>();
+        for (With with : withParams) {
+            names.add(with.name().toLowerCase());
+        }
+        if (names.size() != withParams.length) {
+            throw new ProcessorError(e, ErrorMsg.With_name_not_unique);
+        }
+
+        addForActivityMethod(activityBuilders.getActivityName(), withParams);
+        activityBuilders.SM.addInitMethod(withParams);
+    }
+
+    private void addForActivityMethod(ClassName activityName, With[] params) {
         String forName = getMethodName(METHOD_NAME_FOR, activityName);
-        String startName = getMethodName(METHOD_NAME_START, activityName);
-
         String context = "context";
         String intent = "intent";
-
+        // build FOR method
         MethodSpec.Builder forMethod = MethodSpec.methodBuilder(forName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(Context.class, context)
                 .returns(Intent.class);
-        MethodSpec.Builder startMethod = MethodSpec.methodBuilder(startName)
+        // build START method
+        MethodSpec.Builder startMethod = MethodSpec.methodBuilder(getMethodName(METHOD_NAME_START, activityName))
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(Context.class, context);
 
         forMethod.addStatement("$T $N = new $T($N, $T.class)", Intent.class, intent, Intent.class, context, activityName);
         startMethod.addCode("$N.startActivity($N($N", context, forName, context);
-        for (With with : withParams) {
+        for (With with : params) {
             TypeName typeName = ProcessorUtils.getType(with, new ProcessorUtils.IGetter<With, Class<?>>() {
                 @Override
                 public Class<?> get(With obj) {
@@ -68,7 +87,7 @@ public class NavigatorBuilder extends BaseClassBuilder {
         }
         forMethod.addStatement("return $N", intent);
         startMethod.addCode("));\n");
-
+        // add methods
         getBuilder().addMethod(forMethod.build());
         getBuilder().addMethod(startMethod.build());
     }
@@ -77,7 +96,7 @@ public class NavigatorBuilder extends BaseClassBuilder {
         return String.format(format, activityName.simpleName());
     }
 
-    private String getExtraId(ClassName activityName, String name) {
+    public static String getExtraId(ClassName activityName, String name) {
         return String.format(EXTRA_ID, activityName.simpleName(), name);
     }
 }
