@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,9 +23,6 @@ import the.knight.I;
 })
 public class MainActivity extends AppCompatActivity {
 
-    @Named("S")
-    @Inject
-    String s;
     @Inject
     int injectedNumber;
     @Inject
@@ -39,12 +35,13 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_new)
     public void gotoNew() {
-        I.startMainActivity(this, false, null);
+        I.startMainActivity(this, false, 0d);
     }
 
     @OnClick(R.id.btn_second)
     public void gotoSecond() {
-        startActivity(I.forSecondActivity(this));
+        //startActivity(new Intent(this, SecondActivity.class).putExtra("a", "a"));
+        startActivity(I.forSecondActivity(this, "Mike"));
     }
 
     @OnClick(R.id.btn_unscoped)
@@ -60,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
         text1.setText(String.valueOf(injectedNumber));
         text2.setText(stringUtil.doSomething());
-        text2.append("\n");
-        text2.append(s);
     }
 
     @Override

@@ -95,6 +95,7 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     public void addInitMethod(With[] withParams) {
         String activity = "activity";
         String extras = "extras";
+        String action = "action";
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_INIT)
                 .addModifiers(Modifier.PRIVATE)
@@ -103,6 +104,17 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         // do not retrieve extras if empty
         if (withParams.length > 0) {
             method.addStatement("$T $N = $N.getIntent().getExtras()", Bundle.class, extras, activity);
+            method.addStatement("$T $N = $N.getIntent().getAction()", String.class, action, activity);
+            method.beginControlFlow("if ($N != null)", extras)
+                    .endControlFlow()
+                    .beginControlFlow("else if ($N != null && $N.equals($S))", action, action, "android.intent.action.MAIN")
+                    .addCode("// MAIN won't have any extras\n")
+                    .addStatement("return")
+                    .endControlFlow()
+                    .beginControlFlow("else")
+                    .addCode("// throw exception if Intent was wrongly created\n")
+                    .addStatement("throw new $T($S)", IllegalStateException.class, "Extras were not set")
+                    .endControlFlow();
         }
 
         for (With with : withParams) {
@@ -116,8 +128,10 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
             FieldSpec field = FieldSpec.builder(typeName, getInitFieldName(with), Modifier.PRIVATE).build();
             getBuilder().addField(field);
             // add statement to init method
+            String extraId = NavigatorBuilder.getExtraId(getArgClassName(), with.name());
             method.addStatement("$N = ($T) $N.$N($S)",
-                    field, typeName, extras, getExtraGetterName(typeName), NavigatorBuilder.getExtraId(getArgClassName(), with.name()));
+                    field, typeName, extras, getExtraGetterName(typeName), extraId);
+
             addProvidesField(with, field);
         }
 
@@ -125,6 +139,8 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     }
 
     private void addProvidesField(With with, FieldSpec field) {
+        // TODO : allow @Nullable provides methods ?
+
         MethodSpec.Builder method = MethodSpec.methodBuilder(getProvidesFieldMethodName(with))
                 .addAnnotation(Provides.class)
                 .addModifiers(Modifier.PUBLIC)

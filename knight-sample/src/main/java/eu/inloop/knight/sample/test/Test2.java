@@ -13,11 +13,8 @@ import eu.inloop.knight.sample.MainActivity;
  */
 public class Test2 {
 
-    @ScreenProvided(
-            in = MainActivity.class,
-            scoped = true
-    )
-    public static int getString() {
+    @ScreenProvided(in = MainActivity.class, scoped = true)
+    public static int getnumber() {
         return new Random().nextInt();
     }
 

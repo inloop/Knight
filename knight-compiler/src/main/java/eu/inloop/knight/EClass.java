@@ -12,6 +12,7 @@ import eu.inloop.knight.builder.GPN;
  */
 public enum EClass {
 
+    Nullable(ClassName.get("android.support.annotation", "Nullable")),
     Context(ClassName.get("android.content", "Context")),
     Application(ClassName.get("android.app", "Application")),
     Activity(ClassName.get("android.app", "Activity")),
