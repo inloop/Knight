@@ -52,12 +52,8 @@ public class AppModuleBuilder extends BaseModuleBuilder {
     }
 
     @Override
-    protected Attr getScopeSpecificAnnotationAttributes(Element e) {
-        Attr attr = new Attr();
-        AppProvided a = e.getAnnotation(AppProvided.class);
-        attr.scoped = a.scoped();
-        attr.name = a.named();
-        return attr;
+    protected boolean isScoped(Element e) {
+        return e.getAnnotation(AppProvided.class).scoped();
     }
 
 }

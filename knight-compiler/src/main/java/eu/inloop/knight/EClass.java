@@ -12,7 +12,17 @@ import eu.inloop.knight.builder.GPN;
  */
 public enum EClass {
 
+    // Annotation classes
+    Override(ClassName.get("java.lang", "Override")),
+    AppProvided(ClassName.get("eu.inloop.knight", "AppProvided")),
+    ScreenProvided(ClassName.get("eu.inloop.knight", "ScreenProvided")),
+    ActivityProvided(ClassName.get("eu.inloop.knight", "ActivityProvided")),
+    AppScope(ClassName.get("eu.inloop.knight.scope", "AppScope")),
+    ScreenScope(ClassName.get("eu.inloop.knight.scope", "ScreenScope")),
+    ActivityScope(ClassName.get("eu.inloop.knight.scope", "ActivityScope")),
     Nullable(ClassName.get("android.support.annotation", "Nullable")),
+
+    // Android classes
     Context(ClassName.get("android.content", "Context")),
     Application(ClassName.get("android.app", "Application")),
     Activity(ClassName.get("android.app", "Activity")),
@@ -21,9 +31,11 @@ public enum EClass {
     Bundle(ClassName.get("android.os", "Bundle")),
     ActivityLifecycleCallbacks(ClassName.get("android.app.Application", "ActivityLifecycleCallbacks")),
 
+    // Knight classes
     ComponentStorage(ClassName.get("eu.inloop.knight", "ComponentStorage")),
     StateManager(ClassName.get("eu.inloop.knight", "StateManager")),
 
+    // Dagger classes
     DaggerApplicationComponent(ClassName.get(GPN.toString(GPN.KNIGHT, GPN.DI, GPN.COMPONENTS), "DaggerApplicationComponent")),
     ;
 

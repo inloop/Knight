@@ -70,12 +70,8 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     }
 
     @Override
-    protected Attr getScopeSpecificAnnotationAttributes(Element e) {
-        Attr attr = new Attr();
-        ScreenProvided a = e.getAnnotation(ScreenProvided.class);
-        attr.scoped = a.scoped();
-        attr.name = a.named();
-        return attr;
+    protected boolean isScoped(Element e) {
+        return e.getAnnotation(ScreenProvided.class).scoped();
     }
 
     @Override

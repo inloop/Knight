@@ -24,6 +24,7 @@ public enum ErrorMsg {
     Screen_Module_without_empty_constructor("@%s Module has to have empty constructor.", ScreenProvided.class.getSimpleName()),
     Screen_Scoped_module_method_with_Provides("@%s Module's method annotated with @%s cannot be also annotated with @%s.", ScreenProvided.class.getSimpleName(), ScreenScope.class.getSimpleName(), Provides.class.getSimpleName()),
     With_name_not_unique("@%s must have unique name inside @%s.", With.class.getSimpleName(), Scoped.class.getSimpleName()),
+    Knight_Config_more("@%s can be only one", KnightConfig.class.getSimpleName()),
     ;
 
     private String mMessage;

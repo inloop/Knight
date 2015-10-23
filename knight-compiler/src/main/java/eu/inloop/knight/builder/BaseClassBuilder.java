@@ -1,18 +1,38 @@
 package eu.inloop.knight.builder;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.processing.Filer;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 
+import eu.inloop.knight.EClass;
 import eu.inloop.knight.util.ProcessorError;
 
 public abstract class BaseClassBuilder {
 
     private static final String FULL_NAME_FORMAT = "%s.%s";
+
+    private static final List<ClassName> UNALLOWED_ANNOTATIONS = Arrays.asList(
+            EClass.Override.getName(),
+            EClass.AppProvided.getName(),
+            EClass.ScreenProvided.getName(),
+            EClass.ActivityProvided.getName(),
+            EClass.AppScope.getName(),
+            EClass.ScreenScope.getName(),
+            EClass.ActivityScope.getName()
+    );
 
     private TypeSpec.Builder mBuilder;
     private ClassName mClassName = null;
@@ -86,6 +106,22 @@ public abstract class BaseClassBuilder {
         //javaFile.writeTo(System.out);
 
         System.out.println(String.format("Class <%s> successfully generated.", getFullName()));
+    }
+
+    public List<AnnotationSpec> getAnnotations(Element e) {
+        List<AnnotationSpec> list = new ArrayList<>();
+        for (AnnotationMirror a : e.getAnnotationMirrors()) {
+            ClassName annotClassName = (ClassName) ClassName.get(a.getAnnotationType());
+            if (!UNALLOWED_ANNOTATIONS.contains(annotClassName)) {
+                AnnotationSpec.Builder annotation = AnnotationSpec.builder(annotClassName);
+                for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : a.getElementValues().entrySet()) {
+                    String format = (entry.getValue().getValue() instanceof String) ? "$S" : "$L";
+                    annotation.addMember(entry.getKey().getSimpleName().toString(), format, entry.getValue().getValue());
+                }
+                list.add(annotation.build());
+            }
+        }
+        return list;
     }
 
 }

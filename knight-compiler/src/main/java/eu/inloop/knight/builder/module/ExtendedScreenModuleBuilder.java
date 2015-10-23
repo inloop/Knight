@@ -5,7 +5,6 @@ import com.squareup.javapoet.MethodSpec;
 
 import java.util.List;
 
-import javax.inject.Named;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
@@ -54,13 +53,8 @@ public class ExtendedScreenModuleBuilder extends ScreenModuleBuilder {
             throw new ProcessorError(methodElement, ErrorMsg.Screen_Scoped_module_method_with_Provides);
         }
 
-        Attr attr = new Attr();
-        attr.scoped = true;
-        Named named = methodElement.getAnnotation(Named.class);
-        attr.name = (named != null) ? named.value() : "";
-
         MethodSpec.Builder method = prepareProvidesMethodBuilder(
-                "managed" + StringUtils.startUpperCase(methodElement.getSimpleName().toString()), attr)
+                methodElement, "managed" + StringUtils.startUpperCase(methodElement.getSimpleName().toString()))
                 .returns(ClassName.get(methodElement.getReturnType()));
 
         addProvideStatement(method, methodElement, "super.$N", methodElement.getSimpleName().toString());

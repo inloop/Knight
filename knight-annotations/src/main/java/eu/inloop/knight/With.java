@@ -7,9 +7,13 @@ package eu.inloop.knight;
  * @version 2015-10-21
  */
 public @interface With {
+
     String name();
 
     Class type();
 
     String withNamed() default "";
+
+    boolean withNullable() default false;
+
 }

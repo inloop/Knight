@@ -21,15 +21,98 @@ import javax.tools.JavaFileObject;
  */
 public class KnightTest {
 
+    private JavaFileObject componentStorage() {
+        return JavaFileObjects.forSourceString("eu.inloop.knight.ComponentStorage",
+                Joiner.on('\n').join(
+                        "package eu.inloop.knight;",
+                        "",
+                        "import android.app.Application.ActivityLifecycleCallbacks;",
+                        "import android.app.Activity;",
+                        "import android.os.Bundle;",
+                        "import android.util.Pair;",
+                        "",
+                        "import eu.inloop.knight.core.IActivityComponent;",
+                        "import eu.inloop.knight.core.IAppComponent;",
+                        "import eu.inloop.knight.core.IScreenComponent;",
+                        "",
+                        "public abstract class ComponentStorage<T> implements ActivityLifecycleCallbacks {",
+                        "",
+                        "   public ComponentStorage(T t) {}",
+                        "",
+                        "   protected final T getApplicationComponent() {",
+                        "        return null;",
+                        "    }",
+                        "",
+                        "    protected final IActivityComponent getActivityComponent(Activity activity) {",
+                        "        return null;",
+                        "    }",
+                        "",
+                        "    protected abstract boolean isScoped(Class activityClass);",
+                        "",
+                        "    protected abstract Pair<IScreenComponent, IActivityComponent> buildComponentsAndInject(Activity activity, StateManager manager, IScreenComponent sc);",
+                        "",
+                        "    @Override",
+                        "    public final void onActivityCreated(Activity activity, Bundle bundle) {",
+                        "        // do nothing",
+                        "    }",
+                        "",
+                        "    @Override",
+                        "    public final void onActivityDestroyed(Activity activity) {",
+                        "        // do nothing",
+                        "    }",
+                        "",
+                        "    @Override",
+                        "    public final void onActivitySaveInstanceState(Activity activity, Bundle bundle) {",
+                        "        // do nothing",
+                        "    }",
+                        "",
+                        "    @Override",
+                        "    public final void onActivityStarted(Activity activity) {",
+                        "        // do nothing",
+                        "    }",
+                        "",
+                        "    @Override",
+                        "    public final void onActivityResumed(Activity activity) {",
+                        "        // do nothing",
+                        "    }",
+                        "",
+                        "    @Override",
+                        "    public final void onActivityPaused(Activity activity) {",
+                        "        // do nothing",
+                        "    }",
+                        "",
+                        "    @Override",
+                        "    public final void onActivityStopped(Activity activity) {",
+                        "        // do nothing",
+                        "    }",
+                        "}"
+                )
+        );
+    }
+
+    private JavaFileObject libClass(String className) {
+        return JavaFileObjects.forSourceString(String.format("eu.inloop.knight.%s", className),
+                Joiner.on('\n').join(
+                        "package eu.inloop.knight;",
+                        "",
+                        String.format("public class %s {}", className)
+                )
+        );
+    }
+
     private JavaFileObject exampleActivity() {
         return JavaFileObjects.forSourceString("com.example.ExampleActivity",
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
+                        "import android.app.Activity;",
                         "import eu.inloop.knight.Scoped;",
+                        "import eu.inloop.knight.With;",
                         "",
-                        "@Scoped",
-                        "public class ExampleActivity {",
+                        "@Scoped({",
+                        "       @With(name = \"a\", type = String.class)",
+                        "})",
+                        "public class ExampleActivity extends Activity {",
                         "}"
                 )
         );
@@ -37,7 +120,9 @@ public class KnightTest {
 
     private Iterable<JavaFileObject> files(JavaFileObject... f) {
         List<JavaFileObject> files = new ArrayList<>();
-            files.add(exampleActivity());
+        files.add(componentStorage());
+        files.add(libClass("StateManager"));
+        files.add(exampleActivity());
         files.addAll(Arrays.asList(f));
         return files;
     }

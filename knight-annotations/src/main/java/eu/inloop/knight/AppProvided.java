@@ -29,20 +29,4 @@ public @interface AppProvided {
      */
     boolean scoped() default false;
 
-    /**
-     * <p>
-     * Custom name for provide-method. Will be appended with 'provides'.
-     * </p>
-     * <p>
-     * <b> NOTE: </b>
-     * The name of provide-method is by default derivewd from class name.
-     * (e.g. class Example -> 'providesExample()')
-     * </p>
-     * <p>
-     * <b> NOTE 2: </b>
-     * This is useful if you have annotated 2 classes with the same name and same constructor parameters from different packages.
-     * </p>
-     */
-    String named() default "";
-
 }

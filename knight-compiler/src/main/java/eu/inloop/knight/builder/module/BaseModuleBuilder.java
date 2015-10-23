@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Named;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -40,11 +39,6 @@ import eu.inloop.knight.util.StringUtils;
 public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
     // TODO : Implement save state mechanism into PROVIDES methods only for extended IStateful
-
-    protected static class Attr {
-        boolean scoped;
-        String name;
-    }
 
     private static final String METHOD_NAME_PROVIDES = "provides%s";
 
@@ -74,11 +68,10 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         if (!e.getModifiers().contains(Modifier.PUBLIC)) {
             throw new ProcessorError(e, ErrorMsg.Provided_constructor_not_public);
         }
-        Attr attr = getAnnotationAttributes(e);
 
         ClassName className = ClassName.get((TypeElement) e.getEnclosingElement());
 
-        MethodSpec.Builder method = prepareProvidesMethodBuilder(className.simpleName(), attr);
+        MethodSpec.Builder method = prepareProvidesMethodBuilder(e, className.simpleName(), isScoped(e));
         addProvideStatement(method, e, "new $T", className);
         method.returns(className);
 
@@ -89,41 +82,40 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         if (!e.getModifiers().containsAll(Arrays.asList(Modifier.PUBLIC, Modifier.STATIC))) {
             throw new ProcessorError(e, ErrorMsg.Provided_method_not_public_static);
         }
-        Attr attr = getAnnotationAttributes(e);
 
         ClassName className = ClassName.get((TypeElement) e.getEnclosingElement());
         TypeName returnTypeName = ClassName.get(e.getReturnType());
 
-        MethodSpec.Builder method = prepareProvidesMethodBuilder(e.getSimpleName().toString(), attr);
+        MethodSpec.Builder method = prepareProvidesMethodBuilder(e, e.getSimpleName().toString(), isScoped(e));
         addProvideStatement(method, e, "$T.$N", className, e.getSimpleName().toString());
         method.returns(returnTypeName);
 
         getBuilder().addMethod(method.build());
     }
 
-    protected MethodSpec.Builder prepareProvidesMethodBuilder(String methodNamePart, Attr attr) {
-        String methodName = formatProvidesName(methodNamePart, attr);
+    protected MethodSpec.Builder prepareProvidesMethodBuilder(ExecutableElement e, String methodNamePart) {
+        return prepareProvidesMethodBuilder(e, methodNamePart, false);
+    }
+
+    protected MethodSpec.Builder prepareProvidesMethodBuilder(ExecutableElement e, String methodNamePart, boolean scoped) {
+        String methodName = formatProvidesName(methodNamePart);
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(methodName)
                 .addAnnotation(Provides.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        if (attr.scoped) {
+        if (scoped) {
             method.addAnnotation(mScope);
         }
-        if (attr.name != null) {
-            method.addAnnotation(
-                    AnnotationSpec.builder(Named.class).addMember("value", "$S", attr.name).build()
-            );
+        // add also Annotations (except @Override)
+        for (AnnotationSpec a : getAnnotations(e)) {
+            method.addAnnotation(a);
         }
         return method;
     }
 
-    private String formatProvidesName(final String methodName, Attr attr) {
+    private String formatProvidesName(final String methodName) {
         String name = String.format(METHOD_NAME_PROVIDES, StringUtils.startUpperCase(methodName));
-        if (attr.name != null) {
-            name += StringUtils.startUpperCase(attr.name);
-        }
         // make sure method name is unique in generated Module
         Integer i = mProvidesMethodNames.get(name);
         if (i == null) {
@@ -157,22 +149,18 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
                     p.getSimpleName().toString(),
                     modifiers.toArray(new Modifier[modifiers.size()])
             );
+            // add also Annotations
+            for (AnnotationSpec a : getAnnotations(p)) {
+                param.addAnnotation(a);
+            }
             method.addParameter(param.build());
         }
         method.addCode(")");
         if (asReturnStatement) method.addCode(";\n");
     }
 
-    private Attr getAnnotationAttributes(Element e) {
-        Attr attr = getScopeSpecificAnnotationAttributes(e);
-        if (attr.name == null || attr.name.length() == 0) {
-            attr.name = null;
-        }
-        return attr;
-    }
-
     protected abstract void addScopeSpecificPart();
 
-    protected abstract Attr getScopeSpecificAnnotationAttributes(Element e);
+    protected abstract boolean isScoped(Element e);
 
 }

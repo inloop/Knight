@@ -53,12 +53,8 @@ public class ActivityModuleBuilder extends BaseModuleBuilder {
     }
 
     @Override
-    protected Attr getScopeSpecificAnnotationAttributes(Element e) {
-        Attr attr = new Attr();
-        ActivityProvided a = e.getAnnotation(ActivityProvided.class);
-        attr.scoped = a.scoped();
-        attr.name = a.named();
-        return attr;
+    protected boolean isScoped(Element e) {
+        return e.getAnnotation(ActivityProvided.class).scoped();
     }
 
 }
