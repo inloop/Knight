@@ -22,6 +22,9 @@ import eu.inloop.knight.util.ProcessorError;
  */
 public class ActivityModuleBuilder extends BaseModuleBuilder {
 
+    private static final String FIELD_NAME_ACTIVITY = "mActivity";
+    private static final String METHOD_NAME_PROVIDES_ACTIVITY = "providesActivity";
+
     public ActivityModuleBuilder(ClassName className) throws ProcessorError {
         super(ActivityScope.class, GCN.ACTIVITY_MODULE, className);
     }
@@ -29,7 +32,7 @@ public class ActivityModuleBuilder extends BaseModuleBuilder {
     @Override
     protected void addScopeSpecificPart() {
         // Activity attribute
-        FieldSpec activityField = FieldSpec.builder(EClass.Activity.getName(), "mActivity",
+        FieldSpec activityField = FieldSpec.builder(EClass.Activity.getName(), FIELD_NAME_ACTIVITY,
                 Modifier.PRIVATE, Modifier.FINAL).build();
         getBuilder().addField(activityField);
         // constructor
@@ -41,9 +44,8 @@ public class ActivityModuleBuilder extends BaseModuleBuilder {
                 .build();
         getBuilder().addMethod(constructor);
         // provides method for Activity
-        String name = "providesActivity";
-        mProvidesMethodNames.put(name, 1);
-        MethodSpec providesActivity = MethodSpec.methodBuilder(name)
+        trackMethodName(METHOD_NAME_PROVIDES_ACTIVITY);
+        MethodSpec providesActivity = MethodSpec.methodBuilder(METHOD_NAME_PROVIDES_ACTIVITY)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Provides.class)
                 .addStatement("return $N", activityField)

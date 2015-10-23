@@ -164,10 +164,9 @@ public abstract class BaseComponentBuilder extends BaseClassBuilder {
         super.build(filer);
     }
 
-    public Class<? extends Annotation> getScope() {
-        return mScope;
-    }
-
+    /**
+     * Determines if given <code>module</code> is extended.
+     */
     public boolean isExtended(ClassName module) {
         for (ExtendedScreenModuleBuilder esm : mESMBuilders) {
             if (esm.getClassName().equals(module)) {

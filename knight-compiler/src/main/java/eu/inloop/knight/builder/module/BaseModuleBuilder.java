@@ -42,7 +42,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
     private static final String METHOD_NAME_PROVIDES = "provides%s";
 
-    protected final Map<String, Integer> mProvidesMethodNames = new HashMap<>();
+    private final Map<String, Integer> mProvidesMethodNames = new HashMap<>();
     private Class<? extends Annotation> mScope;
 
     public BaseModuleBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
@@ -116,15 +116,19 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
     private String formatProvidesName(final String methodName) {
         String name = String.format(METHOD_NAME_PROVIDES, StringUtils.startUpperCase(methodName));
-        // make sure method name is unique in generated Module
-        Integer i = mProvidesMethodNames.get(name);
-        if (i == null) {
-            mProvidesMethodNames.put(name, 1);
-        } else {
-            name += ++i;
-            mProvidesMethodNames.put(name, i);
-        }
+
+        int count = trackMethodName(name);
+        if (count > 1) name += count;
+
         return name;
+    }
+
+    protected int trackMethodName(final String name) {
+        Integer i = mProvidesMethodNames.get(name);
+        if (i == null) i = 0;
+        i++;
+        mProvidesMethodNames.put(name, i);
+        return i;
     }
 
     protected void addProvideStatement(MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {

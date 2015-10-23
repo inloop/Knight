@@ -21,6 +21,9 @@ import eu.inloop.knight.util.ProcessorError;
  */
 public class AppModuleBuilder extends BaseModuleBuilder {
 
+    private static final String FIELD_NAME_APPLICATION = "mApplication";
+    private static final String METHOD_NAME_PROVIDES_APPLICATION = "providesApplication";
+
     public AppModuleBuilder() throws ProcessorError {
         super(AppScope.class, GCN.APPLICATION_MODULE);
     }
@@ -28,7 +31,7 @@ public class AppModuleBuilder extends BaseModuleBuilder {
     @Override
     protected void addScopeSpecificPart() {
         // Application attribute
-        FieldSpec appField = FieldSpec.builder(EClass.Application.getName(), "mApplication",
+        FieldSpec appField = FieldSpec.builder(EClass.Application.getName(), FIELD_NAME_APPLICATION,
                 Modifier.PRIVATE, Modifier.FINAL).build();
         getBuilder().addField(appField);
         // constructor
@@ -40,9 +43,8 @@ public class AppModuleBuilder extends BaseModuleBuilder {
                 .build();
         getBuilder().addMethod(constructor);
         // provides method for Application
-        String name = "providesApplication";
-        mProvidesMethodNames.put(name, 1);
-        MethodSpec providesApp = MethodSpec.methodBuilder(name)
+        trackMethodName(METHOD_NAME_PROVIDES_APPLICATION);
+        MethodSpec providesApp = MethodSpec.methodBuilder(METHOD_NAME_PROVIDES_APPLICATION)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Provides.class)
                 .addStatement("return $N", appField)
