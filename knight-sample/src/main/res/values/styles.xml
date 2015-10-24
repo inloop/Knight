@@ -1,8 +1,38 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/app</item>
+        <item name="colorPrimaryDark">@color/app_dark</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <!-- for EditTexts, CheckBoxes, ... -->
+        <item name="colorControlNormal">@color/gray</item>
+        <item name="colorControlActivated">@color/app_darker</item>
+        <item name="colorControlHighlight">@color/app_dark</item>
+        <!-- background -->
+        <item name="android:windowBackground">@color/app_background</item>
+    </style>
+
+    <style name="AppTheme" parent="AppTheme.Base" />
+
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/app</item>
+        <item name="theme">@style/ThemeOverlay.AppTheme.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AppTheme.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
 </resources>

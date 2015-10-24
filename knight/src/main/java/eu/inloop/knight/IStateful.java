@@ -15,5 +15,7 @@ public interface IStateful {
     void onCreate(@Nullable Bundle savedState);
     void onSave(@NonNull Bundle outState);
 
+    // TODO : add onRemove()
+
 }
 

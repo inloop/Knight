@@ -1,11 +1,21 @@
 <resources>
-    <string name="app_name">Knight</string>
+
+    <string name="app_name">Orders</string>
+
     <string name="action_settings">Settings</string>
-    <string name="unscoped">Unscoped Activity</string>
+    <string name="action_add_contack">Add</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="msg_empty">Empty list</string>
 
-    <string name="goto_new">Go to New</string>
-    <string name="goto_second">Go to Second Activity</string>
-    <string name="goto_unscoped">Go to Unscoped Activity</string>
+    <string name="field_phone">Phone:</string>
+    <string name="title_new_contact">Add New Contact</string>
+
+    <string name="hint_contact_name">First and Last Name</string>
+    <string name="hint_contact_phone">Phone</string>
+
+    <string name="err_required">Required!</string>
+    <string name="err_too_short">Must have at least 5 characters!</string>
+    <string name="err_no_connection">No internet connection!</string>
+
+
 </resources>

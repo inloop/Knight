@@ -37,5 +37,9 @@ public abstract class BasePresenter<V extends IView> implements IStateful {
         mView = null;
         onReleaseView();
     }
-    
+
+    public V getView() {
+        return mView;
+    }
+
 }

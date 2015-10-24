@@ -25,9 +25,20 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    /* Support */
+    compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:appcompat-v7:23.0.1'
-
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+    /* ButterKnife */
     compile 'com.jakewharton:butterknife:7.0.1'
+    /* API - Retrofit, OkHttp, JSON Parsers, Picasso */
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+    /* EventBus */
+    compile 'de.greenrobot:eventbus:2.4.0'
 
     // Knight
     compile project(':knight')
