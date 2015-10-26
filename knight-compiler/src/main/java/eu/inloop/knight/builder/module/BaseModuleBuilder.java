@@ -31,7 +31,7 @@ import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
 /**
- * Class {@link BaseModuleBuilder}
+ * Class {@link BaseModuleBuilder} is used for creating Module class file.
  *
  * @author FrantisekGazo
  * @version 2015-10-17
@@ -40,11 +40,21 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
     // TODO : Implement save state mechanism into PROVIDES methods only for extended IStateful
 
-    private static final String METHOD_NAME_PROVIDES = "provides%s";
+    /**
+     * Format of provide method name.
+     */
+    private static final String FORMAT_METHOD_NAME_PROVIDES = "provides%s";
 
     private final Map<String, Integer> mProvidesMethodNames = new HashMap<>();
     private Class<? extends Annotation> mScope;
 
+    /**
+     * Constructor
+     *
+     * @param scope        Module scope
+     * @param genClassName Name of generated module class.
+     * @param className    Class name that will be used when formatting generated module class name.
+     */
     public BaseModuleBuilder(Class<? extends Annotation> scope, GCN genClassName, ClassName className) throws ProcessorError {
         super(genClassName, className, GPN.KNIGHT, GPN.DI, GPN.MODULES);
         if (scope != AppScope.class && scope != ScreenScope.class && scope != ActivityScope.class) {
@@ -54,6 +64,12 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         addScopeSpecificPart();
     }
 
+    /**
+     * Constructor
+     *
+     * @param scope        Module scope
+     * @param genClassName Name of generated module class.
+     */
     public BaseModuleBuilder(Class<? extends Annotation> scope, GCN genClassName) throws ProcessorError {
         this(scope, genClassName, null);
     }
@@ -64,6 +80,11 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         getBuilder().addAnnotation(Module.class);
     }
 
+    /**
+     * Adds method for providing given constructor.
+     *
+     * @param e Constructor element that will be called in <code>provides</code> method.
+     */
     public void addProvidesConstructor(ExecutableElement e) throws ProcessorError {
         if (!e.getModifiers().contains(Modifier.PUBLIC)) {
             throw new ProcessorError(e, ErrorMsg.Provided_constructor_not_public);
@@ -78,6 +99,11 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         getBuilder().addMethod(method.build());
     }
 
+    /**
+     * Adds method for providing given method.
+     *
+     * @param e Method element that will be called in <code>provides</code> method.
+     */
     public void addProvidesMethod(ExecutableElement e) throws ProcessorError {
         if (!e.getModifiers().containsAll(Arrays.asList(Modifier.PUBLIC, Modifier.STATIC))) {
             throw new ProcessorError(e, ErrorMsg.Provided_method_not_public_static);
@@ -93,12 +119,25 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         getBuilder().addMethod(method.build());
     }
 
+    /**
+     * Prepares {@link MethodSpec.Builder} for <code>provides</code> method.
+     *
+     * @param e              Method or Constructor element that will be called in <code>provides</code> method.
+     * @param methodNamePart Name of the <code>provides</code> method that will be formatted.
+     */
     protected MethodSpec.Builder prepareProvidesMethodBuilder(ExecutableElement e, String methodNamePart) {
         return prepareProvidesMethodBuilder(e, methodNamePart, false);
     }
 
+    /**
+     * Prepares {@link MethodSpec.Builder} for <code>provides</code> method.
+     *
+     * @param e              Method or Constructor element that will be called in <code>provides</code> method.
+     * @param methodNamePart Name of the <code>provides</code> method that will be formatted.
+     * @param scoped         <code>true</code> if <code>provides</code> method will be scoped.
+     */
     protected MethodSpec.Builder prepareProvidesMethodBuilder(ExecutableElement e, String methodNamePart, boolean scoped) {
-        String methodName = formatProvidesName(methodNamePart);
+        String methodName = createProvideMethodName(methodNamePart);
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(methodName)
                 .addAnnotation(Provides.class)
@@ -114,8 +153,11 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         return method;
     }
 
-    private String formatProvidesName(final String methodName) {
-        String name = String.format(METHOD_NAME_PROVIDES, StringUtils.startUpperCase(methodName));
+    /**
+     * Formats given method name to create <code>provides</code> method name. Ensures that 2 methods won't have same name.
+     */
+    protected String createProvideMethodName(final String methodName) {
+        String name = String.format(FORMAT_METHOD_NAME_PROVIDES, StringUtils.startUpperCase(methodName));
 
         int count = trackMethodName(name);
         if (count > 1) name += count;
@@ -123,7 +165,12 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         return name;
     }
 
-    protected int trackMethodName(final String name) {
+    /**
+     * Tracks count of methods with given name.
+     *
+     * @param name Method name.
+     */
+    private int trackMethodName(final String name) {
         Integer i = mProvidesMethodNames.get(name);
         if (i == null) i = 0;
         i++;
@@ -131,10 +178,27 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         return i;
     }
 
+    /**
+     * Adds statement to given <code>method</code>.
+     *
+     * @param method     Method Builder.
+     * @param e          Element which will be provided. (Constructor or method)
+     * @param callFormat Format for calling the element <code>e</code>.
+     * @param args       Argument for the <code>callFormat</code>.
+     */
     protected void addProvideStatement(MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
         addProvideCode(true, method, e, callFormat, args);
     }
 
+    /**
+     * Adds code to given <code>method</code>.
+     *
+     * @param asReturnStatement <code>true</code> if there should be <code>return</code> in added code.
+     * @param method            Method Builder.
+     * @param e                 Element which will be provided. (Constructor or method)
+     * @param callFormat        Format for calling the element <code>e</code>.
+     * @param args              Argument for the <code>callFormat</code>.
+     */
     protected void addProvideCode(boolean asReturnStatement, MethodSpec.Builder method, ExecutableElement e, String callFormat, Object... args) {
         if (asReturnStatement) method.addCode("return ");
 
@@ -163,8 +227,16 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         if (asReturnStatement) method.addCode(";\n");
     }
 
+    /**
+     * Adds scope specific part of the generated module.
+     */
     protected abstract void addScopeSpecificPart();
 
+    /**
+     * Determines <code>provides</code> method for given element will be scoped.
+     *
+     * @param e Element.
+     */
     protected abstract boolean isScoped(Element e);
 
 }

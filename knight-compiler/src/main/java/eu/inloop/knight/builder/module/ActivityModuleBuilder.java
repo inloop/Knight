@@ -15,7 +15,7 @@ import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
- * Class {@link ActivityModuleBuilder}
+ * Class {@link ActivityModuleBuilder} is used for creating Activity Module class file.
  *
  * @author FrantisekGazo
  * @version 2015-10-19
@@ -23,8 +23,12 @@ import eu.inloop.knight.util.ProcessorError;
 public class ActivityModuleBuilder extends BaseModuleBuilder {
 
     private static final String FIELD_NAME_ACTIVITY = "mActivity";
-    private static final String METHOD_NAME_PROVIDES_ACTIVITY = "providesActivity";
 
+    /**
+     * Constructor
+     *
+     * @param className Class name of Activity for which this module will be generated.
+     */
     public ActivityModuleBuilder(ClassName className) throws ProcessorError {
         super(ActivityScope.class, GCN.ACTIVITY_MODULE, className);
     }
@@ -44,8 +48,7 @@ public class ActivityModuleBuilder extends BaseModuleBuilder {
                 .build();
         getBuilder().addMethod(constructor);
         // provides method for Activity
-        trackMethodName(METHOD_NAME_PROVIDES_ACTIVITY);
-        MethodSpec providesActivity = MethodSpec.methodBuilder(METHOD_NAME_PROVIDES_ACTIVITY)
+        MethodSpec providesActivity = MethodSpec.methodBuilder(createProvideMethodName(activity))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Provides.class)
                 .addStatement("return $N", activityField)

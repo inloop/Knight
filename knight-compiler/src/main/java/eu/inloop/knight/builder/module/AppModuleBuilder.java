@@ -14,7 +14,7 @@ import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
- * Class {@link AppModuleBuilder}
+ * Class {@link AppModuleBuilder} is used for creating Application Module class file.
  *
  * @author FrantisekGazo
  * @version 2015-10-19
@@ -22,8 +22,10 @@ import eu.inloop.knight.util.ProcessorError;
 public class AppModuleBuilder extends BaseModuleBuilder {
 
     private static final String FIELD_NAME_APPLICATION = "mApplication";
-    private static final String METHOD_NAME_PROVIDES_APPLICATION = "providesApplication";
 
+    /**
+     * Constructor
+     */
     public AppModuleBuilder() throws ProcessorError {
         super(AppScope.class, GCN.APPLICATION_MODULE);
     }
@@ -43,8 +45,7 @@ public class AppModuleBuilder extends BaseModuleBuilder {
                 .build();
         getBuilder().addMethod(constructor);
         // provides method for Application
-        trackMethodName(METHOD_NAME_PROVIDES_APPLICATION);
-        MethodSpec providesApp = MethodSpec.methodBuilder(METHOD_NAME_PROVIDES_APPLICATION)
+        MethodSpec providesApp = MethodSpec.methodBuilder(createProvideMethodName(app))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Provides.class)
                 .addStatement("return $N", appField)

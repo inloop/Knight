@@ -26,7 +26,7 @@ import eu.inloop.knight.util.ProcessorUtils;
 import eu.inloop.knight.util.StringUtils;
 
 /**
- * Class {@link ScreenModuleBuilder}
+ * Class {@link ScreenModuleBuilder} is used for creating Screen Module class file.
  *
  * @author FrantisekGazo
  * @version 2015-10-19
@@ -34,15 +34,24 @@ import eu.inloop.knight.util.StringUtils;
 public class ScreenModuleBuilder extends BaseModuleBuilder {
 
     private static final String METHOD_NAME_INIT = "init";
-    private static final String FIELD_NAME_INIT = "m%s";
-    private static final String METHOD_NAME_PROVIDES_FIELD = "providesField%s";
     private static final String FIELD_NAME_STATE_MANAGER = "mStateManager";
     private static final String STATEFUL_ID_FORMAT = "[%s]%s";
 
+    /**
+     * Constructor
+     *
+     * @param className Class name of Activity for which this module will be generated.
+     */
     public ScreenModuleBuilder(ClassName className) throws ProcessorError {
         super(ScreenScope.class, GCN.SCREEN_MODULE, className);
     }
 
+    /**
+     * Constructor
+     *
+     * @param genClassName Name of generated module class.
+     * @param className    Class name of Activity for which this module will be generated.
+     */
     public ScreenModuleBuilder(GCN genClassName, ClassName className) throws ProcessorError {
         super(ScreenScope.class, genClassName, className);
     }
@@ -63,9 +72,14 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         getBuilder().addMethod(constructor.build());
     }
 
-    protected void addToConstructor(MethodSpec.Builder method) {
+    /**
+     * Adds additional parameters or statements to constructor.
+     *
+     * @param constructor Constructor builder.
+     */
+    protected void addToConstructor(MethodSpec.Builder constructor) {
         String activity = "activity";
-        method.addParameter(Activity.class, activity)
+        constructor.addParameter(Activity.class, activity)
                 .addStatement("$N($N)", METHOD_NAME_INIT, activity);
     }
 
@@ -88,6 +102,11 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         }
     }
 
+    /**
+     * Adds <code>init</code> method to the generated module.
+     *
+     * @param withParams List of Extra attributes that will be initialized.
+     */
     public void addInitMethod(With[] withParams) {
         String activity = "activity";
         String extras = "extras";
@@ -121,7 +140,7 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
                 }
             });
             // add field
-            FieldSpec field = FieldSpec.builder(typeName, getInitFieldName(with), Modifier.PRIVATE).build();
+            FieldSpec field = FieldSpec.builder(typeName, createFieldName(with.name()), Modifier.PRIVATE).build();
             getBuilder().addField(field);
             // add statement to init method
             String extraId = NavigatorBuilder.getExtraId(getArgClassName(), with.name());
@@ -134,10 +153,16 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         getBuilder().addMethod(method.build());
     }
 
+    /**
+     * Adds <code>provides</code> method for given <code>field</code>.
+     *
+     * @param with  Extra attribute that defines the <code>field</code>.
+     * @param field Field.
+     */
     private void addProvidesField(With with, FieldSpec field) {
         // TODO : allow @Nullable provides methods ?
 
-        MethodSpec.Builder method = MethodSpec.methodBuilder(getProvidesFieldMethodName(with))
+        MethodSpec.Builder method = MethodSpec.methodBuilder(createProvideMethodName(with.name()))
                 .addAnnotation(Provides.class)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(field.type)
@@ -150,6 +175,9 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         getBuilder().addMethod(method.build());
     }
 
+    /**
+     * Returns getter for given Extra type.
+     */
     private String getExtraGetterName(TypeName typeName) {
         if (typeName.isPrimitive()) {
             return String.format("get%s", StringUtils.startUpperCase(typeName.toString()));
@@ -158,11 +186,4 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         }
     }
 
-    private String getProvidesFieldMethodName(With with) {
-        return String.format(METHOD_NAME_PROVIDES_FIELD, StringUtils.startUpperCase(with.name()));
-    }
-
-    private String getInitFieldName(With with) {
-        return String.format(FIELD_NAME_INIT, StringUtils.startUpperCase(with.name()));
-    }
 }
