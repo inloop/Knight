@@ -22,6 +22,10 @@ public abstract class BasePresenter<V extends IView> implements IStateful {
     public void onSave(@NonNull Bundle outState) {
     }
 
+    @Override
+    public void onRemove() {
+    }
+
     public void onBindView(@NonNull V view) {
     }
 
