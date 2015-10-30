@@ -55,11 +55,11 @@ public class ContactListPresenter extends BasePresenter<IContactListView> {
         mEventBus.registerSticky(this);
     }
 
-//    @Override
-//    public void onRemove() {
-//        super.onRemove();
-//        mEventBus.unregister(this);
-//    }
+    @Override
+    public void onRemove() {
+        super.onRemove();
+        mEventBus.unregister(this);
+    }
 
     public void onAddClicked() {
         if (getView() != null) getView().gotoAddContactView();
