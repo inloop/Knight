@@ -32,7 +32,7 @@ public class ContactRecyclerAdapter extends BaseRecyclerAdapter<Contact, Contact
 
     public ContactRecyclerAdapter(@NonNull Context context, @NonNull List<Contact> items) {
         super(context, items);
-        Knight.from((ContactListActivity) getContext()).inject(this);
+        Knight.fromContactListActivity(getContext()).inject(this);
     }
 
     @Override

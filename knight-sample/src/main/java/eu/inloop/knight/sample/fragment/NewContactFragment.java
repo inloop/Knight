@@ -59,7 +59,7 @@ public class NewContactFragment extends BaseFragment implements IContactView {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Knight.from((NewContactActivity) getActivity()).inject(this);
+        Knight.fromNewContactActivity(getActivity()).inject(this);
 
         mPresenter.bindView(this);
     }

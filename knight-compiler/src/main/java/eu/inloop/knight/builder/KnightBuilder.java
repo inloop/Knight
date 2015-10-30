@@ -1,5 +1,6 @@
 package eu.inloop.knight.builder;
 
+import android.content.Context;
 import android.util.Pair;
 
 import com.squareup.javapoet.ClassName;
@@ -37,7 +38,7 @@ public class KnightBuilder extends BaseClassBuilder {
     private static final String METHOD_NAME_GET_AC = "getActivityComponent";
 
     private static final String METHOD_NAME_INIT = "braceYourselfFor";
-    private static final String METHOD_NAME_FROM = "from";
+    private static final String METHOD_NAME_FROM = "from%s";
     private static final String METHOD_NAME_FROM_APP = "fromApp";
 
     private static final String METHOD_NAME_GET_INSTANCE = "getInstance";
@@ -164,16 +165,21 @@ public class KnightBuilder extends BaseClassBuilder {
     private void addFromMethod(ActivityBuilders activityBuilders) {
         String activity = "activity";
         getBuilder().addMethod(
-                MethodSpec.methodBuilder(METHOD_NAME_FROM)
+                MethodSpec.methodBuilder(getMethodNameFrom(activityBuilders.getActivityName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .addParameter(activityBuilders.getActivityName(), activity)
+                        .addParameter(Context.class, activity)
                         .returns(activityBuilders.AC.getClassName())
-                        .addStatement("return ($T) $N().$N($N)",
+                        .addStatement("return ($T) $N().$N(($T)$N)",
                                 activityBuilders.AC.getClassName(),
                                 METHOD_NAME_GET_INSTANCE,
-                                METHOD_NAME_GET_AC, activity)
+                                METHOD_NAME_GET_AC,
+                                activityBuilders.getActivityName(), activity)
                         .build()
         );
+    }
+
+    private String getMethodNameFrom(ClassName activityClassName) {
+        return String.format(METHOD_NAME_FROM, activityClassName.simpleName());
     }
 
     private void addFromAppMethod(ClassName appComponent) {

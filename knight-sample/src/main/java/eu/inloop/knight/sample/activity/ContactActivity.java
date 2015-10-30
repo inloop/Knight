@@ -14,9 +14,9 @@ import eu.inloop.knight.sample.model.Contact;
  * @author f3rog
  * @version 2015-07-09
  */
-@Scoped({
+@Scoped(
         @With(name = "contact", type = Contact.class)
-})
+)
 public class ContactActivity extends BaseActivity {
 
     @Override
