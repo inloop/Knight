@@ -34,7 +34,7 @@ public class ContactRecyclerAdapter extends BaseRecyclerAdapter<Contact, Contact
     public ContactRecyclerAdapter(@NonNull Context context, @NonNull List<Contact> items) {
         super(context, items);
         Log.d("AppLog", "ContactRecyclerAdapter App log 1");
-        Knight.fromContactListActivity(getContext()).inject(this);
+        Knight.from((ContactListActivity)getContext()).inject(this);
         Log.d("AppLog", "ContactRecyclerAdapter App log 2");
     }
 

@@ -55,7 +55,7 @@ public class ContactFragment extends BaseFragment implements IContactView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Knight.fromContactActivity(getActivity()).inject(this);
+        Knight.from((ContactActivity)getActivity()).inject(this);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 

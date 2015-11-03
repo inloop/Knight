@@ -1,6 +1,5 @@
 package eu.inloop.knight.builder;
 
-import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
@@ -39,7 +38,7 @@ public class KnightBuilder extends BaseClassBuilder {
     private static final String METHOD_NAME_GET_AC = "getActivityComponent";
 
     private static final String METHOD_NAME_INIT = "braceYourselfFor";
-    private static final String METHOD_NAME_FROM = "from%s";
+    private static final String METHOD_NAME_FROM = "from";
     private static final String METHOD_NAME_FROM_APP = "fromApp";
 
     private static final String METHOD_NAME_GET_INSTANCE = "getInstance";
@@ -173,21 +172,17 @@ public class KnightBuilder extends BaseClassBuilder {
     private void addFromMethod(ActivityBuilders activityBuilders) {
         String activity = "activity";
         getBuilder().addMethod(
-                MethodSpec.methodBuilder(getMethodNameFrom(activityBuilders.getActivityName()))
+                MethodSpec.methodBuilder(METHOD_NAME_FROM)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .addParameter(Context.class, activity)
+                        .addParameter(activityBuilders.getActivityName(), activity)
                         .returns(activityBuilders.AC.getClassName())
-                        .addStatement("return ($T) $N().$N(($T)$N)",
+                        .addStatement("return ($T) $N().$N($N)",
                                 activityBuilders.AC.getClassName(),
                                 METHOD_NAME_GET_INSTANCE,
                                 METHOD_NAME_GET_AC,
-                                activityBuilders.getActivityName(), activity)
+                                activity)
                         .build()
         );
-    }
-
-    private String getMethodNameFrom(ClassName activityClassName) {
-        return String.format(METHOD_NAME_FROM, activityClassName.simpleName());
     }
 
     private void addFromAppMethod(ClassName appComponent) {
