@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation @{@link ActivityProvided} is used for any constructor of any class that will be provided from Activity scope.
@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @version 2015-09-22
  */
 @Target({CONSTRUCTOR, METHOD, TYPE})
-@Retention(SOURCE)
+@Retention(RUNTIME)
 public @interface ActivityProvided {
 
     /**

@@ -11,11 +11,19 @@ buildscript {
         // in the individual module build.gradle files
 
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        mavenLocal()
     }
+
+    group = GROUP
+    version = VERSION_NAME
+
+    apply plugin: 'maven'
 }

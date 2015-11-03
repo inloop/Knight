@@ -1,6 +1,7 @@
 package eu.inloop.knight.builder;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import com.squareup.javapoet.ClassName;
@@ -78,6 +79,13 @@ public class KnightBuilder extends BaseClassBuilder {
                         .addParameter(EClass.Application.getName(), app)
                         .addStatement("$N = new $T($N)", instance, getClassName(), app)
                         .addStatement("$N.registerActivityLifecycleCallbacks($N)", app, instance)
+                        .build()
+        );
+
+        getBuilder().addMethod(
+                MethodSpec.methodBuilder("log")
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                        .addStatement("$T.d($S, $S)", Log.class, "KnightSuperLog", "Logged :)")
                         .build()
         );
     }

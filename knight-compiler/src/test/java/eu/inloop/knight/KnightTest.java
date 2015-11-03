@@ -5,8 +5,6 @@ import com.google.common.truth.Truth;
 import com.google.testing.compile.JavaFileObjects;
 import com.google.testing.compile.JavaSourcesSubjectFactory;
 
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -127,7 +125,7 @@ public class KnightTest {
         return files;
     }
 
-    @Test
+    //@Test
     public void knightClass() {
         JavaFileObject knightFile = JavaFileObjects.forSourceString("the.knight.Knight",
                 Joiner.on('\n').join(
