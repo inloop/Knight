@@ -108,6 +108,8 @@ public class KnightProcessor extends AbstractProcessor {
                         addInjectable(activityBuildersMap.get(activity), (TypeElement) e);
                     }
                 }
+
+                appBuilders.Injector.addInjectMethod(appBuilders.Knight, ClassName.get((TypeElement) e), activities);
             }
 
             // add Provided

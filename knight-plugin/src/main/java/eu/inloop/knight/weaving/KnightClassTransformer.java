@@ -1,15 +1,11 @@
 package eu.inloop.knight.weaving;
 
-import com.github.stephanenicolas.afterburner.AfterBurner;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.inloop.knight.Injectable;
-import eu.inloop.knight.weaving.util.BaseClassTransformer;
+import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.build.IClassTransformer;
 import javassist.build.JavassistBuildException;
-
 
 /**
  * Class {@link KnightClassTransformer}
@@ -17,72 +13,68 @@ import javassist.build.JavassistBuildException;
  * @author FrantisekGazo
  * @version 2015-10-31
  */
-public class KnightClassTransformer extends BaseClassTransformer {
+public class KnightClassTransformer implements IClassTransformer {
 
-    private static final String KNIGHT_CLASS = "the.knight.Knight";
-    private static final String KNIGHT_METHOD = "log";
-
-    private static final List<String> REQUIRED_CLASSES = Arrays.asList(
-            //KNIGHT_CLASS
-    );
+    private static final String VIEW_CLASS = "android.view.View";
+    private static final String BUNDLE_CLASS = "android.os.Bundle";
+    private static final String INJECTOR_CLASS = "a.Injector";
+    private static final String INJECTOR_METHOD = "inject";
 
     private final boolean mDebug;
-    private AfterBurner mAfterBurner = new AfterBurner();
 
     public KnightClassTransformer(boolean debug) {
-        super(REQUIRED_CLASSES);
         mDebug = debug;
     }
 
     @Override
-    public boolean canTransform(CtClass candidateClass) throws JavassistBuildException {
+    public boolean shouldTransform(CtClass candidateClass) throws JavassistBuildException {
         try {
             log("shouldTransform ? %s", candidateClass.getName());
-            //return true;
+            //log("POOL %s", candidateClass.getClassPool().get("eu.inloop.knight.sample.util.A"));
             return candidateClass.hasAnnotation(Injectable.class);
         } catch (Exception e) {
-            log("shouldTransform Crashed");
+            log("shouldTransform Crashed %s", e.getMessage());
             e.printStackTrace();
             throw new JavassistBuildException(e);
         }
     }
 
     @Override
-    public void transform(CtClass classToTransform) throws JavassistBuildException {
+    public void applyTransformations(CtClass classToTransform) throws JavassistBuildException {
         log("transform class %s", classToTransform.getName());
         try {
-            //String body = String.format("%s.%s();", KNIGHT_CLASS, KNIGHT_METHOD);
-            String body = String.format("android.util.Log.d(\"Logged....\", \"HAHAHA\");");
+            ClassPool pool = classToTransform.getClassPool();
 
-            //InsertableMethodBuilder builder = new InsertableMethodBuilder(mAfterBurner);
+            //String body = String.format("android.util.Log.d(\"Logged....\", \"HAHAHA\");");
+            //String body = "a.Injector.log();";
 
             try {
-                classToTransform.getDeclaredMethod("onViewCreated")
-                        .insertBefore(body);
+                CtMethod method = classToTransform.getDeclaredMethod("onViewCreated",
+                        new CtClass[]{pool.get(VIEW_CLASS), pool.get(BUNDLE_CLASS)});
+
+                StringBuilder body = new StringBuilder("");
+
+                body.append(INJECTOR_CLASS)
+                        .append(".")
+                        .append(INJECTOR_METHOD)
+                        .append("(")
+                        .append("this")
+                        .append(",")
+                        .append("this.getContext()")
+                        .append(");");
+
+                log("INJECTED: %s", body.toString());
+
+                method.insertBefore(body.toString());
                 classToTransform.writeFile();
-
-//                builder.insertIntoClass(classToTransform)
-//                        .inMethodIfExists("onViewCreated")
-//                        .afterACallTo("onViewCreated")
-//                        .withBody(body)
-//                        .elseCreateMethodIfNotExists("") //not used, we are sure the method exists
-//                        .doIt();
             } catch (Exception e) {
-                e.printStackTrace();
+                log("transform METHOD NOT FOUND !!!!!!!!!!!!!!! %s", e.getMessage());
+                //throw new JavassistBuildException(e);
             }
-
-
-//            InsertableMethodBuilder builder = new InsertableMethodBuilder(mAfterBurner);
-//
-//            builder.insertIntoClass(classToTransform)
-//                    .inMethodIfExists("onViewCreated")
-//                    .afterACallTo()
-//                    .withBody(body)
-//                    .doIt();
 
             log("transform done");
         } catch (Exception e) {
-            log("transform failed !!! %s", e);
+            log("transform failed !!!!!!!!!!!!! %s", e);
             e.printStackTrace();
             throw new JavassistBuildException(e);
         }

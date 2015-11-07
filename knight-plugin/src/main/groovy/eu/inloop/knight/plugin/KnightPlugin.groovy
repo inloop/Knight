@@ -16,7 +16,10 @@ public class KnightPlugin extends AbstractMorpheusPlugin {
     @Override
     public IClassTransformer[] getTransformers(Project project) {
         System.out.println("@ KnightPlugin -> getTransformers")
-        return new KnightClassTransformer(project.knight.debug)
+        return [
+                //new ANoOpClassTransformer(),
+                new KnightClassTransformer(project.knight.debug)
+        ]
     }
 
     @Override

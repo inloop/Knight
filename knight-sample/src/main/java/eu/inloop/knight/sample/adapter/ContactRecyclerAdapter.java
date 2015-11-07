@@ -3,7 +3,6 @@ package eu.inloop.knight.sample.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
@@ -12,12 +11,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import a.Injector;
 import eu.inloop.knight.Injectable;
 import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.activity.ContactListActivity;
 import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.api.IApi;
-import the.knight.Knight;
 
 /**
  * Class {@link ContactRecyclerAdapter}.
@@ -33,9 +32,7 @@ public class ContactRecyclerAdapter extends BaseRecyclerAdapter<Contact, Contact
 
     public ContactRecyclerAdapter(@NonNull Context context, @NonNull List<Contact> items) {
         super(context, items);
-        Log.d("AppLog", "ContactRecyclerAdapter App log 1");
-        Knight.from((ContactListActivity)getContext()).inject(this);
-        Log.d("AppLog", "ContactRecyclerAdapter App log 2");
+        Injector.inject(this, getContext());
     }
 
     @Override

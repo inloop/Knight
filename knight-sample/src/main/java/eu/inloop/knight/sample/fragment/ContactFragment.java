@@ -22,7 +22,6 @@ import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.Order;
 import eu.inloop.knight.sample.presenter.ContactPresenter;
 import eu.inloop.knight.sample.view.IContactView;
-import the.knight.Knight;
 
 /**
  * Class {@link ContactFragment}.
@@ -55,10 +54,7 @@ public class ContactFragment extends BaseFragment implements IContactView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Knight.from((ContactActivity)getActivity()).inject(this);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         mPresenter.bindView(this);
     }
 

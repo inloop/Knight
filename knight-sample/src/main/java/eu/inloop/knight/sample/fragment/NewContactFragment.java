@@ -19,7 +19,6 @@ import eu.inloop.knight.sample.model.ContactError;
 import eu.inloop.knight.sample.model.Order;
 import eu.inloop.knight.sample.presenter.ContactPresenter;
 import eu.inloop.knight.sample.view.IContactView;
-import the.knight.Knight;
 
 /**
  * Class {@link NewContactFragment}.
@@ -59,8 +58,6 @@ public class NewContactFragment extends BaseFragment implements IContactView {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Knight.from((NewContactActivity)getActivity()).inject(this);
-
         mPresenter.bindView(this);
     }
 
