@@ -11,12 +11,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import a.Injector;
 import eu.inloop.knight.Injectable;
 import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.activity.ContactListActivity;
 import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.api.IApi;
+import the.knight.Injector;
 
 /**
  * Class {@link ContactRecyclerAdapter}.

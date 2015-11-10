@@ -36,9 +36,9 @@ public class KnightBuilder extends BaseClassBuilder {
     private static final String METHOD_NAME_GET_APPC = "getApplicationComponent";
     private static final String METHOD_NAME_GET_AC = "getActivityComponent";
 
-    private static final String METHOD_NAME_INIT = "braceYourselfFor";
-    private static final String METHOD_NAME_FROM = "from";
-    private static final String METHOD_NAME_FROM_APP = "fromApp";
+    public static final String METHOD_NAME_INIT = "braceYourselfFor";
+    public static final String METHOD_NAME_FROM = "from";
+    public static final String METHOD_NAME_FROM_APP = "fromApp";
 
     private static final String METHOD_NAME_GET_INSTANCE = "getInstance";
 

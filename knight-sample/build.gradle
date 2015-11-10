@@ -42,6 +42,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+//    productFlavors {
+//        dev {
+//        }
+//        production {
+//        }
+//    }
 }
 
 dependencies {

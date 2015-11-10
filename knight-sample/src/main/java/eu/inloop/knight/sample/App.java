@@ -2,7 +2,7 @@ package eu.inloop.knight.sample;
 
 import android.app.Application;
 
-import the.knight.Knight;
+import eu.inloop.knight.KnightApp;
 
 /**
  * Class {@link App}
@@ -10,12 +10,6 @@ import the.knight.Knight;
  * @author FrantisekGazo
  * @version 2015-10-19
  */
+@KnightApp
 public class App extends Application {
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Knight.braceYourselfFor(this);
-    }
-
 }

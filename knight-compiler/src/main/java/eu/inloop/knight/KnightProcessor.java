@@ -19,6 +19,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
@@ -54,6 +55,7 @@ public class KnightProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         return annotations(
+                KnightApp.class,
                 Scoped.class,
                 Injectable.class,
                 AppProvided.class,
@@ -182,6 +184,12 @@ public class KnightProcessor extends AbstractProcessor {
                 }
             }
 
+            // Check usage of Knight Application annotation
+            elements = roundEnv.getElementsAnnotatedWith(KnightApp.class);
+            for (Element e : elements) {
+                checkKnightApp((TypeElement) e);
+            }
+
             // build everything
             for (Map.Entry<ClassName, ActivityBuilders> activityBuildersEntry : activityBuildersMap.entrySet()) {
                 activityBuildersEntry.getValue().buildAll(appBuilders, mFiler);
@@ -195,6 +203,15 @@ public class KnightProcessor extends AbstractProcessor {
         }
 
         return false;
+    }
+
+    private void checkKnightApp(TypeElement e) throws ProcessorError {
+        if (!e.getModifiers().contains(Modifier.PUBLIC)) {
+            throw new ProcessorError(e, ErrorMsg.Invalid_Knight_App);
+        }
+        if (!ProcessorUtils.isSubClassOf(e, EClass.Application.getName())) {
+            throw new ProcessorError(e, ErrorMsg.Invalid_Knight_App);
+        }
     }
 
     private void addInjectable(ActivityBuilders activityBuilders, TypeElement e) throws ProcessorError {

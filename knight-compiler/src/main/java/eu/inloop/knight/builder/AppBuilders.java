@@ -36,6 +36,7 @@ public class AppBuilders {
         AppCF = new ComponentFactoryBuilder(EClass.Application.getName());
 
         Knight.setupAppComponent(AppC.getClassName(), AppCF.getClassName());
+        Injector.addInitMethod(Knight);
     }
 
     public void buildAll(Filer filer) throws IOException, ProcessorError {

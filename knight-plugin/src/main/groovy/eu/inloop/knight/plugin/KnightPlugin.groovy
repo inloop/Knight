@@ -1,30 +1,29 @@
 package eu.inloop.knight.plugin
 
-import com.github.stephanenicolas.morpheus.AbstractMorpheusPlugin
-import eu.inloop.knight.weaving.KnightClassTransformer
-import javassist.build.IClassTransformer
+import eu.inloop.knight.plugin.util.AWeavingPlugin
+import eu.inloop.knight.weaving.KnightWeaver
+import eu.inloop.knight.weaving.util.IWeaver
 import org.gradle.api.Project
 
 /**
- * Class {@link KnightPlugin}
+ * Class {@link KnightPlugin} adds dependencies to gradle project and applies Bytecode Weaving.
  *
  * @author FrantisekGazo
- * @version 2015-10-31
+ * @version 2015-11-09
  */
-public class KnightPlugin extends AbstractMorpheusPlugin {
+public class KnightPlugin extends AWeavingPlugin {
+
+    public static final String NAME = "knight"
 
     @Override
-    public IClassTransformer[] getTransformers(Project project) {
-        System.out.println("@ KnightPlugin -> getTransformers")
+    public IWeaver[] getTransformers(Project project) {
         return [
-                //new ANoOpClassTransformer(),
-                new KnightClassTransformer(project.knight.debug)
+                new KnightWeaver(/* add extension params if necessary */)
         ]
     }
 
     @Override
     protected void configure(Project project) {
-        System.out.println("@ KnightPlugin -> configure")
         project.android {
             packagingOptions {
                 exclude 'META-INF/services/javax.annotation.processing.Processor'
@@ -39,14 +38,12 @@ public class KnightPlugin extends AbstractMorpheusPlugin {
 
     @Override
     protected Class getPluginExtension() {
-        System.out.println("@ KnightPlugin -> getPluginExtension")
         return KnightExtension.class
     }
 
     @Override
     protected String getExtension() {
-        System.out.println("@ KnightPlugin -> getExtension")
-        return "knight"
+        return NAME
     }
 
 }

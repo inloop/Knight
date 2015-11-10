@@ -1,7 +1,7 @@
 package eu.inloop.knight.builder;
 
+import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
+import eu.inloop.knight.builder.component.BaseComponentBuilder;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -22,10 +23,10 @@ import eu.inloop.knight.util.StringUtils;
 public class InjectorBuilder extends BaseClassBuilder {
 
     public static final String METHOD_NAME_INJECT = "inject";
+    public static final String METHOD_NAME_INIT = "init";
 
     public InjectorBuilder() throws ProcessorError {
-        super(GCN.INJECTOR, GPN.INJECTOR);
-        addLogMethod();
+        super(GCN.INJECTOR, GPN.KNIGHT);
     }
 
     @Override
@@ -34,11 +35,13 @@ public class InjectorBuilder extends BaseClassBuilder {
         getBuilder().addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
-    public void addLogMethod() {
+    public void addInitMethod(KnightBuilder knightBuilder) {
+        String app = "app";
         getBuilder().addMethod(
-                MethodSpec.methodBuilder("log")
+                MethodSpec.methodBuilder(METHOD_NAME_INIT)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .addStatement("$T.d($S, $S)", Log.class, "Logger", "Hello, I'm Injected :)")
+                        .addParameter(Application.class, app)
+                        .addStatement("$T.$N($N)", knightBuilder.getClassName(), KnightBuilder.METHOD_NAME_INIT, app)
                         .build()
         );
     }
@@ -51,7 +54,9 @@ public class InjectorBuilder extends BaseClassBuilder {
                 .addParameter(className, object);
 
         if (activities.isEmpty()) {
-            method.addStatement("$T.fromApp().inject($N)", knight.getClassName(), object);
+            method.addStatement("$T.$N().$N($N)",
+                    knight.getClassName(), KnightBuilder.METHOD_NAME_FROM_APP,
+                    BaseComponentBuilder.METHOD_NAME_INJECT, object);
         } else {
             method.addParameter(Context.class, activity);
 
@@ -59,7 +64,10 @@ public class InjectorBuilder extends BaseClassBuilder {
                 ClassName activityName = activities.get(i);
                 if (i > 0) method.addCode("else ");
                 method.beginControlFlow("if ($N instanceof $T)", activity, activityName)
-                        .addStatement("$T.from(($T) $N).inject($N)", knight.getClassName(), activityName, activity, object)
+                        .addStatement("$T.$N(($T) $N).$N($N)",
+                                knight.getClassName(), KnightBuilder.METHOD_NAME_FROM,
+                                activityName, activity,
+                                BaseComponentBuilder.METHOD_NAME_INJECT,  object)
                         .endControlFlow();
             }
         }

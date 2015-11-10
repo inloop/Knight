@@ -8,7 +8,6 @@ package eu.inloop.knight.builder;
  */
 public enum GPN {
 
-    INJECTOR("a"),
     KNIGHT("the.knight"),
     DI("di"),
     COMPONENTS("component"),
