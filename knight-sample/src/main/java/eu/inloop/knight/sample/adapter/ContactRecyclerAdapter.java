@@ -9,14 +9,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-import eu.inloop.knight.Injectable;
 import eu.inloop.knight.sample.R;
-import eu.inloop.knight.sample.activity.ContactListActivity;
 import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.api.IApi;
-import the.knight.Injector;
 
 /**
  * Class {@link ContactRecyclerAdapter}.
@@ -24,15 +19,13 @@ import the.knight.Injector;
  * @author f3rog
  * @version 2015-07-09
  */
-@Injectable(from = ContactListActivity.class)
 public class ContactRecyclerAdapter extends BaseRecyclerAdapter<Contact, ContactViewHolder> {
 
-    @Inject
-    Picasso mPicasso;
+    private Picasso mPicasso;
 
     public ContactRecyclerAdapter(@NonNull Context context, @NonNull List<Contact> items) {
         super(context, items);
-        Injector.inject(this, getContext());
+        mPicasso = Picasso.with(context);
     }
 
     @Override

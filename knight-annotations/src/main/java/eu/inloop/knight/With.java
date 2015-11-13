@@ -1,7 +1,7 @@
 package eu.inloop.knight;
 
 /**
- * Class {@link With}
+ * Annotation @{@link With} is used to represent an Extra for started Activity.
  *
  * @author FrantisekGazo
  * @version 2015-10-21

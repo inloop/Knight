@@ -7,15 +7,13 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotation @{@link Scoped} is used only for Activity classes that will be injected.
+ * Annotation @{@link KnightService} is used for Service subclasses that will be injected from Application Scope.
  *
- * @author Frantisek Gazo
- * @version 2015-09-22
+ * @author FrantisekGazo
+ * @version 2015-11-10
  */
 @Target(TYPE)
 @Retention(RUNTIME)
-public @interface Scoped {
-
-    With[] value() default {};
-
+public @interface KnightService {
 }
+

@@ -21,9 +21,9 @@ public class ScopedTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import eu.inloop.knight.Scoped;",
+                        "import eu.inloop.knight.KnightActivity;",
                         "",
-                        "@Scoped",
+                        "@KnightActivity",
                         "public class ExampleActivity {",
                         "}"
                 )
@@ -44,9 +44,9 @@ public class ScopedTest {
                         "package com.example;",
                         "",
                         "import android.app.Activity;",
-                        "import eu.inloop.knight.Scoped;",
+                        "import eu.inloop.knight.KnightActivity;",
                         "",
-                        "@Scoped",
+                        "@KnightActivity",
                         "public class ExampleActivity extends Activity {",
                         "}"
                 )

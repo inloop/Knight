@@ -14,7 +14,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 
 import eu.inloop.knight.ErrorMsg;
-import eu.inloop.knight.Scoped;
+import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.With;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
@@ -41,7 +41,7 @@ public class NavigatorBuilder extends BaseClassBuilder {
     }
 
     public void integrate(TypeElement e, ActivityBuilders activityBuilders) throws ProcessorError {
-        With[] withParams = e.getAnnotation(Scoped.class).value();
+        With[] withParams = e.getAnnotation(KnightActivity.class).value();
 
         // make sure that @With have distinct names
         Set<String> names = new HashSet<>();

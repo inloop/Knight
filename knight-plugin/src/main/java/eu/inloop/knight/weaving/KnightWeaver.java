@@ -5,8 +5,8 @@ import com.github.stephanenicolas.afterburner.AfterBurner;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.inloop.knight.Injectable;
 import eu.inloop.knight.KnightApp;
+import eu.inloop.knight.KnightView;
 import eu.inloop.knight.weaving.util.AWeaver;
 import javassist.CtClass;
 import javassist.build.JavassistBuildException;
@@ -59,7 +59,7 @@ public class KnightWeaver extends AWeaver {
         try {
             //log("needTransformation ? %s", candidateClass.getName());
             return candidateClass.hasAnnotation(KnightApp.class)
-                    || candidateClass.hasAnnotation(Injectable.class);
+                    || candidateClass.hasAnnotation(KnightView.class);
         } catch (Exception e) {
             log("needTransformation - failed");
             e.printStackTrace();
@@ -73,7 +73,7 @@ public class KnightWeaver extends AWeaver {
         try {
             if (classToTransform.hasAnnotation(KnightApp.class)) {
                 weaveKnightInitialization(classToTransform);
-            } else if (classToTransform.hasAnnotation(Injectable.class)) {
+            } else if (classToTransform.hasAnnotation(KnightView.class)) {
                 weaveInjection(classToTransform);
             }
             log("applyTransformations - done");

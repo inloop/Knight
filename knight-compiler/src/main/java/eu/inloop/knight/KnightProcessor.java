@@ -56,8 +56,8 @@ public class KnightProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         return annotations(
                 KnightApp.class,
-                Scoped.class,
-                Injectable.class,
+                KnightActivity.class,
+                KnightView.class,
                 AppProvided.class,
                 ScreenProvided.class,
                 ActivityProvided.class
@@ -75,7 +75,15 @@ public class KnightProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
-            Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Scoped.class);
+            // Check usage of Knight Application annotation
+            Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(KnightApp.class);
+            for (Element e : elements) {
+                checkKnightApp((TypeElement) e);
+            }
+
+            // TODO : generate classes even without KnightActivity ?!
+            
+            elements = roundEnv.getElementsAnnotatedWith(KnightActivity.class);
             if (elements.isEmpty()) {
                 return false;
             }
@@ -92,14 +100,14 @@ public class KnightProcessor extends AbstractProcessor {
                 appBuilders.Navigator.integrate((TypeElement) e, activityBuilders);
             }
 
-            // add Injectable classes
-            elements = roundEnv.getElementsAnnotatedWith(Injectable.class);
+            // TODO add Injectable classes
+            elements = roundEnv.getElementsAnnotatedWith(KnightView.class);
             for (Element e : elements) {
-                List<ClassName> activities = ProcessorUtils.getParamClasses(e.getAnnotation(Injectable.class),
-                        new ProcessorUtils.IGetter<Injectable, Class<?>[]>() {
+                List<ClassName> activities = ProcessorUtils.getParamClasses(e.getAnnotation(KnightView.class),
+                        new ProcessorUtils.IGetter<KnightView, Class<?>[]>() {
                             @Override
-                            public Class<?>[] get(Injectable a) {
-                                return a.from();
+                            public Class<?>[] get(KnightView a) {
+                                return a.in();
                             }
                         });
 
@@ -184,12 +192,6 @@ public class KnightProcessor extends AbstractProcessor {
                 }
             }
 
-            // Check usage of Knight Application annotation
-            elements = roundEnv.getElementsAnnotatedWith(KnightApp.class);
-            for (Element e : elements) {
-                checkKnightApp((TypeElement) e);
-            }
-
             // build everything
             for (Map.Entry<ClassName, ActivityBuilders> activityBuildersEntry : activityBuildersMap.entrySet()) {
                 activityBuildersEntry.getValue().buildAll(appBuilders, mFiler);
@@ -216,7 +218,7 @@ public class KnightProcessor extends AbstractProcessor {
 
     private void addInjectable(ActivityBuilders activityBuilders, TypeElement e) throws ProcessorError {
         if (activityBuilders == null) {
-            throw new ProcessorError(e, ErrorMsg.Injectable_outside_Scoped_Activity);
+            throw new ProcessorError(e, ErrorMsg.Knight_View_outside_Scoped_Activity);
         }
         activityBuilders.AC.addInjectMethod(ClassName.get(e));
     }

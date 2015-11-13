@@ -24,7 +24,7 @@ public @interface ScreenProvided {
      * </p>
      * <p>
      * <b> WARNING: </b>
-     * Each of these Activities must be annotated with @{@link Scoped}.
+     * Each of these Activities must be annotated with @{@link KnightActivity}.
      * </p>
      */
     Class<?>[] in();

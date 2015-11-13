@@ -14,7 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import eu.inloop.knight.Injectable;
+import eu.inloop.knight.KnightView;
 import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.activity.ContactActivity;
 import eu.inloop.knight.sample.adapter.OrderRecyclerAdapter;
@@ -29,7 +29,7 @@ import eu.inloop.knight.sample.view.IContactView;
  * @author f3rog
  * @version 2015-07-09
  */
-@Injectable(from = ContactActivity.class)
+@KnightView(in = ContactActivity.class)
 public class ContactFragment extends BaseFragment implements IContactView {
 
     private OrderRecyclerAdapter mAdapter;

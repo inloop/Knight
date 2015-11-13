@@ -12,12 +12,12 @@ import java.util.List;
 import javax.tools.JavaFileObject;
 
 /**
- * Class {@link InjectableTest}.
+ * Class {@link ViewTest}.
  *
  * @author Frantisek Gazo
  * @version 2015-09-20
  */
-public class InjectableTest {
+public class ViewTest {
 
     private Iterable<JavaFileObject> files(JavaFileObject... f) {
         List<JavaFileObject> files = new ArrayList<>();
@@ -32,21 +32,21 @@ public class InjectableTest {
                         "package com.example;",
                         "",
                         "import android.app.Activity;",
-                        "import eu.inloop.knight.Scoped;",
+                        "import eu.inloop.knight.KnightActivity;",
                         "",
-                        "@Scoped",
+                        "@KnightActivity",
                         "public class ExampleActivity extends Activity {",
                         "}"
                 )
         );
-        JavaFileObject injectable = JavaFileObjects.forSourceString("com.example.ExampleInjectable",
+        JavaFileObject injectable = JavaFileObjects.forSourceString("com.example.ExampleKnightView",
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import eu.inloop.knight.Injectable;",
+                        "import eu.inloop.knight.KnightView;",
                         "",
-                        "@Injectable(from = String.class)",
-                        "public class ExampleInjectable {",
+                        "@KnightView(in = String.class)",
+                        "public class ExampleKnightView {",
                         "}"
                 )
         );
@@ -56,7 +56,7 @@ public class InjectableTest {
                 .that(files(activity, injectable))
                 .processedWith(new KnightProcessor())
                 .failsToCompile()
-                .withErrorContaining(ErrorMsg.Injectable_outside_Scoped_Activity.toString());
+                .withErrorContaining(ErrorMsg.Knight_View_outside_Scoped_Activity.toString());
     }
 
     //@Test
@@ -66,9 +66,9 @@ public class InjectableTest {
                         "package com.example;",
                         "",
                         "import android.app.Activity;",
-                        "import eu.inloop.knight.Scoped;",
+                        "import eu.inloop.knight.KnightActivity;",
                         "",
-                        "@Scoped",
+                        "@KnightActivity",
                         "public class ExampleActivity1 extends Activity {",
                         "}"
                 )
@@ -83,14 +83,14 @@ public class InjectableTest {
                         "}"
                 )
         );
-        JavaFileObject injectable = JavaFileObjects.forSourceString("com.example.ExampleInjectable",
+        JavaFileObject injectable = JavaFileObjects.forSourceString("com.example.ExampleKnightView",
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import eu.inloop.knight.Injectable;",
+                        "import eu.inloop.knight.KnightView;",
                         "",
-                        "@Injectable(from = ExampleActivity2.class)",
-                        "public class ExampleInjectable {",
+                        "@KnightView(in = ExampleActivity2.class)",
+                        "public class ExampleKnightView {",
                         "}"
                 )
         );
@@ -100,7 +100,7 @@ public class InjectableTest {
                 .that(files(activity1, activity2, injectable))
                 .processedWith(new KnightProcessor())
                 .failsToCompile()
-                .withErrorContaining(ErrorMsg.Injectable_outside_Scoped_Activity.toString());
+                .withErrorContaining(ErrorMsg.Knight_View_outside_Scoped_Activity.toString());
     }
 
     //@Test
@@ -110,21 +110,21 @@ public class InjectableTest {
                         "package com.example;",
                         "",
                         "import android.app.Activity;",
-                        "import eu.inloop.knight.Scoped;",
+                        "import eu.inloop.knight.KnightActivity;",
                         "",
-                        "@Scoped",
+                        "@KnightActivity",
                         "public class ExampleActivity extends Activity {",
                         "}"
                 )
         );
-        JavaFileObject injectable = JavaFileObjects.forSourceString("com.example.ExampleInjectable",
+        JavaFileObject injectable = JavaFileObjects.forSourceString("com.example.ExampleKnightView",
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import eu.inloop.knight.Injectable;",
+                        "import eu.inloop.knight.KnightView;",
                         "",
-                        "@Injectable(from = ExampleActivity.class)",
-                        "public class ExampleInjectable {",
+                        "@KnightView(in = ExampleActivity.class)",
+                        "public class ExampleKnightView {",
                         "}"
                 )
         );

@@ -61,7 +61,7 @@ public class ExtendedScreenModuleBuilder extends ScreenModuleBuilder {
     /**
      * Adds <code>provides</code> method for scoped method from superclass.
      *
-     * @param methodElement Scoped method from superclass.
+     * @param methodElement KnightActivity method from superclass.
      */
     private void addManagedMethod(ExecutableElement methodElement) throws ProcessorError {
         // cannot have @Provides annotation

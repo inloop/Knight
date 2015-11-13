@@ -1,9 +1,9 @@
 package eu.inloop.knight.sample.activity;
 
-import eu.inloop.knight.Scoped;
+import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.sample.R;
 
-@Scoped
+@KnightActivity
 public class ContactListActivity extends BaseActivity {
 
     @Override

@@ -3,7 +3,7 @@ package eu.inloop.knight.sample.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 
-import eu.inloop.knight.Scoped;
+import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.sample.R;
 
 /**
@@ -12,7 +12,7 @@ import eu.inloop.knight.sample.R;
  * @author f3rog
  * @version 2015-07-09
  */
-@Scoped
+@KnightActivity
 public class NewContactActivity extends BaseActivity {
 
     @Override

@@ -12,9 +12,9 @@ import eu.inloop.knight.scope.ScreenScope;
  */
 public enum ErrorMsg {
 
-    Scoped_invalid("Only Activity class can be annotated with @%s.", Scoped.class.getSimpleName()),
-    Injectable_outside_Scoped_Activity("@%s can contain only Activity classes annotated with @%s.", Injectable.class.getSimpleName(), Scoped.class.getSimpleName()),
-    Provided_outside_Scoped_Activity("@Provided can contain only Activity classes annotated with @%s.", Scoped.class.getSimpleName()),
+    Scoped_invalid("Only Activity class can be annotated with @%s.", KnightActivity.class.getSimpleName()),
+    Knight_View_outside_Scoped_Activity("@%s can contain only Activity classes annotated with @%s.", KnightView.class.getSimpleName(), KnightActivity.class.getSimpleName()),
+    Provided_outside_Scoped_Activity("@Provided can contain only Activity classes annotated with @%s.", KnightActivity.class.getSimpleName()),
     Provided_constructor_not_public("@Provided constructor has to be public."),
     Provided_method_not_public_static("@Provided method has to be public static."),
     Missing_Module_annotation("Provided class has to be annotated with @%s.", Module.class.getSimpleName()),
@@ -23,7 +23,7 @@ public enum ErrorMsg {
     Screen_Module_is_final("@%s Module cannot be final class if contains @%s methods.", ScreenProvided.class.getSimpleName(), ScreenScope.class.getSimpleName()),
     Screen_Module_without_empty_constructor("@%s Module has to have empty constructor.", ScreenProvided.class.getSimpleName()),
     Screen_Scoped_module_method_with_Provides("@%s Module's method annotated with @%s cannot be also annotated with @%s.", ScreenProvided.class.getSimpleName(), ScreenScope.class.getSimpleName(), Provides.class.getSimpleName()),
-    With_name_not_unique("@%s must have unique name inside @%s.", With.class.getSimpleName(), Scoped.class.getSimpleName()),
+    With_name_not_unique("@%s must have unique name inside @%s.", With.class.getSimpleName(), KnightActivity.class.getSimpleName()),
     Invalid_Knight_App("@%s can be used only on public Application class.", KnightApp.class.getSimpleName());
 
     private String mMessage;

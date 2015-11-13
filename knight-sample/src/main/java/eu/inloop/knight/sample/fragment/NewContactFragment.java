@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import eu.inloop.knight.Injectable;
+import eu.inloop.knight.KnightView;
 import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.activity.NewContactActivity;
 import eu.inloop.knight.sample.model.Contact;
@@ -26,7 +26,7 @@ import eu.inloop.knight.sample.view.IContactView;
  * @author f3rog
  * @version 2015-07-09
  */
-@Injectable(from = NewContactActivity.class)
+@KnightView(in = NewContactActivity.class)
 public class NewContactFragment extends BaseFragment implements IContactView {
 
     @Inject
