@@ -1,17 +1,10 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
-    <fragment
-        android:id="@+id/fragment_contact_new"
-        android:name="eu.inloop.knight.sample.fragment.NewContactFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/fragment_contact_new"/>
+    <include layout="@layout/view_contact_new" />
 
 </LinearLayout>

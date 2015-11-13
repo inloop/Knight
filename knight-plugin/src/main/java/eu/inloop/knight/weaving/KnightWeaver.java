@@ -72,9 +72,9 @@ public class KnightWeaver extends AWeaver {
         log("applyTransformations - %s", classToTransform.getName());
         try {
             if (classToTransform.hasAnnotation(KnightApp.class)) {
-                weaveKnightInitialization(classToTransform);
+                weaveKnightApp(classToTransform);
             } else if (classToTransform.hasAnnotation(KnightView.class)) {
-                weaveInjection(classToTransform);
+                weaveKnightView(classToTransform);
             }
             log("applyTransformations - done");
         } catch (Exception e) {
@@ -84,17 +84,22 @@ public class KnightWeaver extends AWeaver {
         }
     }
 
-    private void weaveInjection(CtClass classToTransform) throws Exception {
+    private void weaveKnightView(CtClass classToTransform) throws Exception {
         if (isSubclassOf(classToTransform, Class.FRAGMENT)
                 || isSubclassOf(classToTransform, Class.SUPPORT_FRAGMENT)) {
 
             String body = String.format("{ %s.%s(this, this.getContext()); }", Class.INJECTOR, Method.INJECT);
             log("INJECTED: %s", body);
             mAfterBurner.beforeOverrideMethod(classToTransform, Method.ON_VIEW_CREATED, body);
+        } else if (isSubclassOf(classToTransform, Class.VIEW)) {
+            // TODO : try to inject in constructor
+            String body = String.format("{ %s.%s(this, this.getContext()); }", Class.INJECTOR, Method.INJECT);
+            log("INJECTED: %s", body);
+            mAfterBurner.beforeOverrideMethod(classToTransform, "onAttachedToWindow", body);
         }
     }
 
-    private void weaveKnightInitialization(CtClass classToTransform) throws Exception {
+    private void weaveKnightApp(CtClass classToTransform) throws Exception {
         String body = String.format("{ %s.%s(this); }", Class.INJECTOR, Method.INIT);
         log("INJECTED: %s", body);
         mAfterBurner.beforeOverrideMethod(classToTransform, Method.ON_CREATE, body);
