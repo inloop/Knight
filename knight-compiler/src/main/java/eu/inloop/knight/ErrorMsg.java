@@ -26,8 +26,7 @@ public enum ErrorMsg {
     With_name_not_unique("@%s must have unique name inside @%s.", With.class.getSimpleName(), KnightActivity.class.getSimpleName()),
     Invalid_Knight_App("@%s can be used only on public Application class.", KnightApp.class.getSimpleName()),
     Invalid_Knight_View("@%s can be used only on View or Fragment subclass.", KnightView.class.getSimpleName()),
-    More_used_Knight_Apps("Used @%s can be only one.", KnightApp.class.getSimpleName()),
-    Missing_used_Knight_App("No used @%s was found", KnightApp.class.getSimpleName()),
+    More_Knight_Apps("@%s can be only one.", KnightApp.class.getSimpleName()),
     Missing_Knight_App("No @%s was found", KnightApp.class.getSimpleName()),
     ;
 

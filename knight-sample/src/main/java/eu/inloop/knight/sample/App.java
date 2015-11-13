@@ -2,6 +2,9 @@ package eu.inloop.knight.sample;
 
 import android.app.Application;
 
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 import eu.inloop.knight.KnightApp;
 
 /**
@@ -12,4 +15,15 @@ import eu.inloop.knight.KnightApp;
  */
 @KnightApp
 public class App extends Application {
+
+    @Inject
+    EventBus mEventBus;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        mEventBus.post("Hello World!");
+    }
+
 }

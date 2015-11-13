@@ -214,16 +214,11 @@ public class KnightProcessor extends AbstractProcessor {
         ClassName appName = null;
         for (Element e : elements) {
             checkKnightApp((TypeElement) e);
-            if (e.getAnnotation(KnightApp.class).used()) {
-                if (appName != null) {
-                    throw new ProcessorError(e, ErrorMsg.More_used_Knight_Apps);
-                } else {
-                    appName = ClassName.get((TypeElement) e);
-                }
+            if (appName != null) {
+                throw new ProcessorError(e, ErrorMsg.More_Knight_Apps);
+            } else {
+                appName = ClassName.get((TypeElement) e);
             }
-        }
-        if (appName == null) {
-            throw new ProcessorError(null, ErrorMsg.Missing_used_Knight_App);
         }
         return appName;
     }

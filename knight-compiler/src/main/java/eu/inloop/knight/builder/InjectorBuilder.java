@@ -1,6 +1,5 @@
 package eu.inloop.knight.builder;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.squareup.javapoet.ClassName;
@@ -35,13 +34,14 @@ public class InjectorBuilder extends BaseClassBuilder {
         getBuilder().addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
-    public void addInitMethod(KnightBuilder knightBuilder) {
+    public void addInitMethod(KnightBuilder knightBuilder, ClassName appClassName) {
         String app = "app";
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_INIT)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .addParameter(Application.class, app)
+                        .addParameter(appClassName, app)
                         .addStatement("$T.$N($N)", knightBuilder.getClassName(), KnightBuilder.METHOD_NAME_INIT, app)
+                        .addStatement("$T.$N().$N($N)", knightBuilder.getClassName(), KnightBuilder.METHOD_NAME_FROM_APP, BaseComponentBuilder.METHOD_NAME_INJECT, app)
                         .build()
         );
     }
