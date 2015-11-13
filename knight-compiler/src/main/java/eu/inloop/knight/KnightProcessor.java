@@ -39,12 +39,14 @@ public class KnightProcessor extends AbstractProcessor {
 
     private Messager mMessager;
     private Filer mFiler;
+    private boolean mProcessed;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         mMessager = processingEnv.getMessager();
         mFiler = processingEnv.getFiler();
+        mProcessed = false;
     }
 
     @Override
@@ -74,35 +76,33 @@ public class KnightProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        if (mProcessed) return false;
+        mProcessed = true;
+
         try {
-            // Check usage of Knight Application annotation
+            // create Knight Application Builders
             Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(KnightApp.class);
-            for (Element e : elements) {
-                checkKnightApp((TypeElement) e);
-            }
+            AppBuilders appBuilders = new AppBuilders(getKnightAppName(elements));
 
-            // TODO : generate classes even without KnightActivity ?!
-            
+            // go through Knight Activities
             elements = roundEnv.getElementsAnnotatedWith(KnightActivity.class);
-            if (elements.isEmpty()) {
-                return false;
-            }
-
-            // create generators for application scope
-            AppBuilders appBuilders = new AppBuilders();
-            // create generators for scoped Activities
             Map<ClassName, ActivityBuilders> activityBuildersMap = new HashMap<>();
             for (Element e : elements) {
-                ClassName activityName = getScopedActivityName((TypeElement) e);
+                // create Knight Activity Builders
+                ClassName activityName = getKnightActivityName((TypeElement) e);
                 ActivityBuilders activityBuilders = new ActivityBuilders(activityName);
                 activityBuildersMap.put(activityName, activityBuilders);
                 // create navigator methods
                 appBuilders.Navigator.integrate((TypeElement) e, activityBuilders);
             }
 
-            // TODO add Injectable classes
+            // add injectable classes
+
+            // TODO elements = roundEnv.getElementsAnnotatedWith(KnightService.class);
+
             elements = roundEnv.getElementsAnnotatedWith(KnightView.class);
             for (Element e : elements) {
+                ClassName viewName = getKnightViewName((TypeElement) e);
                 List<ClassName> activities = ProcessorUtils.getParamClasses(e.getAnnotation(KnightView.class),
                         new ProcessorUtils.IGetter<KnightView, Class<?>[]>() {
                             @Override
@@ -112,14 +112,14 @@ public class KnightProcessor extends AbstractProcessor {
                         });
 
                 if (activities.isEmpty()) { // injectable by Application scope only
-                    appBuilders.AppC.addInjectMethod(ClassName.get((TypeElement) e));
+                    appBuilders.AppC.addInjectMethod(viewName);
                 } else { // injectable by Activity scope
                     for (ClassName activity : activities) {
-                        addInjectable(activityBuildersMap.get(activity), (TypeElement) e);
+                        addInjectable(activityBuildersMap.get(activity), viewName, e);
                     }
                 }
 
-                appBuilders.Injector.addInjectMethod(appBuilders.Knight, ClassName.get((TypeElement) e), activities);
+                appBuilders.Injector.addInjectMethod(appBuilders.Knight, viewName, activities);
             }
 
             // add Provided
@@ -207,6 +207,27 @@ public class KnightProcessor extends AbstractProcessor {
         return false;
     }
 
+    private ClassName getKnightAppName(Set<? extends Element> elements) throws ProcessorError {
+        if (elements.isEmpty()) {
+            throw new ProcessorError(null, ErrorMsg.Missing_Knight_App);
+        }
+        ClassName appName = null;
+        for (Element e : elements) {
+            checkKnightApp((TypeElement) e);
+            if (e.getAnnotation(KnightApp.class).used()) {
+                if (appName != null) {
+                    throw new ProcessorError(e, ErrorMsg.More_used_Knight_Apps);
+                } else {
+                    appName = ClassName.get((TypeElement) e);
+                }
+            }
+        }
+        if (appName == null) {
+            throw new ProcessorError(null, ErrorMsg.Missing_used_Knight_App);
+        }
+        return appName;
+    }
+
     private void checkKnightApp(TypeElement e) throws ProcessorError {
         if (!e.getModifiers().contains(Modifier.PUBLIC)) {
             throw new ProcessorError(e, ErrorMsg.Invalid_Knight_App);
@@ -216,14 +237,24 @@ public class KnightProcessor extends AbstractProcessor {
         }
     }
 
-    private void addInjectable(ActivityBuilders activityBuilders, TypeElement e) throws ProcessorError {
+    private ClassName getKnightViewName(TypeElement e) throws ProcessorError {
+        if (!ProcessorUtils.isSubClassOf(e,
+                EClass.View.getName(),
+                EClass.Fragment.getName(),
+                EClass.SupportFragment.getName())) {
+            throw new ProcessorError(e, ErrorMsg.Invalid_Knight_View);
+        }
+        return ClassName.get(e);
+    }
+
+    private void addInjectable(ActivityBuilders activityBuilders, ClassName className, Element e) throws ProcessorError {
         if (activityBuilders == null) {
             throw new ProcessorError(e, ErrorMsg.Knight_View_outside_Scoped_Activity);
         }
-        activityBuilders.AC.addInjectMethod(ClassName.get(e));
+        activityBuilders.AC.addInjectMethod(className);
     }
 
-    private ClassName getScopedActivityName(TypeElement e) throws ProcessorError {
+    private ClassName getKnightActivityName(TypeElement e) throws ProcessorError {
         if (!ProcessorUtils.isSubClassOf(e, EClass.AppCompatActivity.getName(), EClass.Activity.getName())) {
             throw new ProcessorError(e, ErrorMsg.Scoped_invalid);
         }
@@ -231,7 +262,7 @@ public class KnightProcessor extends AbstractProcessor {
     }
 
     private void error(ProcessorError error) {
-        mMessager.printMessage(Diagnostic.Kind.ERROR, error.getMessage(), error.getmElement());
+        mMessager.printMessage(Diagnostic.Kind.ERROR, error.getMessage(), error.getElement());
     }
 
     private void error(Element e, ErrorMsg msg, Object... args) {

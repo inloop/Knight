@@ -19,7 +19,7 @@ public class ProcessorError extends Exception {
         mElement = e;
     }
 
-    public Element getmElement() {
+    public Element getElement() {
         return mElement;
     }
 }

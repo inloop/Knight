@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder;
 
+import com.squareup.javapoet.ClassName;
+
 import java.io.IOException;
 import java.util.Collection;
 
@@ -18,6 +20,8 @@ import eu.inloop.knight.util.ProcessorError;
  */
 public class AppBuilders {
 
+    private ClassName mAppName;
+
     public KnightBuilder Knight;
     public InjectorBuilder Injector;
     public NavigatorBuilder Navigator;
@@ -25,7 +29,9 @@ public class AppBuilders {
     public ComponentFactoryBuilder AppCF;
     public AppModuleBuilder AppM;
 
-    public AppBuilders() throws ProcessorError {
+    public AppBuilders(ClassName appName) throws ProcessorError {
+        mAppName = appName;
+
         Knight = new KnightBuilder();
         Injector = new InjectorBuilder();
         Navigator = new NavigatorBuilder();
@@ -33,6 +39,7 @@ public class AppBuilders {
         AppM = new AppModuleBuilder();
         AppC = new AppComponentBuilder();
         AppC.addModule(AppM.getClassName());
+        AppC.addInjectMethod(getAppName());
         AppCF = new ComponentFactoryBuilder(EClass.Application.getName());
 
         Knight.setupAppComponent(AppC.getClassName(), AppCF.getClassName());
@@ -56,5 +63,9 @@ public class AppBuilders {
         for (ActivityBuilders builders : activityBuildersList) {
             AppC.addPlusMethod(builders.SC);
         }
+    }
+
+    public ClassName getAppName() {
+        return mAppName;
     }
 }
