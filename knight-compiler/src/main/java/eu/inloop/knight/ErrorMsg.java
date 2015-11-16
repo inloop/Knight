@@ -13,7 +13,6 @@ import eu.inloop.knight.scope.ScreenScope;
 public enum ErrorMsg {
 
     Scoped_invalid("Only Activity class can be annotated with @%s.", KnightActivity.class.getSimpleName()),
-    Knight_View_outside_Scoped_Activity("@%s can contain only Activity classes annotated with @%s.", KnightView.class.getSimpleName(), KnightActivity.class.getSimpleName()),
     Provided_outside_Scoped_Activity("@Provided can contain only Activity classes annotated with @%s.", KnightActivity.class.getSimpleName()),
     Provided_constructor_not_public("@Provided constructor has to be public."),
     Provided_method_not_public_static("@Provided method has to be public static."),
@@ -25,9 +24,10 @@ public enum ErrorMsg {
     Screen_Scoped_module_method_with_Provides("@%s Module's method annotated with @%s cannot be also annotated with @%s.", ScreenProvided.class.getSimpleName(), ScreenScope.class.getSimpleName(), Provides.class.getSimpleName()),
     With_name_not_unique("@%s must have unique name inside @%s.", With.class.getSimpleName(), KnightActivity.class.getSimpleName()),
     Invalid_Knight_App("@%s can be used only on public Application class.", KnightApp.class.getSimpleName()),
-    Invalid_Knight_View("@%s can be used only on View or Fragment subclass.", KnightView.class.getSimpleName()),
     More_Knight_Apps("@%s can be only one.", KnightApp.class.getSimpleName()),
     Missing_Knight_App("No @%s was found", KnightApp.class.getSimpleName()),
+    Not_injectable("This class is not injected from @%s nor @%s.", KnightApp.class.getSimpleName(), KnightActivity.class.getSimpleName()),
+    Invalid_injectable("This class is not supported for injection."),
     ;
 
     private String mMessage;

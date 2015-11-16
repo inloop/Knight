@@ -7,9 +7,9 @@ import com.github.stephanenicolas.afterburner.inserts.InsertableConstructor;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import eu.inloop.knight.KnightApp;
-import eu.inloop.knight.KnightService;
-import eu.inloop.knight.KnightView;
 import eu.inloop.knight.weaving.util.AWeaver;
 import javassist.CtClass;
 import javassist.CtField;
@@ -27,6 +27,7 @@ public class KnightWeaver extends AWeaver {
 
     private interface Class {
         // android classes
+        String SERVICE = "android.app.Service";
         String FRAGMENT = "android.app.Fragment";
         String SUPPORT_FRAGMENT = "android.support.v4.app.Fragment";
         String VIEW = "android.view.View";
@@ -67,8 +68,7 @@ public class KnightWeaver extends AWeaver {
         try {
             //log("needTransformation ? %s", candidateClass.getName());
             return candidateClass.hasAnnotation(KnightApp.class)
-                    || candidateClass.hasAnnotation(KnightService.class)
-                    || candidateClass.hasAnnotation(KnightView.class);
+                    || hasInjectField(candidateClass);
         } catch (Exception e) {
             log("needTransformation - failed");
             e.printStackTrace();
@@ -80,12 +80,26 @@ public class KnightWeaver extends AWeaver {
     public void applyTransformations(CtClass classToTransform) throws JavassistBuildException {
         log("applyTransformations - %s", classToTransform.getName());
         try {
+            // APP
             if (classToTransform.hasAnnotation(KnightApp.class)) {
                 weaveKnightApp(classToTransform);
-            } else if (classToTransform.hasAnnotation(KnightService.class)) {
-                weaveKnightService(classToTransform);
-            } else if (classToTransform.hasAnnotation(KnightView.class)) {
-                weaveKnightView(classToTransform);
+            }
+            // SERVICE
+            else if (isSubclassOf(classToTransform, Class.SERVICE)) {
+                weaveService(classToTransform);
+            }
+            // FRAGMENT
+            else if (isSubclassOf(classToTransform, Class.FRAGMENT)
+                    || isSubclassOf(classToTransform, Class.SUPPORT_FRAGMENT)) {
+                weaveFragment(classToTransform);
+            }
+            // VIEW
+            else if (isSubclassOf(classToTransform, Class.VIEW)) {
+                weaveView(classToTransform);
+            }
+            // nothing done
+            else {
+                log("applyTransformations - NOTHING done");
             }
             log("applyTransformations - done");
         } catch (Exception e) {
@@ -101,44 +115,46 @@ public class KnightWeaver extends AWeaver {
         mAfterBurner.beforeOverrideMethod(classToTransform, Method.ON_CREATE, body);
     }
 
-    private void weaveKnightService(CtClass classToTransform) {
+    private void weaveService(CtClass classToTransform) throws Exception {
         // TODO
     }
 
-    private void weaveKnightView(CtClass classToTransform) throws Exception {
-        // FRAGMENT
-        if (isSubclassOf(classToTransform, Class.FRAGMENT)
-                || isSubclassOf(classToTransform, Class.SUPPORT_FRAGMENT)) {
+    private void weaveFragment(CtClass classToTransform) throws Exception {
+        String body = String.format("{ %s.%s(this, this.getContext()); }", Class.INJECTOR, Method.INJECT);
+        log("Weaved: %s", body);
 
-            String body = String.format("{ %s.%s(this, this.getContext()); }", Class.INJECTOR, Method.INJECT);
-            log("Weaved: %s", body);
+        // weave into method
+        mAfterBurner.beforeOverrideMethod(classToTransform, Method.ON_ATTACH, body);
+    }
 
-            // weave into method
-            mAfterBurner.beforeOverrideMethod(classToTransform, Method.ON_ATTACH, body);
+    private void weaveView(CtClass classToTransform) throws Exception {
+        String field = String.format("private boolean %s = false;", Field.INJECTED);
+        log("Weaved: %s", field);
+        classToTransform.addField(CtField.make(field, classToTransform));
+
+        final String body = String.format("{ if (!%s) { %s.%s(this, getContext()); %s = true; } }",
+                Field.INJECTED, Class.INJECTOR, Method.INJECT, Field.INJECTED);
+        log("Weaved: %s", body);
+
+        // weave into constructors
+        mAfterBurner.insertConstructor(new InsertableConstructor(classToTransform) {
+            @Override
+            public String getConstructorBody(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
+                return body;
+            }
+
+            @Override
+            public boolean acceptParameters(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
+                return true;
+            }
+        });
+    }
+
+    private boolean hasInjectField(CtClass candidateClass) {
+        for (CtField field : candidateClass.getDeclaredFields()) {
+            if (field.hasAnnotation(Inject.class)) return true;
         }
-        // VIEW
-        else if (isSubclassOf(classToTransform, Class.VIEW)) {
-            String field = String.format("private boolean %s = false;", Field.INJECTED);
-            log("Weaved: %s", field);
-            classToTransform.addField(CtField.make(field, classToTransform));
-
-            final String body = String.format("{ if (!%s) { %s.%s(this, getContext()); %s = true; } }",
-                    Field.INJECTED, Class.INJECTOR, Method.INJECT, Field.INJECTED);
-            log("Weaved: %s", body);
-
-            // weave into constructors
-            mAfterBurner.insertConstructor(new InsertableConstructor(classToTransform) {
-                @Override
-                public String getConstructorBody(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
-                    return body;
-                }
-
-                @Override
-                public boolean acceptParameters(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
-                    return true;
-                }
-            });
-        }
+        return false;
     }
 
 }

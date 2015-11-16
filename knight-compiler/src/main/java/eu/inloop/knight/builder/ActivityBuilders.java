@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.annotation.processing.Filer;
 
+import eu.inloop.knight.EClass;
+import eu.inloop.knight.Injectable;
 import eu.inloop.knight.builder.component.ActivityComponentBuilder;
 import eu.inloop.knight.builder.component.ScreenComponentBuilder;
 import eu.inloop.knight.builder.module.ActivityModuleBuilder;
@@ -18,9 +20,9 @@ import eu.inloop.knight.util.ProcessorError;
  * @author FrantisekGazo
  * @version 2015-10-16
  */
-public class ActivityBuilders {
+public class ActivityBuilders extends BaseScopeBuilders {
 
-    public ClassName activityName;
+    private ClassName mActivityName;
 
     public ScreenModuleBuilder SM;
     public ScreenComponentBuilder SC;
@@ -31,7 +33,7 @@ public class ActivityBuilders {
     public ComponentFactoryBuilder CF;
 
     public ActivityBuilders(ClassName activityName) throws ProcessorError {
-        this.activityName = activityName;
+        mActivityName = activityName;
         // Screen Scope
         SM = new ScreenModuleBuilder(activityName);
         SC = new ScreenComponentBuilder(activityName);
@@ -48,7 +50,7 @@ public class ActivityBuilders {
         // sub component
         SC.addPlusMethod(AC);
         // add inject for Activity
-        AC.addInjectMethod(activityName);
+        AC.addInjectMethod(getActivityName());
 
         // create factory methods
         CF.addBuildMethods(appBuilders.AppC, SC, SM, AC, AM);
@@ -62,6 +64,22 @@ public class ActivityBuilders {
     }
 
     public ClassName getActivityName() {
-        return activityName;
+        return mActivityName;
     }
+
+    @Override
+    protected ClassName[] supportedInjectableClasses() {
+        return new ClassName[] {
+                EClass.Fragment.getName(),
+                EClass.SupportFragment.getName(),
+                EClass.View.getName(),
+        };
+    }
+
+    @Override
+    protected void addInjectMethod(Injectable injectable) {
+        AC.addInjectMethod(injectable.getClassName());
+        injectable.addFromActivity(getActivityName());
+    }
+
 }

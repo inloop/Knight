@@ -8,6 +8,7 @@ import java.util.Collection;
 import javax.annotation.processing.Filer;
 
 import eu.inloop.knight.EClass;
+import eu.inloop.knight.Injectable;
 import eu.inloop.knight.builder.component.AppComponentBuilder;
 import eu.inloop.knight.builder.module.AppModuleBuilder;
 import eu.inloop.knight.util.ProcessorError;
@@ -18,7 +19,7 @@ import eu.inloop.knight.util.ProcessorError;
  * @author FrantisekGazo
  * @version 2015-10-16
  */
-public class AppBuilders {
+public class AppBuilders extends BaseScopeBuilders {
 
     private ClassName mAppName;
 
@@ -68,4 +69,21 @@ public class AppBuilders {
     public ClassName getAppName() {
         return mAppName;
     }
+
+    @Override
+    protected ClassName[] supportedInjectableClasses() {
+        return new ClassName[] {
+                EClass.Service.getName(),
+                EClass.Fragment.getName(),
+                EClass.SupportFragment.getName(),
+                EClass.View.getName()
+        };
+    }
+
+    @Override
+    protected void addInjectMethod(Injectable injectable) {
+        AppC.addInjectMethod(injectable.getClassName());
+        injectable.setFromApp(getAppName());
+    }
+
 }

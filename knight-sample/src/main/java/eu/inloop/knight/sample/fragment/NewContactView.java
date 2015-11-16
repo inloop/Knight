@@ -15,9 +15,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import eu.inloop.knight.KnightView;
 import eu.inloop.knight.sample.R;
-import eu.inloop.knight.sample.activity.NewContactActivity;
 import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.ContactError;
 import eu.inloop.knight.sample.model.Order;
@@ -30,7 +28,6 @@ import eu.inloop.knight.sample.view.IContactView;
  * @author FrantisekGazo
  * @version 2015-11-13
  */
-@KnightView(in = NewContactActivity.class)
 public class NewContactView
         extends LinearLayout
         implements IContactView {

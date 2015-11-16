@@ -5,6 +5,8 @@ import android.support.v7.app.ActionBar;
 
 import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.sample.R;
+import eu.inloop.knight.sample.fragment.NewContactFragment;
+import eu.inloop.knight.sample.fragment.NewContactView;
 
 /**
  * Class {@link NewContactActivity}.
@@ -12,7 +14,12 @@ import eu.inloop.knight.sample.R;
  * @author f3rog
  * @version 2015-07-09
  */
-@KnightActivity
+@KnightActivity(
+        injects = {
+                NewContactFragment.class,
+                NewContactView.class
+        }
+)
 public class NewContactActivity extends BaseActivity {
 
     @Override

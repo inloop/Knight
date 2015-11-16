@@ -30,6 +30,7 @@ public enum EClass {
     Fragment(ClassName.get("android.app", "Fragment")),
     SupportFragment(ClassName.get("android.support.v4.app", "Fragment")),
     View(ClassName.get("android.view", "View")),
+    Service(ClassName.get("android.app", "Service")),
     Log(ClassName.get("android.util", "Log")),
     Bundle(ClassName.get("android.os", "Bundle")),
     ActivityLifecycleCallbacks(ClassName.get("android.app.Application", "ActivityLifecycleCallbacks")),

@@ -41,7 +41,7 @@ public class NavigatorBuilder extends BaseClassBuilder {
     }
 
     public void integrate(TypeElement e, ActivityBuilders activityBuilders) throws ProcessorError {
-        With[] withParams = e.getAnnotation(KnightActivity.class).value();
+        With[] withParams = e.getAnnotation(KnightActivity.class).with();
 
         // make sure that @With have distinct names
         Set<String> names = new HashSet<>();

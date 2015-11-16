@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.With;
 import eu.inloop.knight.sample.R;
+import eu.inloop.knight.sample.fragment.ContactFragment;
 import eu.inloop.knight.sample.model.Contact;
 
 /**
@@ -15,7 +16,10 @@ import eu.inloop.knight.sample.model.Contact;
  * @version 2015-07-09
  */
 @KnightActivity(
-        @With(name = "contact", type = Contact.class)
+        with = @With(name = "contact", type = Contact.class),
+        injects = {
+                ContactFragment.class
+        }
 )
 public class ContactActivity extends BaseActivity {
 

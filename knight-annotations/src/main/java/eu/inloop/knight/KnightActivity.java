@@ -21,6 +21,8 @@ public @interface KnightActivity {
      * List of @{@link With} annotations representing Extras added to Intent when starting an Activity.
      * </p>
      */
-    With[] value() default {};
+    With[] with() default {};
+
+    Class[] injects() default {};
 
 }
