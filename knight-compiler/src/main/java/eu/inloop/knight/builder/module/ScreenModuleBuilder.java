@@ -70,6 +70,23 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
                 .addStatement("$N = $N", stateField, stateManager);
         addToConstructor(constructor);
         getBuilder().addMethod(constructor.build());
+        // add provides-method for Presenter Pool
+        addProvidesPresenterPool();
+    }
+
+    private void addProvidesPresenterPool() {
+        ClassName className = EClass.PresenterPool.getName();
+
+        MethodSpec.Builder method = MethodSpec.methodBuilder(createProvideMethodName(className.simpleName()))
+                .addAnnotation(Provides.class)
+                .addAnnotation(ScreenScope.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(className);
+
+        method.addStatement("return $N.manage($S, new $T())",
+                FIELD_NAME_STATE_MANAGER, createStateManagerId(method.build()), className);
+
+        getBuilder().addMethod(method.build());
     }
 
     /**
@@ -94,12 +111,16 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         // check if is screen scoped
         if (m.annotations.contains(AnnotationSpec.builder(ScreenScope.class).build())) {
             // manage state only if scoped
-            method.addCode("return $N.manage($S, ", FIELD_NAME_STATE_MANAGER, String.format(STATEFUL_ID_FORMAT, m.returnType, m.name));
+            method.addCode("return $N.manage($S, ", FIELD_NAME_STATE_MANAGER, createStateManagerId(m));
             addProvideCode(false, method, e, callFormat, args);
             method.addCode(");\n");
         } else {
             addProvideCode(true, method, e, callFormat, args);
         }
+    }
+
+    private String createStateManagerId(MethodSpec m) {
+        return String.format(STATEFUL_ID_FORMAT, m.returnType, m.name);
     }
 
     /**

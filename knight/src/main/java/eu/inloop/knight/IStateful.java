@@ -12,10 +12,23 @@ import android.support.annotation.Nullable;
  */
 public interface IStateful {
 
+    /**
+     * Called when creating object.
+     *
+     * @param savedState Previous state of this object or <code>null</code>.
+     */
     void onCreate(@Nullable Bundle savedState);
 
+    /**
+     * Called when saving object state.
+     *
+     * @param outState Bundle for saving this object state.
+     */
     void onSave(@NonNull Bundle outState);
 
+    /**
+     * Called before removing object.
+     */
     void onRemove();
 
 }

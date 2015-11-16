@@ -181,4 +181,9 @@ public class ContactPresenter extends BasePresenter<IContactView> {
 
     }
 
+    @Override
+    public String getId() {
+        return null;
+    }
+
 }

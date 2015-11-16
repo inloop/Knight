@@ -144,4 +144,9 @@ public class ContactListPresenter extends BasePresenter<IContactListView> {
     }
 
     //endregion
+
+    @Override
+    public String getId() {
+        return null;
+    }
 }
