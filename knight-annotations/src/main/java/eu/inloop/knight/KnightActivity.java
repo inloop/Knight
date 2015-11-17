@@ -18,11 +18,13 @@ public @interface KnightActivity {
 
     /**
      * <p>
-     * List of @{@link With} annotations representing Extras added to Intent when starting an Activity.
+     * List of classes that can be inside annotated activity.
+     * </p>
+     * <p>
+     * <b> NOTE: </b>
+     * Supported are only View and Fragment subclasses.
      * </p>
      */
-    With[] with() default {};
-
-    Class[] injects() default {};
+    Class[] value() default {};
 
 }

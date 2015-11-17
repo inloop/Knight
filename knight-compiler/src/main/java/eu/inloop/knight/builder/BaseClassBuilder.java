@@ -17,7 +17,12 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 
-import eu.inloop.knight.EClass;
+import eu.inloop.knight.ActivityProvided;
+import eu.inloop.knight.AppProvided;
+import eu.inloop.knight.Extra;
+import eu.inloop.knight.ScreenProvided;
+import eu.inloop.knight.scope.ActivityScope;
+import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -42,15 +47,17 @@ public abstract class BaseClassBuilder {
      * These annotation classes won't be transferred to provide methods.
      */
     private static final List<ClassName> IGNORED_ANNOTATIONS = Arrays.asList(
-            EClass.Override.getName(),
+            ClassName.get(Override.class),
+            // extra
+            ClassName.get(Extra.class),
             // provided
-            EClass.AppProvided.getName(),
-            EClass.ScreenProvided.getName(),
-            EClass.ActivityProvided.getName(),
+            ClassName.get(AppProvided.class),
+            ClassName.get(ScreenProvided.class),
+            ClassName.get(ActivityProvided.class),
             // scope
-            EClass.AppScope.getName(),
-            EClass.ScreenScope.getName(),
-            EClass.ActivityScope.getName()
+            ClassName.get(ScreenScope.class),
+            ClassName.get(ScreenScope.class),
+            ClassName.get(ActivityScope.class)
     );
 
     private TypeSpec.Builder mBuilder;

@@ -63,6 +63,7 @@ public class KnightProcessor extends AbstractProcessor {
         return annotations(
                 KnightApp.class,
                 KnightActivity.class,
+                Extra.class,
                 AppProvided.class,
                 ScreenProvided.class,
                 ActivityProvided.class,
@@ -107,7 +108,7 @@ public class KnightProcessor extends AbstractProcessor {
                     new ProcessorUtils.IGetter<KnightApp, Class<?>[]>() {
                         @Override
                         public Class<?>[] get(KnightApp a) {
-                            return a.injects();
+                            return a.value();
                         }
                     }), classesWithInject);
 
@@ -124,7 +125,7 @@ public class KnightProcessor extends AbstractProcessor {
                         new ProcessorUtils.IGetter<KnightActivity, Class<?>[]>() {
                             @Override
                             public Class<?>[] get(KnightActivity a) {
-                                return a.injects();
+                                return a.value();
                             }
                         }), classesWithInject);
                 // create navigator methods

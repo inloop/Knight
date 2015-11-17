@@ -14,12 +14,10 @@ import eu.inloop.knight.sample.fragment.NewContactView;
  * @author f3rog
  * @version 2015-07-09
  */
-@KnightActivity(
-        injects = {
-                NewContactFragment.class,
-                NewContactView.class
-        }
-)
+@KnightActivity({
+        NewContactFragment.class,
+        NewContactView.class
+})
 public class NewContactActivity extends BaseActivity {
 
     @Override

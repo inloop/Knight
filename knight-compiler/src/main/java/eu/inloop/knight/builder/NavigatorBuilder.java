@@ -7,17 +7,20 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
 import eu.inloop.knight.ErrorMsg;
-import eu.inloop.knight.KnightActivity;
-import eu.inloop.knight.With;
+import eu.inloop.knight.Extra;
+import eu.inloop.knight.NamedExtra;
 import eu.inloop.knight.util.ProcessorError;
-import eu.inloop.knight.util.ProcessorUtils;
 
 /**
  * Class {@link NavigatorBuilder}
@@ -41,22 +44,27 @@ public class NavigatorBuilder extends BaseClassBuilder {
     }
 
     public void integrate(TypeElement e, ActivityBuilders activityBuilders) throws ProcessorError {
-        With[] withParams = e.getAnnotation(KnightActivity.class).with();
-
-        // make sure that @With have distinct names
+        // get all fields annotated with @Extra
+        List<NamedExtra> extras = new ArrayList<>();
+        for (Element ee : e.getEnclosedElements()) {
+            if (ee.getAnnotation(Extra.class) != null) {
+                extras.add(new NamedExtra((VariableElement) ee));
+            }
+        }
+        // make sure that @Extra have distinct names
         Set<String> names = new HashSet<>();
-        for (With with : withParams) {
-            names.add(with.name().toLowerCase());
-        }
-        if (names.size() != withParams.length) {
-            throw new ProcessorError(e, ErrorMsg.With_name_not_unique);
+        for (NamedExtra namedExtra : extras) {
+            if (names.contains(namedExtra.getName())) {
+                throw new ProcessorError(namedExtra.getElement(), ErrorMsg.Extra_name_not_unique);
+            }
+            names.add(namedExtra.getName());
         }
 
-        addForActivityMethod(activityBuilders.getActivityName(), withParams);
-        activityBuilders.SM.addInitMethod(withParams);
+        addForActivityMethod(activityBuilders.getActivityName(), extras);
+        activityBuilders.SM.addInitMethod(extras);
     }
 
-    private void addForActivityMethod(ClassName activityName, With[] params) {
+    private void addForActivityMethod(ClassName activityName, List<NamedExtra> extras) {
         String forName = getMethodName(METHOD_NAME_FOR, activityName);
         String context = "context";
         String intent = "intent";
@@ -72,18 +80,14 @@ public class NavigatorBuilder extends BaseClassBuilder {
 
         forMethod.addStatement("$T $N = new $T($N, $T.class)", Intent.class, intent, Intent.class, context, activityName);
         startMethod.addCode("$N.startActivity($N($N", context, forName, context);
-        for (With with : params) {
-            TypeName typeName = ProcessorUtils.getType(with, new ProcessorUtils.IGetter<With, Class<?>>() {
-                @Override
-                public Class<?> get(With obj) {
-                    return obj.type();
-                }
-            });
-            forMethod.addParameter(typeName, with.name());
-            forMethod.addStatement("$N.putExtra($S, $N)", intent, getExtraId(activityName, with.name()), with.name());
+        for (NamedExtra namedExtra : extras) {
+            TypeName typeName = ClassName.get(namedExtra.getElement().asType());
+            String name = namedExtra.getName();
+            forMethod.addParameter(typeName, name);
+            forMethod.addStatement("$N.putExtra($S, $N)", intent, getExtraId(activityName, name), name);
 
-            startMethod.addParameter(typeName, with.name());
-            startMethod.addCode(", $N", with.name());
+            startMethod.addParameter(typeName, name);
+            startMethod.addCode(", $N", name);
         }
         forMethod.addStatement("return $N", intent);
         startMethod.addCode("));\n");

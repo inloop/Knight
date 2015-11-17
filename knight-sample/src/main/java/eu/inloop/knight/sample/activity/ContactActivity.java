@@ -3,8 +3,10 @@ package eu.inloop.knight.sample.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 
+import javax.inject.Inject;
+
+import eu.inloop.knight.Extra;
 import eu.inloop.knight.KnightActivity;
-import eu.inloop.knight.With;
 import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.fragment.ContactFragment;
 import eu.inloop.knight.sample.model.Contact;
@@ -15,13 +17,14 @@ import eu.inloop.knight.sample.model.Contact;
  * @author f3rog
  * @version 2015-07-09
  */
-@KnightActivity(
-        with = @With(name = "contact", type = Contact.class),
-        injects = {
-                ContactFragment.class
-        }
-)
+@KnightActivity({
+        ContactFragment.class
+})
 public class ContactActivity extends BaseActivity {
+
+    @Inject
+    @Extra("showContact")
+    Contact mContact;
 
     @Override
     protected int getLayoutRes() {

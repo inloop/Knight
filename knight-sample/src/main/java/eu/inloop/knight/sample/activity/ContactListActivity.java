@@ -5,7 +5,7 @@ import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.fragment.ContactListFragment;
 
 @KnightActivity(
-        injects = ContactListFragment.class
+        ContactListFragment.class
 )
 public class ContactListActivity extends BaseActivity {
 

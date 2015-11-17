@@ -16,6 +16,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface KnightApp {
 
-    Class[] injects() default {};
+    /**
+     * <p>
+     * List of classes that can be inside annotated activity.
+     * </p>
+     * <p>
+     * <b> NOTE: </b>
+     * Supported are only Service, View and Fragment subclasses.
+     * </p>
+     */
+    Class[] value() default {};
 
 }

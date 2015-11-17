@@ -13,13 +13,6 @@ import eu.inloop.knight.builder.GPN;
 public enum EClass {
 
     // Annotation classes
-    Override(ClassName.get("java.lang", "Override")),
-    AppProvided(ClassName.get("eu.inloop.knight", "AppProvided")),
-    ScreenProvided(ClassName.get("eu.inloop.knight", "ScreenProvided")),
-    ActivityProvided(ClassName.get("eu.inloop.knight", "ActivityProvided")),
-    AppScope(ClassName.get("eu.inloop.knight.scope", "AppScope")),
-    ScreenScope(ClassName.get("eu.inloop.knight.scope", "ScreenScope")),
-    ActivityScope(ClassName.get("eu.inloop.knight.scope", "ActivityScope")),
     Nullable(ClassName.get("android.support.annotation", "Nullable")),
 
     // Android classes

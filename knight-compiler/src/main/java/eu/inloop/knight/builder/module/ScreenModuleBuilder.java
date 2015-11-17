@@ -9,20 +9,20 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 
-import javax.inject.Named;
+import java.util.List;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
 import eu.inloop.knight.EClass;
+import eu.inloop.knight.NamedExtra;
 import eu.inloop.knight.ScreenProvided;
-import eu.inloop.knight.With;
 import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.builder.NavigatorBuilder;
 import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
-import eu.inloop.knight.util.ProcessorUtils;
 import eu.inloop.knight.util.StringUtils;
 
 /**
@@ -126,9 +126,9 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     /**
      * Adds <code>init</code> method to the generated module.
      *
-     * @param withParams List of Extra attributes that will be initialized.
+     * @param extraFields List of Extras that will be initialized.
      */
-    public void addInitMethod(With[] withParams) {
+    public void addInitMethod(List<NamedExtra> extraFields) {
         String activity = "activity";
         String extras = "extras";
         String action = "action";
@@ -138,7 +138,7 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
                 .addParameter(Activity.class, activity);
 
         // do not retrieve extras if empty
-        if (withParams.length > 0) {
+        if (!extras.isEmpty()) {
             method.addStatement("$T $N = $N.getIntent().getExtras()", Bundle.class, extras, activity);
             method.addStatement("$T $N = $N.getIntent().getAction()", String.class, action, activity);
             method.beginControlFlow("if ($N != null)", extras)
@@ -153,22 +153,18 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
                     .endControlFlow();
         }
 
-        for (With with : withParams) {
-            TypeName typeName = ProcessorUtils.getType(with, new ProcessorUtils.IGetter<With, Class<?>>() {
-                @Override
-                public Class<?> get(With obj) {
-                    return obj.type();
-                }
-            });
+        for (NamedExtra namedExtra : extraFields) {
+            TypeName typeName = ClassName.get(namedExtra.getElement().asType());
+            String name = namedExtra.getName();
             // add field
-            FieldSpec field = FieldSpec.builder(typeName, createFieldName(with.name()), Modifier.PRIVATE).build();
+            FieldSpec field = FieldSpec.builder(typeName, createFieldName(name), Modifier.PRIVATE).build();
             getBuilder().addField(field);
             // add statement to init method
-            String extraId = NavigatorBuilder.getExtraId(getArgClassName(), with.name());
+            String extraId = NavigatorBuilder.getExtraId(getArgClassName(), name);
             method.addStatement("$N = ($T) $N.$N($S)",
                     field, typeName, extras, getExtraGetterName(typeName), extraId);
 
-            addProvidesField(with, field);
+            addProvidesField(namedExtra, field);
         }
 
         getBuilder().addMethod(method.build());
@@ -177,20 +173,19 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     /**
      * Adds <code>provides</code> method for given <code>field</code>.
      *
-     * @param with  Extra attribute that defines the <code>field</code>.
-     * @param field Field.
+     * @param namedExtra Extra that defines the <code>field</code>.
+     * @param field      Field.
      */
-    private void addProvidesField(With with, FieldSpec field) {
-        // TODO : allow @Nullable provides methods ?
-
-        MethodSpec.Builder method = MethodSpec.methodBuilder(createProvideMethodName(with.name()))
+    private void addProvidesField(NamedExtra namedExtra, FieldSpec field) {
+        MethodSpec.Builder method = MethodSpec.methodBuilder(createProvideMethodName(namedExtra.getName()))
                 .addAnnotation(Provides.class)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(field.type)
                 .addStatement("return $N", field);
 
-        if (with.withNamed().length() > 0) {
-            method.addAnnotation(AnnotationSpec.builder(Named.class).addMember("value", "$S", with.withNamed()).build());
+        // add also Annotations
+        for (AnnotationSpec a : getAnnotations(namedExtra.getElement())) {
+            method.addAnnotation(a);
         }
 
         getBuilder().addMethod(method.build());
