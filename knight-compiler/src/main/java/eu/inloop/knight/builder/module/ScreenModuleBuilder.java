@@ -138,11 +138,26 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
                 .addParameter(Activity.class, activity);
 
         // do not retrieve extras if empty
-        if (!extras.isEmpty()) {
+        if (!extraFields.isEmpty()) {
             method.addStatement("$T $N = $N.getIntent().getExtras()", Bundle.class, extras, activity);
             method.addStatement("$T $N = $N.getIntent().getAction()", String.class, action, activity);
-            method.beginControlFlow("if ($N != null)", extras)
-                    .endControlFlow()
+            method.beginControlFlow("if ($N != null)", extras);
+
+            for (NamedExtra namedExtra : extraFields) {
+                TypeName typeName = ClassName.get(namedExtra.getElement().asType());
+                String name = namedExtra.getName();
+                // add field
+                FieldSpec field = FieldSpec.builder(typeName, createFieldName(name), Modifier.PRIVATE).build();
+                getBuilder().addField(field);
+                // add statement to init method
+                String extraId = NavigatorBuilder.getExtraId(getArgClassName(), name);
+                method.addStatement("$N = ($T) $N.$N($S)",
+                        field, typeName, extras, getExtraGetterName(typeName), extraId);
+
+                addProvidesField(namedExtra, field);
+            }
+
+            method.endControlFlow()
                     .beginControlFlow("else if ($N != null && $N.equals($S))", action, action, "android.intent.action.MAIN")
                     .addCode("// MAIN won't have any extras\n")
                     .addStatement("return")
@@ -151,20 +166,7 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
                     .addCode("// throw exception if Intent was wrongly created\n")
                     .addStatement("throw new $T($S)", IllegalStateException.class, "Extras were not set")
                     .endControlFlow();
-        }
 
-        for (NamedExtra namedExtra : extraFields) {
-            TypeName typeName = ClassName.get(namedExtra.getElement().asType());
-            String name = namedExtra.getName();
-            // add field
-            FieldSpec field = FieldSpec.builder(typeName, createFieldName(name), Modifier.PRIVATE).build();
-            getBuilder().addField(field);
-            // add statement to init method
-            String extraId = NavigatorBuilder.getExtraId(getArgClassName(), name);
-            method.addStatement("$N = ($T) $N.$N($S)",
-                    field, typeName, extras, getExtraGetterName(typeName), extraId);
-
-            addProvidesField(namedExtra, field);
         }
 
         getBuilder().addMethod(method.build());
