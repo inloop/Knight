@@ -40,8 +40,6 @@ import eu.inloop.knight.util.StringUtils;
  */
 public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
-    // TODO : Implement save state mechanism into PROVIDES methods only for extended IStateful
-
     /**
      * Format of provide method name.
      */
@@ -115,7 +113,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
         MethodSpec.Builder method = prepareProvidesMethodBuilder(e, e.getSimpleName().toString(), isScoped(e));
         addProvideStatement(method, e, "$T.$N", className, e.getSimpleName().toString());
-        method.returns(getProvidedType(e, ClassName.get(e.getReturnType())));
+        method.returns(ClassName.get(e.getReturnType()));
 
         getBuilder().addMethod(method.build());
     }

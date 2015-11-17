@@ -4,7 +4,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
@@ -13,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author FrantisekGazo
  * @version 2015-11-17
  */
-@Target({CONSTRUCTOR, METHOD})
+@Target(CONSTRUCTOR)
 @Retention(RUNTIME)
 public @interface As {
 
