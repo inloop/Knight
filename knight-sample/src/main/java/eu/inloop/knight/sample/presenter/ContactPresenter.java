@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import eu.inloop.knight.BasePresenter;
+import eu.inloop.knight.As;
 import eu.inloop.knight.ScreenProvided;
 import eu.inloop.knight.sample.activity.ContactActivity;
 import eu.inloop.knight.sample.activity.NewContactActivity;
@@ -30,7 +30,8 @@ import retrofit.client.Response;
  * @author f3rog
  * @version 2015-07-09
  */
-public class ContactPresenter extends BasePresenter<IContactView> {
+public class ContactPresenter
+        extends AContactPresenter {
 
     private static final int MIN_LENGTH = 5;
 
@@ -45,6 +46,7 @@ public class ContactPresenter extends BasePresenter<IContactView> {
     /**
      * Constructor
      */
+    @As(AContactPresenter.class)
     @ScreenProvided(in = ContactActivity.class, scoped = true)
     public ContactPresenter(IApi api, Contact contact) {
         this(api, contact, false);
@@ -53,6 +55,7 @@ public class ContactPresenter extends BasePresenter<IContactView> {
     /**
      * Constructor
      */
+    @As(AContactPresenter.class)
     @ScreenProvided(in = NewContactActivity.class, scoped = true)
     public ContactPresenter(IApi api, EventBus eventBus) {
         this(api, null, true);
@@ -88,6 +91,7 @@ public class ContactPresenter extends BasePresenter<IContactView> {
         }
     }
 
+    @Override
     public ContactError onSaveClicked(String name, String phone) {
         ContactError error = new ContactError();
 

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import eu.inloop.knight.As;
 import eu.inloop.knight.BasePresenter;
 import eu.inloop.knight.ScreenProvided;
 import eu.inloop.knight.sample.R;
@@ -32,7 +33,9 @@ import retrofit.client.Response;
  * @author f3rog
  * @version 2015-07-09
  */
-public class ContactListPresenter extends BasePresenter<IContactListView> {
+public class ContactListPresenter
+        extends BasePresenter<IContactListView>
+        implements IContactListPresenter {
 
     private final Application mApp;
     private final NetUtils mNetUtils;
@@ -44,6 +47,7 @@ public class ContactListPresenter extends BasePresenter<IContactListView> {
     /**
      * Constructor
      */
+    @As(IContactListPresenter.class)
     @ScreenProvided(in = ContactListActivity.class, scoped = true)
     public ContactListPresenter(Application app, NetUtils utils, IApi api, EventBus eventBus) {
         mApp = app;
@@ -61,10 +65,12 @@ public class ContactListPresenter extends BasePresenter<IContactListView> {
         mEventBus.unregister(this);
     }
 
+    @Override
     public void onAddClicked() {
         if (getView() != null) getView().gotoAddContactView();
     }
 
+    @Override
     public void onContactClicked(int position) {
         // just to make sure
         if (position < 0 || position >= mContacts.size()) {

@@ -21,7 +21,7 @@ import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.adapter.BaseRecyclerAdapter;
 import eu.inloop.knight.sample.adapter.ContactRecyclerAdapter;
 import eu.inloop.knight.sample.model.Contact;
-import eu.inloop.knight.sample.presenter.ContactListPresenter;
+import eu.inloop.knight.sample.presenter.IContactListPresenter;
 import eu.inloop.knight.sample.view.IContactListView;
 import the.knight.I;
 
@@ -36,7 +36,7 @@ public class ContactListFragment extends BaseFragment implements IContactListVie
     private ContactRecyclerAdapter mAdapter;
 
     @Inject
-    ContactListPresenter mPresenter;
+    IContactListPresenter mPresenter;
 
     @Bind(R.id.rv_contacts)
     RecyclerView mRecyclerView;

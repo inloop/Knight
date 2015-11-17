@@ -15,7 +15,7 @@ import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.ContactError;
 import eu.inloop.knight.sample.model.Order;
-import eu.inloop.knight.sample.presenter.ContactPresenter;
+import eu.inloop.knight.sample.presenter.AContactPresenter;
 import eu.inloop.knight.sample.view.IContactView;
 
 /**
@@ -27,7 +27,7 @@ import eu.inloop.knight.sample.view.IContactView;
 public class NewContactFragment extends BaseFragment implements IContactView {
 
     @Inject
-    ContactPresenter mPresenter;
+    AContactPresenter mPresenter;
 
     @Bind(R.id.et_contact_name)
     EditText mName;

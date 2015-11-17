@@ -20,6 +20,7 @@ import javax.lang.model.element.VariableElement;
 
 import dagger.Module;
 import dagger.Provides;
+import eu.inloop.knight.As;
 import eu.inloop.knight.ErrorMsg;
 import eu.inloop.knight.builder.BaseClassBuilder;
 import eu.inloop.knight.builder.GCN;
@@ -28,6 +29,7 @@ import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
+import eu.inloop.knight.util.ProcessorUtils;
 import eu.inloop.knight.util.StringUtils;
 
 /**
@@ -94,7 +96,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
         MethodSpec.Builder method = prepareProvidesMethodBuilder(e, className.simpleName(), isScoped(e));
         addProvideStatement(method, e, "new $T", className);
-        method.returns(className);
+        method.returns(getProvidedType(e, className));
 
         getBuilder().addMethod(method.build());
     }
@@ -110,13 +112,27 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         }
 
         ClassName className = ClassName.get((TypeElement) e.getEnclosingElement());
-        TypeName returnTypeName = ClassName.get(e.getReturnType());
 
         MethodSpec.Builder method = prepareProvidesMethodBuilder(e, e.getSimpleName().toString(), isScoped(e));
         addProvideStatement(method, e, "$T.$N", className, e.getSimpleName().toString());
-        method.returns(returnTypeName);
+        method.returns(getProvidedType(e, ClassName.get(e.getReturnType())));
 
         getBuilder().addMethod(method.build());
+    }
+
+    private TypeName getProvidedType(ExecutableElement e, TypeName defaultType) {
+        As as = e.getAnnotation(As.class);
+        if (as != null) {
+            // TODO : add some check for superclass
+            return ProcessorUtils.getType(as, new ProcessorUtils.IGetter<As, Class<?>>() {
+                @Override
+                public Class<?> get(As annotation) {
+                    return annotation.value();
+                }
+            });
+        } else {
+            return defaultType;
+        }
     }
 
     /**

@@ -18,7 +18,7 @@ import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.adapter.OrderRecyclerAdapter;
 import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.Order;
-import eu.inloop.knight.sample.presenter.ContactPresenter;
+import eu.inloop.knight.sample.presenter.AContactPresenter;
 import eu.inloop.knight.sample.view.IContactView;
 
 /**
@@ -32,7 +32,7 @@ public class ContactFragment extends BaseFragment implements IContactView {
     private OrderRecyclerAdapter mAdapter;
 
     @Inject
-    ContactPresenter mPresenter;
+    AContactPresenter mPresenter;
 
     @Bind(R.id.tv_contact_phone)
     TextView mPhone;
