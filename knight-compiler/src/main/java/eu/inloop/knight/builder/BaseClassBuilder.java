@@ -7,22 +7,16 @@ import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.processing.Filer;
+import javax.inject.Qualifier;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 
-import eu.inloop.knight.ActivityProvided;
-import eu.inloop.knight.AppProvided;
-import eu.inloop.knight.Extra;
-import eu.inloop.knight.ScreenProvided;
-import eu.inloop.knight.scope.ActivityScope;
-import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -42,23 +36,6 @@ public abstract class BaseClassBuilder {
      * Format of class field.
      */
     private static final String FORMAT_CLASS_FIELD_NAME = "m%s";
-
-    /**
-     * These annotation classes won't be transferred to provide methods.
-     */
-    private static final List<ClassName> IGNORED_ANNOTATIONS = Arrays.asList(
-            ClassName.get(Override.class),
-            // extra
-            ClassName.get(Extra.class),
-            // provided
-            ClassName.get(AppProvided.class),
-            ClassName.get(ScreenProvided.class),
-            ClassName.get(ActivityProvided.class),
-            // scope
-            ClassName.get(ScreenScope.class),
-            ClassName.get(ScreenScope.class),
-            ClassName.get(ActivityScope.class)
-    );
 
     private TypeSpec.Builder mBuilder;
     private ClassName mClassName = null;
@@ -187,18 +164,20 @@ public abstract class BaseClassBuilder {
      *
      * @param element Element.
      */
-    public List<AnnotationSpec> getAnnotations(Element element) {
+    public List<AnnotationSpec> getQualifiers(Element element) {
         List<AnnotationSpec> list = new ArrayList<>();
         for (AnnotationMirror a : element.getAnnotationMirrors()) {
-            ClassName annotationClassName = (ClassName) ClassName.get(a.getAnnotationType());
-            if (!IGNORED_ANNOTATIONS.contains(annotationClassName)) {
-                AnnotationSpec.Builder annotation = AnnotationSpec.builder(annotationClassName);
-                for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : a.getElementValues().entrySet()) {
-                    String format = (entry.getValue().getValue() instanceof String) ? "$S" : "$L";
-                    annotation.addMember(entry.getKey().getSimpleName().toString(), format, entry.getValue().getValue());
-                }
-                list.add(annotation.build());
+            if (a.getAnnotationType().asElement().getAnnotation(Qualifier.class) == null) {
+                continue; // ignore non-Qualifier annotations
             }
+
+            ClassName annotationClassName = (ClassName) ClassName.get(a.getAnnotationType());
+            AnnotationSpec.Builder annotation = AnnotationSpec.builder(annotationClassName);
+            for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : a.getElementValues().entrySet()) {
+                String format = (entry.getValue().getValue() instanceof String) ? "$S" : "$L";
+                annotation.addMember(entry.getKey().getSimpleName().toString(), format, entry.getValue().getValue());
+            }
+            list.add(annotation.build());
         }
         return list;
     }

@@ -146,8 +146,8 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         if (scoped) {
             method.addAnnotation(mScope);
         }
-        // add also Annotations (except @Override)
-        for (AnnotationSpec a : getAnnotations(e)) {
+        // add also Qualifier annotations
+        for (AnnotationSpec a : getQualifiers(e)) {
             method.addAnnotation(a);
         }
         return method;
@@ -217,8 +217,8 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
                     p.getSimpleName().toString(),
                     modifiers.toArray(new Modifier[modifiers.size()])
             );
-            // add also Annotations
-            for (AnnotationSpec a : getAnnotations(p)) {
+            // add also Qualifier annotations
+            for (AnnotationSpec a : getQualifiers(p)) {
                 param.addAnnotation(a);
             }
             method.addParameter(param.build());

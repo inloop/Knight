@@ -183,8 +183,8 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
                 .returns(field.type)
                 .addStatement("return $N", field);
 
-        // add also Annotations
-        for (AnnotationSpec a : getAnnotations(namedExtra.getElement())) {
+        // add also Qualifier annotations
+        for (AnnotationSpec a : getQualifiers(namedExtra.getElement())) {
             method.addAnnotation(a);
         }
 
