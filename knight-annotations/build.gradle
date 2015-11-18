@@ -5,6 +5,6 @@ targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
+    /* Javax Annotations (@Generated) */
     compile 'org.glassfish:javax.annotation:10.0-b28'
 }

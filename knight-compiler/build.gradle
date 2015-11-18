@@ -14,8 +14,4 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava', version: '18.0'
     testCompile group: 'com.google.truth', name: 'truth', version: '0.27'
     testCompile group: 'com.google.testing.compile', name: 'compile-testing', version: '0.7'
-
-    /* I Need to recognize Dagger annotation classes */
-    compile 'com.google.android:android:4.1.1.4'
-    compile 'com.google.dagger:dagger:2.0'
 }
