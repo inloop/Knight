@@ -14,6 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.model.Contact;
@@ -34,6 +35,8 @@ public class NewContactView
 
     @Inject
     AContactPresenter mPresenter;
+    @Inject
+    Activity mActivity;
 
     @Bind(R.id.et_contact_name)
     EditText mName;
@@ -73,6 +76,7 @@ public class NewContactView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        ButterKnife.bind(this);
         mPresenter.bindView(this);
     }
 
@@ -84,7 +88,7 @@ public class NewContactView
 
     @Override
     public void gotoBack() {
-        ((Activity) getContext()).onBackPressed();
+        mActivity.onBackPressed();
     }
 
     @Override
