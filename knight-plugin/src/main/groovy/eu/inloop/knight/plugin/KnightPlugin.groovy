@@ -30,9 +30,11 @@ public class KnightPlugin extends AWeavingPlugin {
             }
         }
         project.dependencies {
+            // Dagger
+            apt 'com.google.dagger:dagger-compiler:2.0'
             // Knight
-            compile 'eu.inloop.knight:knight:0.0.4'
-            apt 'eu.inloop.knight:knight-compiler:0.0.4'
+            compile 'eu.inloop.knight:knight:0.0.5'
+            apt 'eu.inloop.knight:knight-compiler:0.0.5'
         }
     }
 

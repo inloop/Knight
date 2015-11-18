@@ -1,1 +1,1 @@
-include ':knight', ':knight-annotations', ':knight-compiler', ':knight-plugin', ':knight-sample', ':knight-shared'
+include ':knight', ':knight-annotations', ':knight-compiler', ':knight-plugin', ':knight-sample'
