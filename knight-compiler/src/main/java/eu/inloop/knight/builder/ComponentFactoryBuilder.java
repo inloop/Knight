@@ -18,6 +18,7 @@ import eu.inloop.knight.builder.module.AppModuleBuilder;
 import eu.inloop.knight.builder.module.ScreenModuleBuilder;
 import eu.inloop.knight.core.IActivityComponent;
 import eu.inloop.knight.core.IScreenComponent;
+import eu.inloop.knight.core.StateManager;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -80,7 +81,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(parentComponentBuilder.getClassName(), appC, Modifier.FINAL)
-                .addParameter(EClass.StateManager.getName(), stateManager, Modifier.FINAL)
+                .addParameter(StateManager.class, stateManager, Modifier.FINAL)
                 .addParameter(EClass.Activity.getName(), activity, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
@@ -153,7 +154,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 .addParameter(appcBuilder.getClassName(), appC, Modifier.FINAL)
                 .addParameter(IScreenComponent.class, sc, Modifier.FINAL)
                 .addParameter(getArgClassName(), activity, Modifier.FINAL)
-                .addParameter(EClass.StateManager.getName(), stateManager, Modifier.FINAL)
+                .addParameter(StateManager.class, stateManager, Modifier.FINAL)
                 .returns(ParameterizedTypeName.get(Pair.class, IScreenComponent.class, IActivityComponent.class))
                 .addStatement("$T $N", scBuilder.getClassName(), localSc)
                 .addCode("// create Screen Component if necessary\n")

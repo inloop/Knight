@@ -1,4 +1,4 @@
-package eu.inloop.knight;
+package eu.inloop.knight.core;
 
 import android.app.Activity;
 import android.app.Application;
@@ -8,10 +8,6 @@ import android.util.Pair;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import eu.inloop.knight.core.IActivityComponent;
-import eu.inloop.knight.core.IAppComponent;
-import eu.inloop.knight.core.IScreenComponent;
 
 /**
  * Class {@link ComponentStorage}

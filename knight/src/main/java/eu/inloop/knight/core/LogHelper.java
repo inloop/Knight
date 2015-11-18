@@ -1,4 +1,4 @@
-package eu.inloop.knight;
+package eu.inloop.knight.core;
 
 import android.util.Log;
 

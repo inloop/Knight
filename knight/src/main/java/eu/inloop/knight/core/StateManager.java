@@ -1,9 +1,11 @@
-package eu.inloop.knight;
+package eu.inloop.knight.core;
 
 import android.os.Bundle;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import eu.inloop.knight.IStateful;
 
 /**
  * Class {@link StateManager} is used for managing states of screen scoped objects implementing {@link IStateful}.

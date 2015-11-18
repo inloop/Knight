@@ -12,9 +12,6 @@ import eu.inloop.knight.builder.GPN;
  */
 public enum EClass {
 
-    // Annotation classes
-    Nullable(ClassName.get("android.support.annotation", "Nullable")),
-
     // Android classes
     Context(ClassName.get("android.content", "Context")),
     Application(ClassName.get("android.app", "Application")),
@@ -27,11 +24,6 @@ public enum EClass {
     Log(ClassName.get("android.util", "Log")),
     Bundle(ClassName.get("android.os", "Bundle")),
     ActivityLifecycleCallbacks(ClassName.get("android.app.Application", "ActivityLifecycleCallbacks")),
-
-    // Knight classes
-    ComponentStorage(ClassName.get("eu.inloop.knight", "ComponentStorage")),
-    StateManager(ClassName.get("eu.inloop.knight", "StateManager")),
-    PresenterPool(ClassName.get("eu.inloop.knight", "PresenterPool")),
 
     // Dagger classes
     DaggerApplicationComponent(ClassName.get(GPN.toString(GPN.KNIGHT, GPN.DI, GPN.COMPONENTS), "DaggerApplicationComponent")),

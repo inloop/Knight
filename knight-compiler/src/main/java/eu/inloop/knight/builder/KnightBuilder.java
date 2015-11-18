@@ -12,8 +12,10 @@ import java.util.Collection;
 import javax.lang.model.element.Modifier;
 
 import eu.inloop.knight.EClass;
+import eu.inloop.knight.core.ComponentStorage;
 import eu.inloop.knight.core.IActivityComponent;
 import eu.inloop.knight.core.IScreenComponent;
+import eu.inloop.knight.core.StateManager;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -139,7 +141,7 @@ public class KnightBuilder extends BaseClassBuilder {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PROTECTED)
                 .addParameter(EClass.Activity.getName(), activity)
-                .addParameter(EClass.StateManager.getName(), stateManager)
+                .addParameter(StateManager.class, stateManager)
                 .addParameter(IScreenComponent.class, sc)
                 .returns(ParameterizedTypeName.get(Pair.class, IScreenComponent.class, IActivityComponent.class));
 
@@ -191,7 +193,7 @@ public class KnightBuilder extends BaseClassBuilder {
 
     public void setupAppComponent(ClassName appComponent, ClassName appComponentFactory) {
         // set superclass (needs generic ApplicationComponent class)
-        getBuilder().superclass(ParameterizedTypeName.get(EClass.ComponentStorage.getName(), appComponent));
+        getBuilder().superclass(ParameterizedTypeName.get(ClassName.get(ComponentStorage.class), appComponent));
         // add constructor
         addConstructor(appComponentFactory);
         // add fromApp() method

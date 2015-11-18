@@ -15,10 +15,11 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
-import eu.inloop.knight.EClass;
 import eu.inloop.knight.NamedExtra;
+import eu.inloop.knight.PresenterPool;
 import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.builder.NavigatorBuilder;
+import eu.inloop.knight.core.StateManager;
 import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
@@ -57,14 +58,14 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     @Override
     protected void addScopeSpecificPart() {
         // Application attribute
-        FieldSpec stateField = FieldSpec.builder(EClass.StateManager.getName(), FIELD_NAME_STATE_MANAGER,
+        FieldSpec stateField = FieldSpec.builder(StateManager.class, FIELD_NAME_STATE_MANAGER,
                 Modifier.PRIVATE, Modifier.FINAL).build();
         getBuilder().addField(stateField);
         // constructor
         String stateManager = "stateManager";
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(EClass.StateManager.getName(), stateManager)
+                .addParameter(StateManager.class, stateManager)
                 .addStatement("$N = $N", stateField, stateManager);
         addToConstructor(constructor);
         getBuilder().addMethod(constructor.build());
@@ -73,7 +74,7 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
     }
 
     private void addProvidesPresenterPool() {
-        ClassName className = EClass.PresenterPool.getName();
+        ClassName className = ClassName.get(PresenterPool.class);
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(createProvideMethodName(className.simpleName()))
                 .addAnnotation(Provides.class)
