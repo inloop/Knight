@@ -1,4 +1,4 @@
-package eu.inloop.knight.sample.fragment;
+package eu.inloop.knight.sample.view.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

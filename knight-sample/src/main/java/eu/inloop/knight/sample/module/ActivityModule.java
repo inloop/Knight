@@ -7,7 +7,7 @@ import com.squareup.picasso.Picasso;
 import dagger.Module;
 import dagger.Provides;
 import eu.inloop.knight.ActivityProvided;
-import eu.inloop.knight.sample.activity.ContactListActivity;
+import eu.inloop.knight.sample.view.activity.ContactListActivity;
 import eu.inloop.knight.scope.ActivityScope;
 
 /**

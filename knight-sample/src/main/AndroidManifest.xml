@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.ContactListActivity"
+            android:name=".view.activity.ContactListActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -21,11 +21,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.NewContactActivity"
+            android:name=".view.activity.NewContactActivity"
             android:label="@string/title_new_contact">
         </activity>
         <activity
-            android:name=".activity.ContactActivity">
+            android:name=".view.activity.ContactActivity">
         </activity>
     </application>
 

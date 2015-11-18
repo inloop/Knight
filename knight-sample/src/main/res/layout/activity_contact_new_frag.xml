@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/fragment_contact_new"
-        android:name="eu.inloop.knight.sample.fragment.NewContactFragment"
+        android:name="eu.inloop.knight.sample.view.fragment.NewContactFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_contact_new"/>

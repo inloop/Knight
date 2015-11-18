@@ -1,4 +1,4 @@
-package eu.inloop.knight.sample.activity;
+package eu.inloop.knight.sample.view.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import eu.inloop.knight.Extra;
 import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.sample.R;
-import eu.inloop.knight.sample.fragment.ContactFragment;
 import eu.inloop.knight.sample.model.Contact;
+import eu.inloop.knight.sample.view.fragment.ContactFragment;
 
 /**
  * Class {@link ContactActivity}.

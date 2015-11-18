@@ -1,4 +1,4 @@
-package eu.inloop.knight.sample.activity;
+package eu.inloop.knight.sample.view.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

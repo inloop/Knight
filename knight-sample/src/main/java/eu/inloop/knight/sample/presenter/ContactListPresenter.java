@@ -16,7 +16,6 @@ import eu.inloop.knight.As;
 import eu.inloop.knight.BasePresenter;
 import eu.inloop.knight.ScreenProvided;
 import eu.inloop.knight.sample.R;
-import eu.inloop.knight.sample.activity.ContactListActivity;
 import eu.inloop.knight.sample.bus.ContactListEvent;
 import eu.inloop.knight.sample.bus.NewContactEvent;
 import eu.inloop.knight.sample.model.Contact;
@@ -26,6 +25,7 @@ import eu.inloop.knight.sample.model.api.ApiError;
 import eu.inloop.knight.sample.model.api.IApi;
 import eu.inloop.knight.sample.util.NetUtils;
 import eu.inloop.knight.sample.view.IContactListView;
+import eu.inloop.knight.sample.view.activity.ContactListActivity;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

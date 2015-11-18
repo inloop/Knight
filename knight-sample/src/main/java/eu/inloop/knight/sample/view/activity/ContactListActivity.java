@@ -1,8 +1,8 @@
-package eu.inloop.knight.sample.activity;
+package eu.inloop.knight.sample.view.activity;
 
 import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.sample.R;
-import eu.inloop.knight.sample.fragment.ContactListFragment;
+import eu.inloop.knight.sample.view.fragment.ContactListFragment;
 
 @KnightActivity(
         ContactListFragment.class

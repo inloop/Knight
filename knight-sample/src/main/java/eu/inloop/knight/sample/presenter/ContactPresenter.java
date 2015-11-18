@@ -12,8 +12,6 @@ import javax.inject.Singleton;
 import de.greenrobot.event.EventBus;
 import eu.inloop.knight.As;
 import eu.inloop.knight.ScreenProvided;
-import eu.inloop.knight.sample.activity.ContactActivity;
-import eu.inloop.knight.sample.activity.NewContactActivity;
 import eu.inloop.knight.sample.bus.NewContactEvent;
 import eu.inloop.knight.sample.model.Contact;
 import eu.inloop.knight.sample.model.ContactError;
@@ -23,6 +21,8 @@ import eu.inloop.knight.sample.model.api.ApiCallback;
 import eu.inloop.knight.sample.model.api.ApiError;
 import eu.inloop.knight.sample.model.api.IApi;
 import eu.inloop.knight.sample.view.IContactView;
+import eu.inloop.knight.sample.view.activity.ContactActivity;
+import eu.inloop.knight.sample.view.activity.NewContactActivity;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

@@ -1,12 +1,12 @@
-package eu.inloop.knight.sample.activity;
+package eu.inloop.knight.sample.view.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 
 import eu.inloop.knight.KnightActivity;
 import eu.inloop.knight.sample.R;
-import eu.inloop.knight.sample.fragment.NewContactFragment;
-import eu.inloop.knight.sample.fragment.NewContactView;
+import eu.inloop.knight.sample.view.fragment.NewContactFragment;
+import eu.inloop.knight.sample.view.fragment.NewContactView;
 
 /**
  * Class {@link NewContactActivity}.
