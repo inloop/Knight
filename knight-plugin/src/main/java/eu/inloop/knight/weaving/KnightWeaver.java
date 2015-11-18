@@ -109,16 +109,34 @@ public class KnightWeaver extends AWeaver {
         }
     }
 
+    /**
+     * Weaves into Application subclass
+     */
     private void weaveKnightApp(CtClass classToTransform) throws Exception {
         String body = String.format("{ %s.%s(this); }", Class.INJECTOR, Method.INIT);
         log("Weaved: %s", body);
         mAfterBurner.beforeOverrideMethod(classToTransform, Method.ON_CREATE, body);
     }
 
+    /**
+     * Weaves into Service subclass
+     */
     private void weaveService(CtClass classToTransform) throws Exception {
-        // TODO
+        String field = String.format("private boolean %s = false;", Field.INJECTED);
+        log("Weaved: %s", field);
+        classToTransform.addField(CtField.make(field, classToTransform));
+
+        final String body = String.format("{ if (!%s) { %s.%s(this, null); %s = true; } }",
+                Field.INJECTED, Class.INJECTOR, Method.INJECT, Field.INJECTED);
+        log("Weaved: %s", body);
+
+        // weave into constructors
+        mAfterBurner.insertConstructor(new MyInsertableConstructor(classToTransform, body));
     }
 
+    /**
+     * Weaves into Fragment subclass
+     */
     private void weaveFragment(CtClass classToTransform) throws Exception {
         String body = String.format("{ %s.%s(this, this.getContext()); }", Class.INJECTOR, Method.INJECT);
         log("Weaved: %s", body);
@@ -127,6 +145,9 @@ public class KnightWeaver extends AWeaver {
         mAfterBurner.beforeOverrideMethod(classToTransform, Method.ON_ATTACH, body);
     }
 
+    /**
+     * Weaves into View subclass
+     */
     private void weaveView(CtClass classToTransform) throws Exception {
         String field = String.format("private boolean %s = false;", Field.INJECTED);
         log("Weaved: %s", field);
@@ -137,17 +158,7 @@ public class KnightWeaver extends AWeaver {
         log("Weaved: %s", body);
 
         // weave into constructors
-        mAfterBurner.insertConstructor(new InsertableConstructor(classToTransform) {
-            @Override
-            public String getConstructorBody(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
-                return body;
-            }
-
-            @Override
-            public boolean acceptParameters(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
-                return true;
-            }
-        });
+        mAfterBurner.insertConstructor(new MyInsertableConstructor(classToTransform, body));
     }
 
     private boolean hasInjectField(CtClass candidateClass) {
@@ -155,6 +166,26 @@ public class KnightWeaver extends AWeaver {
             if (field.hasAnnotation(Inject.class)) return true;
         }
         return false;
+    }
+
+    private static class MyInsertableConstructor extends InsertableConstructor {
+
+        private String mBody;
+
+        public MyInsertableConstructor(CtClass classToInsertInto, String body) {
+            super(classToInsertInto);
+            this.mBody = body;
+        }
+
+        @Override
+        public String getConstructorBody(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
+            return mBody;
+        }
+
+        @Override
+        public boolean acceptParameters(CtClass[] paramClasses) throws AfterBurnerImpossibleException {
+            return true; // into all
+        }
     }
 
 }
