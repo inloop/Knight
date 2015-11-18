@@ -50,6 +50,7 @@ public class KnightBuilder extends BaseClassBuilder {
 
     @Override
     public void start() throws ProcessorError {
+        super.start();
         getBuilder().addModifiers(Modifier.FINAL, Modifier.PUBLIC);
         addInitAndInstanceMethods();
     }

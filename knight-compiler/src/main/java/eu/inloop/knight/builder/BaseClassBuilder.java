@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Generated;
 import javax.annotation.processing.Filer;
 import javax.inject.Qualifier;
 import javax.lang.model.element.AnnotationMirror;
@@ -17,6 +18,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 
+import eu.inloop.knight.KnightProcessor;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -135,6 +137,12 @@ public abstract class BaseClassBuilder {
      * Called in the constructor.
      */
     public void start() throws ProcessorError {
+        // add @Generated
+        getBuilder().addAnnotation(
+                AnnotationSpec.builder(Generated.class)
+                        .addMember("value", "$S", KnightProcessor.class.getName())
+                        .build()
+        );
     }
 
     /**

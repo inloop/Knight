@@ -38,6 +38,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
 
     @Override
     public void start() throws ProcessorError {
+        super.start();
         getBuilder().addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
