@@ -2,6 +2,7 @@ package eu.inloop.knight;
 
 import com.squareup.javapoet.ClassName;
 
+import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.builder.GPN;
 
 /**
@@ -26,7 +27,7 @@ public enum EClass {
     ActivityLifecycleCallbacks(ClassName.get("android.app.Application", "ActivityLifecycleCallbacks")),
 
     // Dagger classes
-    DaggerApplicationComponent(ClassName.get(GPN.toString(GPN.KNIGHT, GPN.DI, GPN.COMPONENTS), "DaggerApplicationComponent")),
+    DaggerApplicationComponent(ClassName.get(GPN.toString(GPN.KNIGHT, GPN.DI, GPN.COMPONENTS), String.format("Dagger%s", GCN.APPLICATION_COMPONENT.getName()))),
     ;
 
     private ClassName mClassName;

@@ -116,9 +116,9 @@ public abstract class BaseClassBuilder {
             // build CLASS name
             String name;
             if (mGenClassNameArg == null) {
-                name = mGenClassName.getmName();
+                name = mGenClassName.getName();
             } else {
-                name = String.format(mGenClassName.getmName(), mGenClassNameArg.simpleName());
+                name = String.format(mGenClassName.getName(), mGenClassNameArg.simpleName());
             }
             // save
             mClassName = ClassName.get(GPN.toString(mGenPackageName), name);

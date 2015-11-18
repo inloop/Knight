@@ -2,14 +2,19 @@ package eu.inloop.knight;
 
 import com.google.common.base.Joiner;
 import com.google.common.truth.Truth;
+import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
 import com.google.testing.compile.JavaSourcesSubjectFactory;
+
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.tools.JavaFileObject;
+
+import dagger.internal.codegen.ComponentProcessor;
 
 /**
  * Class {@link KnightTest}.
@@ -19,81 +24,30 @@ import javax.tools.JavaFileObject;
  */
 public class KnightTest {
 
-    private JavaFileObject componentStorage() {
-        return JavaFileObjects.forSourceString("eu.inloop.knight.ComponentStorage",
-                Joiner.on('\n').join(
-                        "package eu.inloop.knight;",
-                        "",
-                        "import android.app.Application.ActivityLifecycleCallbacks;",
-                        "import android.app.Activity;",
-                        "import android.os.Bundle;",
-                        "import android.util.Pair;",
-                        "",
-                        "import eu.inloop.knight.core.IActivityComponent;",
-                        "import eu.inloop.knight.core.IAppComponent;",
-                        "import eu.inloop.knight.core.IScreenComponent;",
-                        "",
-                        "public abstract class ComponentStorage<T> implements ActivityLifecycleCallbacks {",
-                        "",
-                        "   public ComponentStorage(T t) {}",
-                        "",
-                        "   protected final T getApplicationComponent() {",
-                        "        return null;",
-                        "    }",
-                        "",
-                        "    protected final IActivityComponent getActivityComponent(Activity activity) {",
-                        "        return null;",
-                        "    }",
-                        "",
-                        "    protected abstract boolean isScoped(Class activityClass);",
-                        "",
-                        "    protected abstract Pair<IScreenComponent, IActivityComponent> buildComponentsAndInject(Activity activity, StateManager manager, IScreenComponent sc);",
-                        "",
-                        "    @Override",
-                        "    public final void onActivityCreated(Activity activity, Bundle bundle) {",
-                        "        // do nothing",
-                        "    }",
-                        "",
-                        "    @Override",
-                        "    public final void onActivityDestroyed(Activity activity) {",
-                        "        // do nothing",
-                        "    }",
-                        "",
-                        "    @Override",
-                        "    public final void onActivitySaveInstanceState(Activity activity, Bundle bundle) {",
-                        "        // do nothing",
-                        "    }",
-                        "",
-                        "    @Override",
-                        "    public final void onActivityStarted(Activity activity) {",
-                        "        // do nothing",
-                        "    }",
-                        "",
-                        "    @Override",
-                        "    public final void onActivityResumed(Activity activity) {",
-                        "        // do nothing",
-                        "    }",
-                        "",
-                        "    @Override",
-                        "    public final void onActivityPaused(Activity activity) {",
-                        "        // do nothing",
-                        "    }",
-                        "",
-                        "    @Override",
-                        "    public final void onActivityStopped(Activity activity) {",
-                        "        // do nothing",
-                        "    }",
-                        "}"
-                )
-        );
+    private Iterable<JavaFileObject> files(JavaFileObject... f) {
+        List<JavaFileObject> files = new ArrayList<>();
+        files.addAll(Arrays.asList(f));
+        return files;
     }
 
-    private JavaFileObject libClass(String className) {
-        return JavaFileObjects.forSourceString(String.format("eu.inloop.knight.%s", className),
+    private CompileTester assertFiles(JavaFileObject... f) {
+        return Truth.assert_()
+                .about(JavaSourcesSubjectFactory.javaSources())
+                .that(files(f))
+                .processedWith(new ComponentProcessor(), new KnightProcessor());
+    }
+
+    private JavaFileObject exampleApp() {
+        return JavaFileObjects.forSourceString("com.example.ExampleApp",
                 Joiner.on('\n').join(
-                        "package eu.inloop.knight;",
+                        "package com.example;",
                         "",
-                        String.format("public class %s {}", className)
+                        "import android.app.Application;",
+                        "import eu.inloop.knight.KnightApp;",
+                        "",
+                        "@KnightApp",
+                        "public class ExampleApp extends Application {",
+                        "}"
                 )
         );
     }
@@ -105,56 +59,45 @@ public class KnightTest {
                         "",
                         "import android.app.Activity;",
                         "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.With;",
                         "",
-                        "@KnightActivity({",
-                        "       @With(name = \"a\", type = String.class)",
-                        "})",
+                        "@KnightActivity",
                         "public class ExampleActivity extends Activity {",
                         "}"
                 )
         );
     }
 
-    private Iterable<JavaFileObject> files(JavaFileObject... f) {
-        List<JavaFileObject> files = new ArrayList<>();
-        files.add(componentStorage());
-        files.add(libClass("StateManager"));
-        files.add(exampleActivity());
-        files.addAll(Arrays.asList(f));
-        return files;
-    }
-
-    //@Test
+    @Test
     public void knightClass() {
-        JavaFileObject knightFile = JavaFileObjects.forSourceString("the.knight.Knight",
+        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.I",
                 Joiner.on('\n').join(
                         "package the.knight;",
                         "",
-                        "public final class Knight {",
+                        "import android.content.Context;",
+                        "import android.content.Intent;",
+                        "import com.example.ExampleActivity;",
+                        "import javax.annotation.Generated;",
                         "",
-                        "}"
-                )
-        );
-        JavaFileObject appComponentFile = JavaFileObjects.forSourceString("the.knight.di.module",
-                Joiner.on('\n').join(
-                        "package the.knight.di.component;",
+                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        "public final class I {",
                         "",
-                        "public final class ApplicationComponent {",
+                        "  public static Intent forExampleActivity(Context context) {",
+                        "    Intent intent = new Intent(context, ExampleActivity.class);",
+                        "    return intent;",
+                        "  }",
+                        "",
+                        "  public static void startExampleActivity(Context context) {",
+                        "    context.startActivity(forExampleActivity(context));",
+                        "  }",
                         "",
                         "}"
                 )
         );
 
-        Truth.assert_()
-                .about(JavaSourcesSubjectFactory.javaSources())
-                .that(files())
-                .processedWith(new KnightProcessor())
+        assertFiles(exampleApp(), exampleActivity())
                 .compilesWithoutError()
                 .and()
-                .generatesSources(knightFile)
-                .and()
-                .generatesSources(appComponentFile);
+                .generatesSources(navigator);
     }
 
 }
