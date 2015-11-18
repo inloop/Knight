@@ -17,16 +17,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({CONSTRUCTOR, METHOD, TYPE})
 @Retention(RUNTIME)
 public @interface AppProvided {
-
-    /**
-     * <p>
-     * True if the same instance should be provided during the life of specified scope. (Like Singleton)
-     * </p>
-     * <p>
-     * <b> NOTE: </b>
-     * Default value is {@code false}.
-     * </p>
-     */
-    boolean scoped() default false;
-
 }

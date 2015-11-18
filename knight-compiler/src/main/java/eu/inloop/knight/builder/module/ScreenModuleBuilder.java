@@ -11,14 +11,12 @@ import com.squareup.javapoet.TypeName;
 
 import java.util.List;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
 import eu.inloop.knight.EClass;
 import eu.inloop.knight.NamedExtra;
-import eu.inloop.knight.ScreenProvided;
 import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.builder.NavigatorBuilder;
 import eu.inloop.knight.scope.ScreenScope;
@@ -98,11 +96,6 @@ public class ScreenModuleBuilder extends BaseModuleBuilder {
         String activity = "activity";
         constructor.addParameter(Activity.class, activity)
                 .addStatement("$N($N)", METHOD_NAME_INIT, activity);
-    }
-
-    @Override
-    protected boolean isScoped(Element e) {
-        return e.getAnnotation(ScreenProvided.class).scoped();
     }
 
     @Override

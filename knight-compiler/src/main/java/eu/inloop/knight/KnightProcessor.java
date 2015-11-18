@@ -159,7 +159,7 @@ public class KnightProcessor extends AbstractProcessor {
                 List<ClassName> in = getParamClasses(e.getAnnotation(ScreenProvided.class), new ProcessorUtils.IGetter<ScreenProvided, Class<?>[]>() {
                     @Override
                     public Class<?>[] get(ScreenProvided annotation) {
-                        return annotation.in();
+                        return annotation.value();
                     }
                 });
                 ActivityBuilders activityBuilders;
@@ -186,7 +186,7 @@ public class KnightProcessor extends AbstractProcessor {
                 List<ClassName> in = getParamClasses(e.getAnnotation(ActivityProvided.class), new ProcessorUtils.IGetter<ActivityProvided, Class<?>[]>() {
                     @Override
                     public Class<?>[] get(ActivityProvided annotation) {
-                        return annotation.in();
+                        return annotation.value();
                     }
                 });
                 ActivityBuilders activityBuilders;

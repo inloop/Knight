@@ -27,17 +27,6 @@ public @interface ScreenProvided {
      * Each of these Activities must be annotated with @{@link KnightActivity}.
      * </p>
      */
-    Class<?>[] in();
-
-    /**
-     * <p>
-     * True if the same instance should be provided during the life of specified scope. (Like Singleton)
-     * </p>
-     * <p>
-     * <b> NOTE: </b>
-     * Default value is {@code false}.
-     * </p>
-     */
-    boolean scoped() default false;
+    Class<?>[] value();
 
 }

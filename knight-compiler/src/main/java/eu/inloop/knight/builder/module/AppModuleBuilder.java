@@ -3,11 +3,9 @@ package eu.inloop.knight.builder.module;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
-import eu.inloop.knight.AppProvided;
 import eu.inloop.knight.EClass;
 import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.scope.AppScope;
@@ -52,11 +50,6 @@ public class AppModuleBuilder extends BaseModuleBuilder {
                 .returns(EClass.Application.getName())
                 .build();
         getBuilder().addMethod(providesApp);
-    }
-
-    @Override
-    protected boolean isScoped(Element e) {
-        return e.getAnnotation(AppProvided.class).scoped();
     }
 
 }

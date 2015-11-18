@@ -4,11 +4,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
-import eu.inloop.knight.ActivityProvided;
 import eu.inloop.knight.EClass;
 import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.scope.ActivityScope;
@@ -55,11 +53,6 @@ public class ActivityModuleBuilder extends BaseModuleBuilder {
                 .returns(EClass.Activity.getName())
                 .build();
         getBuilder().addMethod(providesActivity);
-    }
-
-    @Override
-    protected boolean isScoped(Element e) {
-        return e.getAnnotation(ActivityProvided.class).scoped();
     }
 
 }

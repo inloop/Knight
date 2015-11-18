@@ -16,9 +16,9 @@ import eu.inloop.knight.scope.ActivityScope;
  * @author FrantisekGazo
  * @version 2015-10-24
  */
-@ActivityProvided(
-        in = ContactListActivity.class
-)
+@ActivityProvided({
+        ContactListActivity.class
+})
 @Module
 public class ActivityModule {
 

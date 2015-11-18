@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Singleton;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -251,6 +252,8 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
      *
      * @param e Element.
      */
-    protected abstract boolean isScoped(Element e);
+    protected boolean isScoped(Element e) {
+        return e.getAnnotation(Singleton.class) != null;
+    }
 
 }

@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Singleton;
+
 import de.greenrobot.event.EventBus;
 import eu.inloop.knight.As;
 import eu.inloop.knight.ScreenProvided;
@@ -46,8 +48,9 @@ public class ContactPresenter
     /**
      * Constructor
      */
+    @ScreenProvided(ContactActivity.class)
+    @Singleton
     @As(AContactPresenter.class)
-    @ScreenProvided(in = ContactActivity.class, scoped = true)
     public ContactPresenter(IApi api, Contact contact) {
         this(api, contact, false);
     }
@@ -55,8 +58,9 @@ public class ContactPresenter
     /**
      * Constructor
      */
+    @ScreenProvided(NewContactActivity.class)
+    @Singleton
     @As(AContactPresenter.class)
-    @ScreenProvided(in = NewContactActivity.class, scoped = true)
     public ContactPresenter(IApi api, EventBus eventBus) {
         this(api, null, true);
         mEventBus = eventBus;

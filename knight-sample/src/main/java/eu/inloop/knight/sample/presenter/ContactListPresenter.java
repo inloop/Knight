@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Singleton;
+
 import de.greenrobot.event.EventBus;
 import eu.inloop.knight.As;
 import eu.inloop.knight.BasePresenter;
@@ -47,8 +49,9 @@ public class ContactListPresenter
     /**
      * Constructor
      */
+    @ScreenProvided(ContactListActivity.class)
+    @Singleton
     @As(IContactListPresenter.class)
-    @ScreenProvided(in = ContactListActivity.class, scoped = true)
     public ContactListPresenter(Application app, NetUtils utils, IApi api, EventBus eventBus) {
         mApp = app;
         mNetUtils = utils;

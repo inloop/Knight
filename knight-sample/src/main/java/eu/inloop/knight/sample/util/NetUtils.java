@@ -5,6 +5,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import javax.inject.Singleton;
+
 import eu.inloop.knight.AppProvided;
 
 /**
@@ -17,7 +19,8 @@ public class NetUtils {
 
     private Context mAppContext;
 
-    @AppProvided(scoped = true)
+    @AppProvided
+    @Singleton
     public NetUtils(Application app) {
         this.mAppContext = app;
     }
