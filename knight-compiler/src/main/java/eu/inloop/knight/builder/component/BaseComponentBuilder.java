@@ -39,6 +39,7 @@ public abstract class BaseComponentBuilder extends BaseClassBuilder {
 
     public static final String METHOD_NAME_INJECT = "inject";
     public static final String METHOD_NAME_PLUS = "plus";
+    private static final String PARAM_NAME_MODULE = "module%d";
 
     private final Class<? extends Annotation> mScope;
     private final List<ClassName> mModules = new ArrayList<>();
@@ -151,8 +152,9 @@ public abstract class BaseComponentBuilder extends BaseClassBuilder {
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_PLUS)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(componentBuilder.getClassName());
+        int i = 1;
         for (ClassName module : componentBuilder.getModules()) {
-            method.addParameter(module, ProcessorUtils.getParamName(module));
+            method.addParameter(module, String.format(PARAM_NAME_MODULE, i++));
         }
         getBuilder().addMethod(method.build());
     }

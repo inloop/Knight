@@ -49,7 +49,6 @@ public class ApplicationComponentTest extends BaseTest {
                 .generatesSources(navigator);
     }
 
-    // FIXME : fails because plus() method params are not called moduleX
     @Test
     public void oneActivity() {
         JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
@@ -100,7 +99,6 @@ public class ApplicationComponentTest extends BaseTest {
                 .generatesSources(navigator);
     }
 
-    // FIXME : fails because plus() method params are not called moduleX
     @Test
     public void oneActivityWithExtraModule() {
         JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
