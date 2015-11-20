@@ -1,10 +1,15 @@
 package eu.inloop.knight;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+
 import com.google.common.base.Joiner;
 import com.google.testing.compile.JavaFileObjects;
 
 import org.junit.Test;
 
+import javax.annotation.Generated;
 import javax.tools.JavaFileObject;
 
 /**
@@ -21,8 +26,10 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -30,16 +37,18 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.I",
+        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
                 Joiner.on('\n').join(
-                        "package the.knight;",
+                        PACKAGE_KNIGHT,
                         "",
-                        "import android.content.Context;",
-                        "import android.content.Intent;",
-                        "import com.example.MainActivity;",
-                        "import javax.annotation.Generated;",
+                        importClass(
+                                "com.example.MainActivity",
+                                Intent.class,
+                                Context.class,
+                                Generated.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "public final class I {",
                         "",
                         "  public static Intent forMainActivity(Context context) {",
@@ -55,7 +64,7 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity)
+        assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
                 .and()
                 .generatesSources(navigator);
@@ -67,9 +76,11 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.Extra;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class,
+                                Extra.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -81,16 +92,18 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.I",
+        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
                 Joiner.on('\n').join(
-                        "package the.knight;",
+                        PACKAGE_KNIGHT,
                         "",
-                        "import android.content.Context;",
-                        "import android.content.Intent;",
-                        "import com.example.MainActivity;",
-                        "import javax.annotation.Generated;",
+                        importClass(
+                                "com.example.MainActivity",
+                                Intent.class,
+                                Context.class,
+                                Generated.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "public final class I {",
                         "",
                         "  public static Intent forMainActivity(Context context, int number) {",
@@ -107,7 +120,7 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity)
+        assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
                 .and()
                 .generatesSources(navigator);
@@ -119,9 +132,11 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.Extra;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class,
+                                Extra.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -133,17 +148,19 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.I",
+        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
                 Joiner.on('\n').join(
-                        "package the.knight;",
+                        PACKAGE_KNIGHT,
                         "",
-                        "import android.content.Context;",
-                        "import android.content.Intent;",
-                        "import com.example.MainActivity;",
-                        "import java.lang.String;",
-                        "import javax.annotation.Generated;",
+                        importClass(
+                                "com.example.MainActivity",
+                                Intent.class,
+                                Context.class,
+                                Generated.class,
+                                String.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "public final class I {",
                         "",
                         "  public static Intent forMainActivity(Context context, String mText) {",
@@ -160,7 +177,7 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity)
+        assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
                 .and()
                 .generatesSources(navigator);
@@ -172,9 +189,11 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.Extra;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class,
+                                Extra.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -186,17 +205,19 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.I",
+        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
                 Joiner.on('\n').join(
-                        "package the.knight;",
+                        PACKAGE_KNIGHT,
                         "",
-                        "import android.content.Context;",
-                        "import android.content.Intent;",
-                        "import com.example.MainActivity;",
-                        "import java.lang.Double;",
-                        "import javax.annotation.Generated;",
+                        importClass(
+                                "com.example.MainActivity",
+                                Intent.class,
+                                Context.class,
+                                Generated.class,
+                                Double.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "public final class I {",
                         "",
                         "  public static Intent forMainActivity(Context context, Double somethingElse) {",
@@ -213,7 +234,7 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity)
+        assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
                 .and()
                 .generatesSources(navigator);
@@ -225,9 +246,11 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.Extra;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class,
+                                Extra.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -245,9 +268,11 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.Extra;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class,
+                                Extra.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class SecondActivity extends Activity {",
@@ -259,19 +284,21 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.I",
+        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
                 Joiner.on('\n').join(
-                        "package the.knight;",
+                        PACKAGE_KNIGHT,
                         "",
-                        "import android.content.Context;",
-                        "import android.content.Intent;",
-                        "import com.example.MainActivity;",
-                        "import com.example.SecondActivity;",
-                        "import java.lang.Double;",
-                        "import java.lang.Float;",
-                        "import javax.annotation.Generated;",
+                        importClass(
+                                "com.example.MainActivity",
+                                "com.example.SecondActivity",
+                                Intent.class,
+                                Context.class,
+                                Generated.class,
+                                Double.class,
+                                Float.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "public final class I {",
                         "",
                         "  public static Intent forMainActivity(Context context, Double number, Float mSomething) {",
@@ -299,7 +326,7 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity, secondActivity)
+        assertFiles(EMPTY_KNIGHT_APP, activity, secondActivity)
                 .compilesWithoutError()
                 .and()
                 .generatesSources(navigator);
@@ -311,9 +338,11 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.Extra;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class,
+                                Extra.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -331,9 +360,11 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
-                        "import eu.inloop.knight.Extra;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class,
+                                Extra.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class SecondActivity extends Activity {",
@@ -348,8 +379,10 @@ public class NavigatorTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class ThirdActivity extends Activity {",
@@ -357,20 +390,22 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.I",
+        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
                 Joiner.on('\n').join(
-                        "package the.knight;",
+                        PACKAGE_KNIGHT,
                         "",
-                        "import android.content.Context;",
-                        "import android.content.Intent;",
-                        "import com.example.MainActivity;",
-                        "import com.example.SecondActivity;",
-                        "import com.example.ThirdActivity;",
-                        "import java.lang.Double;",
-                        "import java.lang.Float;",
-                        "import javax.annotation.Generated;",
+                        importClass(
+                                "com.example.MainActivity",
+                                "com.example.SecondActivity",
+                                "com.example.ThirdActivity",
+                                Intent.class,
+                                Context.class,
+                                Generated.class,
+                                Double.class,
+                                Float.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "public final class I {",
                         "",
                         "  public static Intent forMainActivity(Context context, Double number, Float mSomething) {",
@@ -407,7 +442,7 @@ public class NavigatorTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity, secondActivity, thirdActivity)
+        assertFiles(EMPTY_KNIGHT_APP, activity, secondActivity, thirdActivity)
                 .compilesWithoutError()
                 .and()
                 .generatesSources(navigator);

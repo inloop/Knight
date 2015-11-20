@@ -1,11 +1,19 @@
 package eu.inloop.knight;
 
+import android.app.Activity;
+
 import com.google.common.base.Joiner;
 import com.google.testing.compile.JavaFileObjects;
 
 import org.junit.Test;
 
+import javax.annotation.Generated;
 import javax.tools.JavaFileObject;
+
+import dagger.Component;
+import dagger.Module;
+import eu.inloop.knight.core.IAppComponent;
+import eu.inloop.knight.scope.AppScope;
 
 /**
  * Class {@link ApplicationComponentTest}
@@ -17,18 +25,20 @@ public class ApplicationComponentTest extends BaseTest {
 
     @Test
     public void noActivity() {
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.di.component.ApplicationComponent",
+        JavaFileObject component = JavaFileObjects.forSourceString(KNIGHT_COMPONENT + "ApplicationComponent",
                 Joiner.on('\n').join(
-                        "package the.knight.di.component;",
+                        PACKAGE_KNIGHT_COMPONENT,
                         "",
-                        "import com.example.TestApp;",
-                        "import dagger.Component;",
-                        "import eu.inloop.knight.core.IAppComponent;",
-                        "import eu.inloop.knight.scope.AppScope;",
-                        "import javax.annotation.Generated;",
-                        "import the.knight.di.module.ApplicationModule;",
+                        importClass(
+                                "com.example.TestApp",
+                                KNIGHT_MODULE + "ApplicationModule",
+                                Component.class,
+                                IAppComponent.class,
+                                AppScope.class,
+                                Generated.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "@AppScope",
                         "@Component(",
                         "   modules = {",
@@ -43,10 +53,10 @@ public class ApplicationComponentTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp())
+        assertFiles(EMPTY_KNIGHT_APP)
                 .compilesWithoutError()
                 .and()
-                .generatesSources(navigator);
+                .generatesSources(component);
     }
 
     @Test
@@ -55,8 +65,10 @@ public class ApplicationComponentTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -64,19 +76,21 @@ public class ApplicationComponentTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.di.component.ApplicationComponent",
+        JavaFileObject component = JavaFileObjects.forSourceString(KNIGHT_COMPONENT + "ApplicationComponent",
                 Joiner.on('\n').join(
-                        "package the.knight.di.component;",
+                        PACKAGE_KNIGHT_COMPONENT,
                         "",
-                        "import com.example.TestApp;",
-                        "import dagger.Component;",
-                        "import eu.inloop.knight.core.IAppComponent;",
-                        "import eu.inloop.knight.scope.AppScope;",
-                        "import javax.annotation.Generated;",
-                        "import the.knight.di.module.ApplicationModule;",
-                        "import the.knight.di.module.ScreenModuleForMainActivity;",
+                        importClass(
+                                "com.example.TestApp",
+                                KNIGHT_MODULE + "ApplicationModule",
+                                KNIGHT_MODULE + "ScreenModuleForMainActivity",
+                                Component.class,
+                                IAppComponent.class,
+                                AppScope.class,
+                                Generated.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "@AppScope",
                         "@Component(",
                         "   modules = {",
@@ -93,10 +107,10 @@ public class ApplicationComponentTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity)
+        assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
                 .and()
-                .generatesSources(navigator);
+                .generatesSources(component);
     }
 
     @Test
@@ -105,8 +119,10 @@ public class ApplicationComponentTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import android.app.Activity;",
-                        "import eu.inloop.knight.KnightActivity;",
+                        importClass(
+                                Activity.class,
+                                KnightActivity.class
+                        ),
                         "",
                         "@KnightActivity",
                         "public class MainActivity extends Activity {",
@@ -117,8 +133,10 @@ public class ApplicationComponentTest extends BaseTest {
                 Joiner.on('\n').join(
                         "package com.example;",
                         "",
-                        "import dagger.Module;",
-                        "import eu.inloop.knight.ScreenProvided;",
+                        importClass(
+                                Module.class,
+                                ScreenProvided.class
+                        ),
                         "",
                         "@ScreenProvided(MainActivity.class)",
                         "@Module",
@@ -127,20 +145,22 @@ public class ApplicationComponentTest extends BaseTest {
                 )
         );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString("the.knight.di.component.ApplicationComponent",
+        JavaFileObject component = JavaFileObjects.forSourceString(KNIGHT_COMPONENT + "ApplicationComponent",
                 Joiner.on('\n').join(
-                        "package the.knight.di.component;",
+                        PACKAGE_KNIGHT_COMPONENT,
                         "",
-                        "import com.example.ScreenModule;",
-                        "import com.example.TestApp;",
-                        "import dagger.Component;",
-                        "import eu.inloop.knight.core.IAppComponent;",
-                        "import eu.inloop.knight.scope.AppScope;",
-                        "import javax.annotation.Generated;",
-                        "import the.knight.di.module.ApplicationModule;",
-                        "import the.knight.di.module.ScreenModuleForMainActivity;",
+                        importClass(
+                                "com.example.ScreenModule",
+                                "com.example.TestApp",
+                                KNIGHT_MODULE + "ApplicationModule",
+                                KNIGHT_MODULE + "ScreenModuleForMainActivity",
+                                Component.class,
+                                IAppComponent.class,
+                                AppScope.class,
+                                Generated.class
+                        ),
                         "",
-                        "@Generated(\"eu.inloop.knight.KnightProcessor\")",
+                        GENERATED,
                         "@AppScope",
                         "@Component(",
                         "   modules = {",
@@ -157,10 +177,10 @@ public class ApplicationComponentTest extends BaseTest {
                 )
         );
 
-        assertFiles(emptyKnightApp(), activity, module)
+        assertFiles(EMPTY_KNIGHT_APP, activity, module)
                 .compilesWithoutError()
                 .and()
-                .generatesSources(navigator);
+                .generatesSources(component);
     }
 
 }
