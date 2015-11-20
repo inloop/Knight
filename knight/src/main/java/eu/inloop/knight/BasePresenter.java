@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Class {@link BasePresenter}
  *
@@ -12,7 +14,8 @@ import android.support.annotation.Nullable;
  */
 public abstract class BasePresenter<V extends IView> implements IPresenter<V> {
 
-    private V mView;
+    // weak reference in case somebody forgets to call releaseView()
+    private WeakReference<V> mView;
 
     @Override
     public void onCreate(@Nullable Bundle savedState) {
@@ -34,7 +37,7 @@ public abstract class BasePresenter<V extends IView> implements IPresenter<V> {
 
     @Override
     public final void bindView(@NonNull V view) {
-        mView = view;
+        mView = new WeakReference<>(view);
         onBindView(view);
     }
 
@@ -46,7 +49,7 @@ public abstract class BasePresenter<V extends IView> implements IPresenter<V> {
 
     @Override
     public V getView() {
-        return mView;
+        return (mView != null) ? mView.get() : null;
     }
 
 }
