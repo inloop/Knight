@@ -2,18 +2,17 @@ package eu.inloop.knight;
 
 import android.app.Application;
 
-import com.google.common.base.Joiner;
-import com.google.testing.compile.JavaFileObjects;
-
 import org.junit.Test;
 
-import javax.annotation.Generated;
 import javax.inject.Singleton;
 import javax.tools.JavaFileObject;
 
 import dagger.Module;
 import dagger.Provides;
 import eu.inloop.knight.scope.AppScope;
+
+import static eu.inloop.knight.util.File.file;
+import static eu.inloop.knight.util.File.generatedFile;
 
 /**
  * Class {@link ApplicationModuleTest}
@@ -25,24 +24,19 @@ public class ApplicationModuleTest extends BaseTest {
 
     @Test
     public void noProvided() {
-        JavaFileObject module = JavaFileObjects.forSourceString(KNIGHT_MODULE + "ApplicationModule",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT_MODULE,
-                        "",
-                        importClass(
-                                Application.class,
-                                Provides.class,
-                                Module.class,
-                                Generated.class
-                        ),
-                        "",
-                        GENERATED,
+        JavaFileObject module = generatedFile(P_KNIGHT_MODULE, "ApplicationModule")
+                .imports(
+                        Application.class,
+                        Provides.class,
+                        Module.class
+                )
+                .body(
                         "@Module",
-                        "public final class ApplicationModule {",
+                        "public final class $T {",
                         "",
                         "   private final Application mApplication;",
                         "",
-                        "   public ApplicationModule(Application application) {",
+                        "   public $T(Application application) {",
                         "       mApplication = application;",
                         "   }",
                         "",
@@ -52,8 +46,7 @@ public class ApplicationModuleTest extends BaseTest {
                         "   }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP)
                 .compilesWithoutError()
@@ -63,46 +56,37 @@ public class ApplicationModuleTest extends BaseTest {
 
     @Test
     public void util() {
-        JavaFileObject util = JavaFileObjects.forSourceString("com.example.Util",
-                Joiner.on('\n').join(
-                        "package com.example;",
+        JavaFileObject util = file("com.example", "Util")
+                .imports(
+                        Application.class,
+                        AppProvided.class, "AP",
+                        Singleton.class
+                )
+                .body(
+                        "public class $T {",
                         "",
-                        importClass(
-                                Application.class,
-                                AppProvided.class,
-                                Singleton.class
-                        ),
-                        "",
-                        "public class Util {",
-                        "",
-                        "   @AppProvided",
+                        "   @$AP",
                         "   @Singleton",
-                        "   public Util(Application app) {}",
+                        "   public $T(Application app) {}",
                         "",
                         "}"
-                )
-        );
+                );
 
-        JavaFileObject module = JavaFileObjects.forSourceString(KNIGHT_MODULE + "ApplicationModule",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT_MODULE,
-                        "",
-                        importClass(
-                                "com.example.Util",
-                                Application.class,
-                                AppScope.class,
-                                Provides.class,
-                                Module.class,
-                                Generated.class
-                        ),
-                        "",
-                        GENERATED,
+        JavaFileObject module = generatedFile(P_KNIGHT_MODULE, "ApplicationModule")
+                .imports(
+                        util, "U",
+                        Application.class,
+                        AppScope.class, "AS",
+                        Provides.class,
+                        Module.class
+                )
+                .body(
                         "@Module",
-                        "public final class ApplicationModule {",
+                        "public final class $T {",
                         "",
                         "   private final Application mApplication;",
                         "",
-                        "   public ApplicationModule(Application application) {",
+                        "   public $T(Application application) {",
                         "       mApplication = application;",
                         "   }",
                         "",
@@ -112,14 +96,13 @@ public class ApplicationModuleTest extends BaseTest {
                         "   }",
                         "",
                         "   @Provides",
-                        "   @AppScope",
-                        "   public Util providesUtil(Application app) {",
-                        "       return new Util(app);",
+                        "   @$AS",
+                        "   public $U provides$U(Application app) {",
+                        "       return new $U(app);",
                         "   }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, util)
                 .compilesWithoutError()

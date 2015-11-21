@@ -2,18 +2,17 @@ package eu.inloop.knight;
 
 import android.app.Activity;
 
-import com.google.common.base.Joiner;
-import com.google.testing.compile.JavaFileObjects;
-
 import org.junit.Test;
 
-import javax.annotation.Generated;
 import javax.tools.JavaFileObject;
 
 import dagger.Component;
 import dagger.Module;
 import eu.inloop.knight.core.IAppComponent;
 import eu.inloop.knight.scope.AppScope;
+
+import static eu.inloop.knight.util.File.file;
+import static eu.inloop.knight.util.File.generatedFile;
 
 /**
  * Class {@link ApplicationComponentTest}
@@ -25,33 +24,27 @@ public class ApplicationComponentTest extends BaseTest {
 
     @Test
     public void noActivity() {
-        JavaFileObject component = JavaFileObjects.forSourceString(KNIGHT_COMPONENT + "ApplicationComponent",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT_COMPONENT,
-                        "",
-                        importClass(
-                                "com.example.TestApp",
-                                KNIGHT_MODULE + "ApplicationModule",
-                                Component.class,
-                                IAppComponent.class,
-                                AppScope.class,
-                                Generated.class
-                        ),
-                        "",
-                        GENERATED,
-                        "@AppScope",
+        JavaFileObject component = generatedFile(P_KNIGHT_COMPONENT, "ApplicationComponent")
+                .imports(
+                        EMPTY_KNIGHT_APP,
+                        P_KNIGHT_MODULE + ".ApplicationModule", "AM",
+                        AppScope.class, "AS",
+                        Component.class,
+                        IAppComponent.class
+                )
+                .body(
+                        "@$AS",
                         "@Component(",
                         "   modules = {",
-                        "       ApplicationModule.class,",
+                        "       $AM.class,",
                         "   }",
                         ")",
-                        "public interface ApplicationComponent extends IAppComponent {",
+                        "public interface $T extends IAppComponent {",
                         "",
                         "   void inject(TestApp testApp);",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP)
                 .compilesWithoutError()
@@ -61,51 +54,41 @@ public class ApplicationComponentTest extends BaseTest {
 
     @Test
     public void oneActivity() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class
-                        ),
-                        "",
-                        "@KnightActivity",
-                        "public class MainActivity extends Activity {",
-                        "}"
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class
                 )
-        );
+                .body(
+                        "@KnightActivity",
+                        "public class $T extends Activity {",
+                        "}"
+                );
 
-        JavaFileObject component = JavaFileObjects.forSourceString(KNIGHT_COMPONENT + "ApplicationComponent",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT_COMPONENT,
-                        "",
-                        importClass(
-                                "com.example.TestApp",
-                                KNIGHT_MODULE + "ApplicationModule",
-                                KNIGHT_MODULE + "ScreenModuleForMainActivity",
-                                Component.class,
-                                IAppComponent.class,
-                                AppScope.class,
-                                Generated.class
-                        ),
-                        "",
-                        GENERATED,
+        JavaFileObject component = generatedFile(P_KNIGHT_COMPONENT, "ApplicationComponent")
+                .imports(
+                        EMPTY_KNIGHT_APP,
+                        P_KNIGHT_MODULE + ".ApplicationModule",
+                        P_KNIGHT_MODULE + ".ScreenModuleForMainActivity",
+                        AppScope.class, "AS",
+                        Component.class,
+                        IAppComponent.class
+                )
+                .body(
                         "@AppScope",
                         "@Component(",
                         "   modules = {",
                         "       ApplicationModule.class,",
                         "   }",
                         ")",
-                        "public interface ApplicationComponent extends IAppComponent {",
+                        "public interface $T extends IAppComponent {",
                         "",
                         "   void inject(TestApp testApp);",
                         "",
                         "   ScreenComponentForMainActivity plus(ScreenModuleForMainActivity module1);",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
@@ -115,67 +98,54 @@ public class ApplicationComponentTest extends BaseTest {
 
     @Test
     public void oneActivityWithExtraModule() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class
-                        ),
-                        "",
-                        "@KnightActivity",
-                        "public class MainActivity extends Activity {",
-                        "}"
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class
                 )
-        );
-        JavaFileObject module = JavaFileObjects.forSourceString("com.example.ScreenModule",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Module.class,
-                                ScreenProvided.class
-                        ),
-                        "",
+                .body(
+                        "@KnightActivity",
+                        "public class $T extends Activity {",
+                        "}"
+                );
+
+        JavaFileObject module = file("com.example", "ScreenModule")
+                .imports(
+                        Module.class,
+                        ScreenProvided.class
+                )
+                .body(
                         "@ScreenProvided(MainActivity.class)",
                         "@Module",
-                        "public class ScreenModule {",
+                        "public class $T {",
                         "}"
-                )
-        );
+                );
 
-        JavaFileObject component = JavaFileObjects.forSourceString(KNIGHT_COMPONENT + "ApplicationComponent",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT_COMPONENT,
-                        "",
-                        importClass(
-                                "com.example.ScreenModule",
-                                "com.example.TestApp",
-                                KNIGHT_MODULE + "ApplicationModule",
-                                KNIGHT_MODULE + "ScreenModuleForMainActivity",
-                                Component.class,
-                                IAppComponent.class,
-                                AppScope.class,
-                                Generated.class
-                        ),
-                        "",
-                        GENERATED,
+        JavaFileObject component = generatedFile(P_KNIGHT_COMPONENT, "ApplicationComponent")
+                .imports(
+                        module,
+                        EMPTY_KNIGHT_APP,
+                        P_KNIGHT_MODULE + ".ApplicationModule",
+                        P_KNIGHT_MODULE + ".ScreenModuleForMainActivity",
+                        AppScope.class,
+                        Component.class,
+                        IAppComponent.class
+                )
+                .body(
                         "@AppScope",
                         "@Component(",
                         "   modules = {",
                         "       ApplicationModule.class,",
                         "   }",
                         ")",
-                        "public interface ApplicationComponent extends IAppComponent {",
+                        "public interface $T extends IAppComponent {",
                         "",
                         "   void inject(TestApp testApp);",
                         "",
                         "   ScreenComponentForMainActivity plus(ScreenModuleForMainActivity module1, ScreenModule module2);",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity, module)
                 .compilesWithoutError()

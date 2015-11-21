@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder;
 
+import com.squareup.javapoet.ClassName;
+
 /**
  * Enum {@link GCN}
  *
@@ -19,6 +21,8 @@ public enum GCN {
     ACTIVITY_MODULE("ActivityModuleFor%s"),
     COMPONENT_FACTORY("ComponentFactoryFor%s"),
     EXTENDED_MODULE("Extended_%s"),
+    // Dagger generated class names
+    DAGGER("Dagger%s")
     ;
 
     private String mName;
@@ -29,5 +33,20 @@ public enum GCN {
 
     public String getName() {
         return mName;
+    }
+
+    public String formatName(String arg) {
+        if (arg != null) {
+            return String.format(mName, arg);
+        } else {
+            return mName;
+        }
+    }
+    public String formatName(ClassName arg) {
+        if (arg != null) {
+            return String.format(mName, arg.simpleName());
+        } else {
+            return mName;
+        }
     }
 }

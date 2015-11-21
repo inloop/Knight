@@ -4,13 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.common.base.Joiner;
-import com.google.testing.compile.JavaFileObjects;
-
 import org.junit.Test;
 
-import javax.annotation.Generated;
 import javax.tools.JavaFileObject;
+
+import static eu.inloop.knight.util.File.file;
+import static eu.inloop.knight.util.File.generatedFile;
 
 /**
  * Class {@link NavigatorTest}.
@@ -22,34 +21,25 @@ public class NavigatorTest extends BaseTest {
 
     @Test
     public void oneActivityNoExtra() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class
-                        ),
-                        "",
-                        "@KnightActivity",
-                        "public class MainActivity extends Activity {",
-                        "}"
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class
                 )
-        );
+                .body(
+                        "@KnightActivity",
+                        "public class $T extends Activity {",
+                        "}"
+                );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT,
-                        "",
-                        importClass(
-                                "com.example.MainActivity",
-                                Intent.class,
-                                Context.class,
-                                Generated.class
-                        ),
-                        "",
-                        GENERATED,
-                        "public final class I {",
+        JavaFileObject navigator = generatedFile(P_KNIGHT, C_NAVIGATOR)
+                .imports(
+                        activity,
+                        Intent.class,
+                        Context.class
+                )
+                .body(
+                        "public final class $T {",
                         "",
                         "  public static Intent forMainActivity(Context context) {",
                         "    Intent intent = new Intent(context, MainActivity.class);",
@@ -61,8 +51,7 @@ public class NavigatorTest extends BaseTest {
                         "  }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
@@ -72,39 +61,30 @@ public class NavigatorTest extends BaseTest {
 
     @Test
     public void oneActivityOneExtraPrimitive() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class,
-                                Extra.class
-                        ),
-                        "",
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class,
+                        Extra.class
+                )
+                .body(
                         "@KnightActivity",
-                        "public class MainActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "",
                         "   @Extra",
                         "   int number;",
                         "",
                         "}"
-                )
-        );
+                );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT,
-                        "",
-                        importClass(
-                                "com.example.MainActivity",
-                                Intent.class,
-                                Context.class,
-                                Generated.class
-                        ),
-                        "",
-                        GENERATED,
-                        "public final class I {",
+        JavaFileObject navigator = generatedFile(P_KNIGHT, C_NAVIGATOR)
+                .imports(
+                        activity,
+                        Intent.class,
+                        Context.class
+                )
+                .body(
+                        "public final class $T {",
                         "",
                         "  public static Intent forMainActivity(Context context, int number) {",
                         "    Intent intent = new Intent(context, MainActivity.class);",
@@ -117,8 +97,7 @@ public class NavigatorTest extends BaseTest {
                         "  }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
@@ -128,40 +107,31 @@ public class NavigatorTest extends BaseTest {
 
     @Test
     public void oneActivityOneExtraObject() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class,
-                                Extra.class
-                        ),
-                        "",
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class,
+                        Extra.class
+                )
+                .body(
                         "@KnightActivity",
-                        "public class MainActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "",
                         "   @Extra",
                         "   String mText;",
                         "",
                         "}"
-                )
-        );
+                );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT,
-                        "",
-                        importClass(
-                                "com.example.MainActivity",
-                                Intent.class,
-                                Context.class,
-                                Generated.class,
-                                String.class
-                        ),
-                        "",
-                        GENERATED,
-                        "public final class I {",
+        JavaFileObject navigator = generatedFile(P_KNIGHT, C_NAVIGATOR)
+                .imports(
+                        activity,
+                        Intent.class,
+                        Context.class,
+                        String.class
+                )
+                .body(
+                        "public final class $T {",
                         "",
                         "  public static Intent forMainActivity(Context context, String mText) {",
                         "    Intent intent = new Intent(context, MainActivity.class);",
@@ -174,8 +144,7 @@ public class NavigatorTest extends BaseTest {
                         "  }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
@@ -185,40 +154,31 @@ public class NavigatorTest extends BaseTest {
 
     @Test
     public void oneActivityOneExtraObjectNamed() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class,
-                                Extra.class
-                        ),
-                        "",
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class,
+                        Extra.class
+                )
+                .body(
                         "@KnightActivity",
-                        "public class MainActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "",
                         "   @Extra(\"somethingElse\")",
                         "   Double mSomething;",
                         "",
                         "}"
-                )
-        );
+                );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT,
-                        "",
-                        importClass(
-                                "com.example.MainActivity",
-                                Intent.class,
-                                Context.class,
-                                Generated.class,
-                                Double.class
-                        ),
-                        "",
-                        GENERATED,
-                        "public final class I {",
+        JavaFileObject navigator = generatedFile(P_KNIGHT, C_NAVIGATOR)
+                .imports(
+                        activity,
+                        Intent.class,
+                        Context.class,
+                        Double.class
+                )
+                .body(
+                        "public final class $T {",
                         "",
                         "  public static Intent forMainActivity(Context context, Double somethingElse) {",
                         "    Intent intent = new Intent(context, MainActivity.class);",
@@ -231,8 +191,7 @@ public class NavigatorTest extends BaseTest {
                         "  }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity)
                 .compilesWithoutError()
@@ -242,18 +201,15 @@ public class NavigatorTest extends BaseTest {
 
     @Test
     public void twoActivitiesWithExtras() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class,
-                                Extra.class
-                        ),
-                        "",
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class,
+                        Extra.class
+                )
+                .body(
                         "@KnightActivity",
-                        "public class MainActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "",
                         "   @Extra(\"number\")",
                         "   Double mNumber;",
@@ -262,44 +218,34 @@ public class NavigatorTest extends BaseTest {
                         "   Float mSomething;",
                         "",
                         "}"
+                );
+        JavaFileObject secondActivity = file("com.example", "SecondActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class,
+                        Extra.class
                 )
-        );
-        JavaFileObject secondActivity = JavaFileObjects.forSourceString("com.example.SecondActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class,
-                                Extra.class
-                        ),
-                        "",
+                .body(
                         "@KnightActivity",
-                        "public class SecondActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "",
                         "   @Extra(\"hasFlag\")",
                         "   boolean mFlag;",
                         "",
                         "}"
-                )
-        );
+                );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT,
-                        "",
-                        importClass(
-                                "com.example.MainActivity",
-                                "com.example.SecondActivity",
-                                Intent.class,
-                                Context.class,
-                                Generated.class,
-                                Double.class,
-                                Float.class
-                        ),
-                        "",
-                        GENERATED,
-                        "public final class I {",
+        JavaFileObject navigator = generatedFile(P_KNIGHT, C_NAVIGATOR)
+                .imports(
+                        activity,
+                        secondActivity,
+                        Intent.class,
+                        Context.class,
+                        Double.class,
+                        Float.class
+                )
+                .body(
+                        "public final class $T {",
                         "",
                         "  public static Intent forMainActivity(Context context, Double number, Float mSomething) {",
                         "    Intent intent = new Intent(context, MainActivity.class);",
@@ -323,8 +269,7 @@ public class NavigatorTest extends BaseTest {
                         "  }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity, secondActivity)
                 .compilesWithoutError()
@@ -334,18 +279,15 @@ public class NavigatorTest extends BaseTest {
 
     @Test
     public void threeActivitiesWithExtras() {
-        JavaFileObject activity = JavaFileObjects.forSourceString("com.example.MainActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class,
-                                Extra.class
-                        ),
-                        "",
+        JavaFileObject activity = file("com.example", "MainActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class,
+                        Extra.class
+                )
+                .body(
                         "@KnightActivity",
-                        "public class MainActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "",
                         "   @Extra(\"number\")",
                         "   Double mNumber;",
@@ -354,59 +296,45 @@ public class NavigatorTest extends BaseTest {
                         "   Float mSomething;",
                         "",
                         "}"
+                );
+        JavaFileObject secondActivity = file("com.example", "SecondActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class,
+                        Extra.class
                 )
-        );
-        JavaFileObject secondActivity = JavaFileObjects.forSourceString("com.example.SecondActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class,
-                                Extra.class
-                        ),
-                        "",
+                .body(
                         "@KnightActivity",
-                        "public class SecondActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "",
                         "   @Extra(\"hasFlag\")",
                         "   boolean mFlag;",
                         "",
                         "}"
+                );
+        JavaFileObject thirdActivity = file("com.example", "ThirdActivity")
+                .imports(
+                        Activity.class,
+                        KnightActivity.class
                 )
-        );
-        JavaFileObject thirdActivity = JavaFileObjects.forSourceString("com.example.ThirdActivity",
-                Joiner.on('\n').join(
-                        "package com.example;",
-                        "",
-                        importClass(
-                                Activity.class,
-                                KnightActivity.class
-                        ),
-                        "",
+                .body(
                         "@KnightActivity",
-                        "public class ThirdActivity extends Activity {",
+                        "public class $T extends Activity {",
                         "}"
-                )
-        );
+                );
 
-        JavaFileObject navigator = JavaFileObjects.forSourceString(KNIGHT + "I",
-                Joiner.on('\n').join(
-                        PACKAGE_KNIGHT,
-                        "",
-                        importClass(
-                                "com.example.MainActivity",
-                                "com.example.SecondActivity",
-                                "com.example.ThirdActivity",
-                                Intent.class,
-                                Context.class,
-                                Generated.class,
-                                Double.class,
-                                Float.class
-                        ),
-                        "",
-                        GENERATED,
-                        "public final class I {",
+        JavaFileObject navigator = generatedFile(P_KNIGHT, C_NAVIGATOR)
+                .imports(
+                        activity,
+                        secondActivity,
+                        thirdActivity,
+                        Intent.class,
+                        Context.class,
+                        Double.class,
+                        Float.class
+                )
+                .body(
+                        "public final class $T {",
                         "",
                         "  public static Intent forMainActivity(Context context, Double number, Float mSomething) {",
                         "    Intent intent = new Intent(context, MainActivity.class);",
@@ -439,8 +367,7 @@ public class NavigatorTest extends BaseTest {
                         "  }",
                         "",
                         "}"
-                )
-        );
+                );
 
         assertFiles(EMPTY_KNIGHT_APP, activity, secondActivity, thirdActivity)
                 .compilesWithoutError()
