@@ -5,9 +5,9 @@ import com.squareup.javapoet.ClassName;
 import java.lang.annotation.Annotation;
 
 import dagger.Subcomponent;
-import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.core.IActivityComponent;
 import eu.inloop.knight.core.IComponent;
+import eu.inloop.knight.name.GCN;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.util.ProcessorError;
 

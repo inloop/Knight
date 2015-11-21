@@ -8,8 +8,9 @@ import com.squareup.javapoet.MethodSpec;
 
 import javax.lang.model.element.Modifier;
 
-import eu.inloop.knight.Injectable;
 import eu.inloop.knight.builder.component.BaseComponentBuilder;
+import eu.inloop.knight.name.GCN;
+import eu.inloop.knight.name.GPN;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -55,8 +56,8 @@ public class InjectorBuilder extends BaseClassBuilder {
                 .addParameter(Context.class, context);
 
         boolean first = true;
-        if (!injectable.getmFromActivities().isEmpty()) {
-            for (ClassName activityName : injectable.getmFromActivities()) {
+        if (!injectable.getFromActivities().isEmpty()) {
+            for (ClassName activityName : injectable.getFromActivities()) {
                 if (first) {
                     first = false;
                 } else {
@@ -70,7 +71,7 @@ public class InjectorBuilder extends BaseClassBuilder {
                         .endControlFlow();
             }
         }
-        if (injectable.getmFromApp() != null) {
+        if (injectable.getFromApp() != null) {
             if (first) {
                 first = false;
             } else {

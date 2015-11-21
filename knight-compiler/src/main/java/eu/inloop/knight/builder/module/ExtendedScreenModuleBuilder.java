@@ -10,7 +10,7 @@ import javax.lang.model.element.TypeElement;
 
 import dagger.Provides;
 import eu.inloop.knight.ErrorMsg;
-import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.name.GCN;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 

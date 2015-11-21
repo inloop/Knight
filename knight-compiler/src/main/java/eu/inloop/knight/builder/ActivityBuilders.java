@@ -1,17 +1,19 @@
 package eu.inloop.knight.builder;
 
+import android.app.Fragment;
+import android.view.View;
+
 import com.squareup.javapoet.ClassName;
 
 import java.io.IOException;
 
 import javax.annotation.processing.Filer;
 
-import eu.inloop.knight.EClass;
-import eu.inloop.knight.Injectable;
 import eu.inloop.knight.builder.component.ActivityComponentBuilder;
 import eu.inloop.knight.builder.component.ScreenComponentBuilder;
 import eu.inloop.knight.builder.module.ActivityModuleBuilder;
 import eu.inloop.knight.builder.module.ScreenModuleBuilder;
+import eu.inloop.knight.name.EClass;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -70,9 +72,9 @@ public class ActivityBuilders extends BaseScopeBuilders {
     @Override
     protected ClassName[] supportedInjectableClasses() {
         return new ClassName[] {
-                EClass.Fragment.getName(),
                 EClass.SupportFragment.getName(),
-                EClass.View.getName(),
+                ClassName.get(Fragment.class),
+                ClassName.get(View.class)
         };
     }
 

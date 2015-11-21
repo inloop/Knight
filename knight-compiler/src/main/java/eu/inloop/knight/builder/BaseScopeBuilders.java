@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.inloop.knight.ErrorMsg;
-import eu.inloop.knight.Injectable;
 import eu.inloop.knight.util.ProcessorError;
 
 import static eu.inloop.knight.util.ProcessorUtils.isSubClassOf;
@@ -33,8 +32,8 @@ public abstract class BaseScopeBuilders {
         for (ClassName className : mInjectables) {
             Injectable injectable = classesWithInject.get(className);
             if (injectable != null) {
-                if (!isSubClassOf(injectable.getmElement(), supported)) {
-                    throw new ProcessorError(injectable.getmElement(), ErrorMsg.Invalid_injectable);
+                if (!isSubClassOf(injectable.getElement(), supported)) {
+                    throw new ProcessorError(injectable.getElement(), ErrorMsg.Invalid_injectable);
                 }
                 addInjectMethod(injectable);
             }

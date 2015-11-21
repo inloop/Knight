@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder;
 
+import android.app.Activity;
+import android.app.Application;
 import android.util.Pair;
 
 import com.squareup.javapoet.ClassName;
@@ -8,7 +10,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 
 import javax.lang.model.element.Modifier;
 
-import eu.inloop.knight.EClass;
 import eu.inloop.knight.builder.component.ActivityComponentBuilder;
 import eu.inloop.knight.builder.component.AppComponentBuilder;
 import eu.inloop.knight.builder.component.BaseComponentBuilder;
@@ -19,6 +20,9 @@ import eu.inloop.knight.builder.module.ScreenModuleBuilder;
 import eu.inloop.knight.core.IActivityComponent;
 import eu.inloop.knight.core.IScreenComponent;
 import eu.inloop.knight.core.StateManager;
+import eu.inloop.knight.name.EClass;
+import eu.inloop.knight.name.GCN;
+import eu.inloop.knight.name.GPN;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 
@@ -48,7 +52,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addParameter(EClass.Application.getName(), app, Modifier.FINAL)
+                .addParameter(Application.class, app, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         // get component builder
@@ -82,7 +86,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(parentComponentBuilder.getClassName(), appC, Modifier.FINAL)
                 .addParameter(StateManager.class, stateManager, Modifier.FINAL)
-                .addParameter(EClass.Activity.getName(), activity, Modifier.FINAL)
+                .addParameter(Activity.class, activity, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", appC);
@@ -115,7 +119,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(parentComponentBuilder.getClassName(), sc, Modifier.FINAL)
-                .addParameter(EClass.Activity.getName(), activity, Modifier.FINAL)
+                .addParameter(Activity.class, activity, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         method.addCode("return $N.plus(\n", sc);

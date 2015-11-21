@@ -15,11 +15,11 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
-import eu.inloop.knight.NamedExtra;
 import eu.inloop.knight.PresenterPool;
-import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.builder.NamedExtra;
 import eu.inloop.knight.builder.NavigatorBuilder;
 import eu.inloop.knight.core.StateManager;
+import eu.inloop.knight.name.GCN;
 import eu.inloop.knight.scope.ScreenScope;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;

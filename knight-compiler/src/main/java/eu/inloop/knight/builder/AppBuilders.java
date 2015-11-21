@@ -1,5 +1,10 @@
 package eu.inloop.knight.builder;
 
+import android.app.Application;
+import android.app.Fragment;
+import android.app.Service;
+import android.view.View;
+
 import com.squareup.javapoet.ClassName;
 
 import java.io.IOException;
@@ -7,10 +12,9 @@ import java.util.Collection;
 
 import javax.annotation.processing.Filer;
 
-import eu.inloop.knight.EClass;
-import eu.inloop.knight.Injectable;
 import eu.inloop.knight.builder.component.AppComponentBuilder;
 import eu.inloop.knight.builder.module.AppModuleBuilder;
+import eu.inloop.knight.name.EClass;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -41,7 +45,7 @@ public class AppBuilders extends BaseScopeBuilders {
         AppC = new AppComponentBuilder();
         AppC.addModule(AppM.getClassName());
         AppC.addInjectMethod(getAppName());
-        AppCF = new ComponentFactoryBuilder(EClass.Application.getName());
+        AppCF = new ComponentFactoryBuilder(ClassName.get(Application.class));
 
         Knight.setupAppComponent(AppC.getClassName(), AppCF.getClassName());
         Injector.addInitMethod(Knight, getAppName());
@@ -72,11 +76,11 @@ public class AppBuilders extends BaseScopeBuilders {
 
     @Override
     protected ClassName[] supportedInjectableClasses() {
-        return new ClassName[] {
-                EClass.Service.getName(),
-                EClass.Fragment.getName(),
+        return new ClassName[]{
+                ClassName.get(Service.class),
                 EClass.SupportFragment.getName(),
-                EClass.View.getName()
+                ClassName.get(Fragment.class),
+                ClassName.get(View.class)
         };
     }
 

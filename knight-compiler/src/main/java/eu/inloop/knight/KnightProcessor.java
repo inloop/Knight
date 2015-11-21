@@ -1,5 +1,8 @@
 package eu.inloop.knight;
 
+import android.app.Activity;
+import android.app.Application;
+
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 
@@ -27,6 +30,8 @@ import javax.tools.Diagnostic;
 
 import eu.inloop.knight.builder.ActivityBuilders;
 import eu.inloop.knight.builder.AppBuilders;
+import eu.inloop.knight.builder.Injectable;
+import eu.inloop.knight.name.EClass;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.ProcessorUtils;
 
@@ -244,13 +249,13 @@ public class KnightProcessor extends AbstractProcessor {
         if (!e.getModifiers().contains(Modifier.PUBLIC)) {
             throw new ProcessorError(e, ErrorMsg.Invalid_Knight_App);
         }
-        if (!ProcessorUtils.isSubClassOf(e, EClass.Application.getName())) {
+        if (!ProcessorUtils.isSubClassOf(e, Application.class)) {
             throw new ProcessorError(e, ErrorMsg.Invalid_Knight_App);
         }
     }
 
     private ClassName getKnightActivityName(TypeElement e) throws ProcessorError {
-        if (!ProcessorUtils.isSubClassOf(e, EClass.AppCompatActivity.getName(), EClass.Activity.getName())) {
+        if (!ProcessorUtils.isSubClassOf(e, EClass.AppCompatActivity.getName(), ClassName.get(Activity.class))) {
             throw new ProcessorError(e, ErrorMsg.Scoped_invalid);
         }
         return ClassName.get(e);

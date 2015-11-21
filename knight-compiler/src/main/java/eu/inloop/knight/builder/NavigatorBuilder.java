@@ -19,7 +19,8 @@ import javax.lang.model.element.VariableElement;
 
 import eu.inloop.knight.ErrorMsg;
 import eu.inloop.knight.Extra;
-import eu.inloop.knight.NamedExtra;
+import eu.inloop.knight.name.GCN;
+import eu.inloop.knight.name.GPN;
 import eu.inloop.knight.util.ProcessorError;
 
 /**

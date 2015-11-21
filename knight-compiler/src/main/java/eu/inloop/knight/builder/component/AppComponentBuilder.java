@@ -3,9 +3,9 @@ package eu.inloop.knight.builder.component;
 import java.lang.annotation.Annotation;
 
 import dagger.Component;
-import eu.inloop.knight.builder.GCN;
 import eu.inloop.knight.core.IAppComponent;
 import eu.inloop.knight.core.IComponent;
+import eu.inloop.knight.name.GCN;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.util.ProcessorError;
 

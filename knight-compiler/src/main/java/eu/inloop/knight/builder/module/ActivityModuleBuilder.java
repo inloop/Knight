@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder.module;
 
+import android.app.Activity;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -7,8 +9,7 @@ import com.squareup.javapoet.MethodSpec;
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
-import eu.inloop.knight.EClass;
-import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.name.GCN;
 import eu.inloop.knight.scope.ActivityScope;
 import eu.inloop.knight.util.ProcessorError;
 
@@ -34,14 +35,14 @@ public class ActivityModuleBuilder extends BaseModuleBuilder {
     @Override
     protected void addScopeSpecificPart() {
         // Activity attribute
-        FieldSpec activityField = FieldSpec.builder(EClass.Activity.getName(), FIELD_NAME_ACTIVITY,
+        FieldSpec activityField = FieldSpec.builder(Activity.class, FIELD_NAME_ACTIVITY,
                 Modifier.PRIVATE, Modifier.FINAL).build();
         getBuilder().addField(activityField);
         // constructor
         String activity = "activity";
         MethodSpec constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(EClass.Activity.getName(), activity)
+                .addParameter(Activity.class, activity)
                 .addStatement("$N = $N", activityField, activity)
                 .build();
         getBuilder().addMethod(constructor);
@@ -50,7 +51,7 @@ public class ActivityModuleBuilder extends BaseModuleBuilder {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Provides.class)
                 .addStatement("return $N", activityField)
-                .returns(EClass.Activity.getName())
+                .returns(Activity.class)
                 .build();
         getBuilder().addMethod(providesActivity);
     }

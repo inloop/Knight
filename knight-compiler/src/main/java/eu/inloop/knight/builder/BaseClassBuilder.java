@@ -19,6 +19,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 
 import eu.inloop.knight.KnightProcessor;
+import eu.inloop.knight.name.GCN;
+import eu.inloop.knight.name.GPN;
 import eu.inloop.knight.util.ProcessorError;
 import eu.inloop.knight.util.StringUtils;
 

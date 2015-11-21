@@ -1,4 +1,4 @@
-package eu.inloop.knight;
+package eu.inloop.knight.builder;
 
 import com.squareup.javapoet.ClassName;
 
@@ -28,15 +28,15 @@ public class Injectable {
         mFromApp = null;
     }
 
-    public TypeElement getmElement() {
+    public TypeElement getElement() {
         return mElement;
     }
 
-    public Set<ClassName> getmFromActivities() {
+    public Set<ClassName> getFromActivities() {
         return mFromActivities;
     }
 
-    public ClassName getmFromApp() {
+    public ClassName getFromApp() {
         return mFromApp;
     }
 

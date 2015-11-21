@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder;
 
+import android.app.Activity;
+import android.app.Application;
 import android.util.Pair;
 
 import com.squareup.javapoet.ClassName;
@@ -11,11 +13,12 @@ import java.util.Collection;
 
 import javax.lang.model.element.Modifier;
 
-import eu.inloop.knight.EClass;
 import eu.inloop.knight.core.ComponentStorage;
 import eu.inloop.knight.core.IActivityComponent;
 import eu.inloop.knight.core.IScreenComponent;
 import eu.inloop.knight.core.StateManager;
+import eu.inloop.knight.name.GCN;
+import eu.inloop.knight.name.GPN;
 import eu.inloop.knight.util.ProcessorError;
 
 /**
@@ -77,7 +80,7 @@ public class KnightBuilder extends BaseClassBuilder {
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_INIT)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .addParameter(EClass.Application.getName(), app)
+                        .addParameter(Application.class, app)
                         .addStatement("$N = new $T($N)", instance, getClassName(), app)
                         .addStatement("$N.registerActivityLifecycleCallbacks($N)", app, instance)
                         .build()
@@ -89,7 +92,7 @@ public class KnightBuilder extends BaseClassBuilder {
         getBuilder().addMethod(
                 MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PRIVATE)
-                        .addParameter(EClass.Application.getName(), app)
+                        .addParameter(Application.class, app)
                         .addStatement("super($T.$N($N))", appComponentFactoryName, ComponentFactoryBuilder.METHOD_NAME_BUILD, app)
                         .build()
         );
@@ -140,7 +143,7 @@ public class KnightBuilder extends BaseClassBuilder {
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_ON_BUILD_AND_INJECT)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PROTECTED)
-                .addParameter(EClass.Activity.getName(), activity)
+                .addParameter(Activity.class, activity)
                 .addParameter(StateManager.class, stateManager)
                 .addParameter(IScreenComponent.class, sc)
                 .returns(ParameterizedTypeName.get(Pair.class, IScreenComponent.class, IActivityComponent.class));

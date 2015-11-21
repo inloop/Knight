@@ -1,4 +1,4 @@
-package eu.inloop.knight.builder;
+package eu.inloop.knight.name;
 
 /**
  * Enum {@link GPN}

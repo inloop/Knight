@@ -1,13 +1,14 @@
 package eu.inloop.knight.builder.module;
 
+import android.app.Application;
+
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
 import javax.lang.model.element.Modifier;
 
 import dagger.Provides;
-import eu.inloop.knight.EClass;
-import eu.inloop.knight.builder.GCN;
+import eu.inloop.knight.name.GCN;
 import eu.inloop.knight.scope.AppScope;
 import eu.inloop.knight.util.ProcessorError;
 
@@ -31,14 +32,14 @@ public class AppModuleBuilder extends BaseModuleBuilder {
     @Override
     protected void addScopeSpecificPart() {
         // Application attribute
-        FieldSpec appField = FieldSpec.builder(EClass.Application.getName(), FIELD_NAME_APPLICATION,
+        FieldSpec appField = FieldSpec.builder(Application.class, FIELD_NAME_APPLICATION,
                 Modifier.PRIVATE, Modifier.FINAL).build();
         getBuilder().addField(appField);
         // constructor
         String app = "application";
         MethodSpec constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(EClass.Application.getName(), app)
+                .addParameter(Application.class, app)
                 .addStatement("$N = $N", appField, app)
                 .build();
         getBuilder().addMethod(constructor);
@@ -47,7 +48,7 @@ public class AppModuleBuilder extends BaseModuleBuilder {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Provides.class)
                 .addStatement("return $N", appField)
-                .returns(EClass.Application.getName())
+                .returns(Application.class)
                 .build();
         getBuilder().addMethod(providesApp);
     }

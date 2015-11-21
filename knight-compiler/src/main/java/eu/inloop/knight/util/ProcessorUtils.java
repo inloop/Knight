@@ -94,6 +94,10 @@ public class ProcessorUtils {
         return className;
     }
 
+    public static boolean isSubClassOf(final TypeElement element, final Class cls) {
+        return isSubClassOf(element, ClassName.get(cls));
+    }
+
     public static boolean isSubClassOf(final TypeElement element, final ClassName cls) {
         TypeElement superClass = element;
         do {

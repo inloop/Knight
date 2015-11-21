@@ -13,13 +13,14 @@ import java.util.List;
 import javax.tools.JavaFileObject;
 
 import dagger.internal.codegen.ComponentProcessor;
-import eu.inloop.knight.builder.GPN;
+import eu.inloop.knight.name.GCN;
+import eu.inloop.knight.name.GPN;
 
-import static eu.inloop.knight.builder.GPN.COMPONENTS;
-import static eu.inloop.knight.builder.GPN.DI;
-import static eu.inloop.knight.builder.GPN.FACTORIES;
-import static eu.inloop.knight.builder.GPN.KNIGHT;
-import static eu.inloop.knight.builder.GPN.MODULES;
+import static eu.inloop.knight.name.GPN.COMPONENTS;
+import static eu.inloop.knight.name.GPN.DI;
+import static eu.inloop.knight.name.GPN.FACTORIES;
+import static eu.inloop.knight.name.GPN.KNIGHT;
+import static eu.inloop.knight.name.GPN.MODULES;
 import static eu.inloop.knight.util.File.file;
 
 /**
@@ -30,7 +31,7 @@ import static eu.inloop.knight.util.File.file;
  */
 public class BaseTest {
 
-    protected static final String C_NAVIGATOR = "I";
+    protected static final String C_NAVIGATOR = GCN.NAVIGATOR.getName();
 
     protected static final String P_KNIGHT = GPN.toString(KNIGHT);
     protected static final String P_KNIGHT_FACTORY = GPN.toString(KNIGHT, DI, FACTORIES);
