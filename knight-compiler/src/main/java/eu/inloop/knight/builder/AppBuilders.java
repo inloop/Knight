@@ -37,12 +37,12 @@ public class AppBuilders extends BaseScopeBuilders {
     public AppBuilders(ClassName appName) throws ProcessorError {
         mAppName = appName;
 
-        Knight = new KnightBuilder();
+        Knight = new KnightBuilder(mAppName);
         Injector = new InjectorBuilder();
         Navigator = new NavigatorBuilder();
         // Application Scope
-        AppM = new AppModuleBuilder();
-        AppC = new AppComponentBuilder();
+        AppM = new AppModuleBuilder(mAppName);
+        AppC = new AppComponentBuilder(mAppName);
         AppC.addModule(AppM.getClassName());
         AppC.addInjectMethod(getAppName());
         AppCF = new ComponentFactoryBuilder(ClassName.get(Application.class));

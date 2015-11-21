@@ -1,7 +1,9 @@
 package eu.inloop.knight;
 
+import android.app.Activity;
 import android.app.Application;
 
+import com.google.common.base.Joiner;
 import com.google.common.truth.Truth;
 import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaSourcesSubjectFactory;
@@ -48,6 +50,16 @@ public class BaseTest {
                     "public class $T extends Application {}"
             );
 
+    protected static final JavaFileObject EMPTY_KNIGHT_ACTIVITY = file("com.example", "TestActivity")
+            .imports(
+                    Activity.class,
+                    KnightActivity.class
+            )
+            .body(
+                    "@KnightActivity",
+                    "public class $T extends Activity {}"
+            );
+
     protected CompileTester assertFiles(JavaFileObject... f) {
         List<JavaFileObject> files = new ArrayList<>();
         files.addAll(Arrays.asList(f));
@@ -56,6 +68,10 @@ public class BaseTest {
                 .about(JavaSourcesSubjectFactory.javaSources())
                 .that(files)
                 .processedWith(new ComponentProcessor(), new KnightProcessor());
+    }
+
+    protected static String join(String... lines) {
+        return Joiner.on("\n").join(lines);
     }
 
 }

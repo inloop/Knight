@@ -1,7 +1,6 @@
 package eu.inloop.knight.builder;
 
 import android.app.Activity;
-import android.app.Application;
 import android.util.Pair;
 
 import com.squareup.javapoet.ClassName;
@@ -52,7 +51,7 @@ public class ComponentFactoryBuilder extends BaseClassBuilder {
 
         MethodSpec.Builder method = MethodSpec.methodBuilder(METHOD_NAME_BUILD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addParameter(Application.class, app, Modifier.FINAL)
+                .addParameter(componentBuilder.getArgClassName(), app, Modifier.FINAL)
                 .returns(componentBuilder.getClassName());
 
         // get component builder

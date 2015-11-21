@@ -1,5 +1,7 @@
 package eu.inloop.knight.builder.component;
 
+import com.squareup.javapoet.ClassName;
+
 import java.lang.annotation.Annotation;
 
 import dagger.Component;
@@ -17,8 +19,8 @@ import eu.inloop.knight.util.ProcessorError;
  */
 public class AppComponentBuilder extends BaseComponentBuilder {
 
-    public AppComponentBuilder() throws ProcessorError {
-        super(AppScope.class, GCN.APPLICATION_COMPONENT);
+    public AppComponentBuilder(ClassName appClassName) throws ProcessorError {
+        super(AppScope.class, GCN.APPLICATION_COMPONENT, appClassName);
     }
 
     @Override

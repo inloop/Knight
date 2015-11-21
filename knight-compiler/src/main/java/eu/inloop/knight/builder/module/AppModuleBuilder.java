@@ -1,7 +1,9 @@
 package eu.inloop.knight.builder.module;
 
 import android.app.Application;
+import android.content.res.Resources;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
@@ -24,33 +26,50 @@ public class AppModuleBuilder extends BaseModuleBuilder {
 
     /**
      * Constructor
+     * @param appClassName
      */
-    public AppModuleBuilder() throws ProcessorError {
-        super(AppScope.class, GCN.APPLICATION_MODULE);
+    public AppModuleBuilder(ClassName appClassName) throws ProcessorError {
+        super(AppScope.class, GCN.APPLICATION_MODULE, appClassName);
     }
 
     @Override
     protected void addScopeSpecificPart() {
         // Application attribute
-        FieldSpec appField = FieldSpec.builder(Application.class, FIELD_NAME_APPLICATION,
+        FieldSpec appField = FieldSpec.builder(getArgClassName(), FIELD_NAME_APPLICATION,
                 Modifier.PRIVATE, Modifier.FINAL).build();
         getBuilder().addField(appField);
         // constructor
         String app = "application";
         MethodSpec constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(Application.class, app)
+                .addParameter(getArgClassName(), app)
                 .addStatement("$N = $N", appField, app)
                 .build();
         getBuilder().addMethod(constructor);
+        // provides method for Knight Application
+        MethodSpec providesApp = MethodSpec.methodBuilder(createProvideMethodName(getArgClassName().simpleName()))
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Provides.class)
+                .addStatement("return $N", appField)
+                .returns(getArgClassName())
+                .build();
+        getBuilder().addMethod(providesApp);
         // provides method for Application
-        MethodSpec providesApp = MethodSpec.methodBuilder(createProvideMethodName(app))
+        providesApp = MethodSpec.methodBuilder(createProvideMethodName(app))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Provides.class)
                 .addStatement("return $N", appField)
                 .returns(Application.class)
                 .build();
         getBuilder().addMethod(providesApp);
+        // provides method for Application Resources
+        MethodSpec providesAppResources = MethodSpec.methodBuilder(createProvideMethodName("applicationResources"))
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Provides.class)
+                .addStatement("return $N.getResources()", appField)
+                .returns(Resources.class)
+                .build();
+        getBuilder().addMethod(providesAppResources);
     }
 
 }

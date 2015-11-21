@@ -1,7 +1,6 @@
 package eu.inloop.knight.builder;
 
 import android.app.Activity;
-import android.app.Application;
 import android.util.Pair;
 
 import com.squareup.javapoet.ClassName;
@@ -49,8 +48,8 @@ public class KnightBuilder extends BaseClassBuilder {
 
     private static final String CONSTANT_SCOPED_ACTIVITY_CLASSES = "SCOPED_ACTIVITY_CLASSES";
 
-    public KnightBuilder() throws ProcessorError {
-        super(GCN.KNIGHT, GPN.KNIGHT);
+    public KnightBuilder(ClassName appClassName) throws ProcessorError {
+        super(GCN.KNIGHT, appClassName, GPN.KNIGHT);
     }
 
     @Override
@@ -80,7 +79,7 @@ public class KnightBuilder extends BaseClassBuilder {
         getBuilder().addMethod(
                 MethodSpec.methodBuilder(METHOD_NAME_INIT)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                        .addParameter(Application.class, app)
+                        .addParameter(getArgClassName(), app)
                         .addStatement("$N = new $T($N)", instance, getClassName(), app)
                         .addStatement("$N.registerActivityLifecycleCallbacks($N)", app, instance)
                         .build()
@@ -92,7 +91,7 @@ public class KnightBuilder extends BaseClassBuilder {
         getBuilder().addMethod(
                 MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PRIVATE)
-                        .addParameter(Application.class, app)
+                        .addParameter(getArgClassName(), app)
                         .addStatement("super($T.$N($N))", appComponentFactoryName, ComponentFactoryBuilder.METHOD_NAME_BUILD, app)
                         .build()
         );
