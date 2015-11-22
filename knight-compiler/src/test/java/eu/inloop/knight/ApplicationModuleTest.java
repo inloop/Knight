@@ -2,7 +2,6 @@ package eu.inloop.knight;
 
 import android.app.Application;
 import android.content.res.Resources;
-import android.support.annotation.Nullable;
 
 import org.junit.Test;
 
@@ -119,7 +118,6 @@ public class ApplicationModuleTest extends BaseTest {
                 .generatesSources(module);
     }
 
-    // FIXME : fails because @Nullable is not transferred to module
     @Test
     public void named() {
         JavaFileObject util = file("com.example", "Util")
@@ -137,21 +135,11 @@ public class ApplicationModuleTest extends BaseTest {
                         "   @Singleton",
                         "   public $T(Application app) {}",
                         "",
-                        "}"
-                );
-        JavaFileObject something = file("com.example", "Something")
-                .imports(
-                        AppProvided.class, "AP",
-                        Nullable.class
-                )
-                .body(
-                        "public class $T {",
                         "",
                         "   @$AP",
-                        "   @Nullable",
-                        "   public static $T build() {",
-                        "       return null;",
-                        "   }",
+                        "   @Named(\"some-other-name\")",
+                        "   @Singleton",
+                        "   public $T() {}",
                         "",
                         "}"
                 );
@@ -160,14 +148,12 @@ public class ApplicationModuleTest extends BaseTest {
                 .imports(
                         EMPTY_KNIGHT_APP, "App",
                         util, "U",
-                        something, "S",
                         Application.class,
                         Resources.class,
                         AppScope.class, "AS",
                         Provides.class,
                         Module.class,
-                        Named.class,
-                        Nullable.class
+                        Named.class
                 )
                 .body(
                         GENERAL_LINES,
@@ -180,15 +166,16 @@ public class ApplicationModuleTest extends BaseTest {
                         "   }",
                         "",
                         "   @Provides",
-                        "   @Nullable",
-                        "   public $S providesBuild() {",
-                        "       return $S.build();",
+                        "   @$AS",
+                        "   @Named(\"some-other-name\")",
+                        "   public $U provides$U2() {",
+                        "       return new $U();",
                         "   }",
                         "",
                         "}"
                 );
 
-        assertFiles(EMPTY_KNIGHT_APP, util, something)
+        assertFiles(EMPTY_KNIGHT_APP, util)
                 .compilesWithoutError()
                 .and()
                 .generatesSources(module);
