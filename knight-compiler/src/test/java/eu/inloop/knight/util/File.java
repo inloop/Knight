@@ -92,8 +92,12 @@ public class File implements IImports, IBody {
             }
 
             if (className != null) {
+                String packageName = className.substring(0, className.lastIndexOf("."));
                 mLastClassName = className;
-                classNames.add(className);
+                // import only from different packages
+                if (!packageName.equals(mPackage)) {
+                    classNames.add(className);
+                }
             }
         }
         Collections.sort(classNames);
@@ -127,8 +131,11 @@ public class File implements IImports, IBody {
         if (!line.contains(KEY_SIGN)) return line;
 
         String res = line;
-        for (Map.Entry<String, String> entry : mMapping.entrySet()) {
-            res = res.replaceAll(String.format(KEY_FORMAT, entry.getKey()), entry.getValue());
+        List<String> keys = new ArrayList<>(mMapping.keySet());
+        Collections.sort(keys);
+        for (int i = keys.size() - 1; i >= 0; i--) {
+            String key = keys.get(i);
+            res = res.replaceAll(String.format(KEY_FORMAT, key), mMapping.get(key));
         }
         return res;
     }

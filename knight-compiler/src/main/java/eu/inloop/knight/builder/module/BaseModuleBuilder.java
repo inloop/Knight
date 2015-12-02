@@ -6,12 +6,16 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.processing.Filer;
 import javax.inject.Singleton;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -23,7 +27,9 @@ import dagger.Module;
 import dagger.Provides;
 import eu.inloop.knight.As;
 import eu.inloop.knight.ErrorMsg;
+import eu.inloop.knight.assisted.Factory;
 import eu.inloop.knight.builder.BaseClassBuilder;
+import eu.inloop.knight.builder.assisted.FactoryBuilder;
 import eu.inloop.knight.name.GCN;
 import eu.inloop.knight.name.GPN;
 import eu.inloop.knight.scope.ActivityScope;
@@ -48,6 +54,7 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
 
     private final Map<String, Integer> mProvidesMethodNames = new HashMap<>();
     private Class<? extends Annotation> mScope;
+    private List<FactoryBuilder> mFactoryBuilders = new ArrayList<>();
 
     /**
      * Constructor
@@ -93,6 +100,11 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
         }
 
         ClassName className = ClassName.get((TypeElement) e.getEnclosingElement());
+
+        if (e.getAnnotation(Factory.class) != null) {
+            FactoryBuilder factoryBuilder = new FactoryBuilder(className, e, mScope);
+            mFactoryBuilders.add(factoryBuilder);
+        }
 
         MethodSpec.Builder method = prepareProvidesMethodBuilder(e, className.simpleName(), isScoped(e));
         addProvideStatement(method, e, "new $T", className);
@@ -255,6 +267,14 @@ public abstract class BaseModuleBuilder extends BaseClassBuilder {
      */
     protected boolean isScoped(Element e) {
         return e.getAnnotation(Singleton.class) != null;
+    }
+
+    @Override
+    public void build(Filer filer) throws ProcessorError, IOException {
+        for (int i = 0; i < mFactoryBuilders.size(); i++) {
+            mFactoryBuilders.get(i).build(filer);
+        }
+        super.build(filer);
     }
 
 }

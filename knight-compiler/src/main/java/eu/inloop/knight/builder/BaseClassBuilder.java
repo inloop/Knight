@@ -118,9 +118,13 @@ public abstract class BaseClassBuilder {
             // build CLASS name
             String name = mGenClassName.formatName(mGenClassNameArg);
             // save
-            mClassName = ClassName.get(GPN.toString(mGenPackageName), name);
+            mClassName = ClassName.get(getPackage(), name);
         }
         return mClassName;
+    }
+
+    protected String getPackage() {
+        return GPN.toString(mGenPackageName);
     }
 
     /**

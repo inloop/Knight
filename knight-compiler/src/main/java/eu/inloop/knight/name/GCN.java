@@ -21,6 +21,7 @@ public enum GCN {
     ACTIVITY_MODULE("ActivityModuleFor%s"),
     COMPONENT_FACTORY("ComponentFactoryFor%s"),
     EXTENDED_MODULE("Extended_%s"),
+    FACTORY("%sFactory"),
     // Dagger generated class names
     DAGGER("Dagger%s")
     ;

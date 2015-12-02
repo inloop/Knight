@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import eu.inloop.knight.PresenterPool;
 import eu.inloop.knight.sample.R;
 import eu.inloop.knight.sample.adapter.BaseRecyclerAdapter;
 import eu.inloop.knight.sample.adapter.ContactRecyclerAdapter;
@@ -37,6 +38,7 @@ public class ContactListFragment extends BaseFragment implements IContactListVie
 
     @Inject
     IContactListPresenter mPresenter;
+    PresenterPool mPresenterPool;
 
     @Bind(R.id.rv_contacts)
     RecyclerView mRecyclerView;
@@ -55,6 +57,7 @@ public class ContactListFragment extends BaseFragment implements IContactListVie
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setHasOptionsMenu(true);
+        mPresenter = mPresenterPool.add(mPresenter);
         mPresenter.bindView(this);
     }
 

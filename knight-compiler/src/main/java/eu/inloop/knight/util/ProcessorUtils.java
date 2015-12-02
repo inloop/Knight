@@ -94,6 +94,23 @@ public class ProcessorUtils {
         return className;
     }
 
+    public static boolean inplements(final TypeElement element, final Class cls) {
+        return inplements(element, ClassName.get(cls));
+    }
+
+    public static boolean inplements(final TypeElement element, final ClassName cls) {
+        TypeElement superClass = element;
+        while (superClass != null) {
+            for (int i = 0; i < superClass.getInterfaces().size(); i++) {
+                if (ClassName.get(superClass.getInterfaces().get(i)).equals(cls)) {
+                    return true;
+                }
+            }
+            superClass = (TypeElement) ((Symbol.ClassSymbol) superClass).getSuperclass().asElement();
+        }
+        return false;
+    }
+
     public static boolean isSubClassOf(final TypeElement element, final Class cls) {
         return isSubClassOf(element, ClassName.get(cls));
     }

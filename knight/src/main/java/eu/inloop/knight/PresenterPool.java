@@ -13,6 +13,9 @@ import java.util.Map;
  * @author FrantisekGazo
  * @version 2015-11-14
  */
+
+// TODO : <ID, T>
+// TODO : rename to ManagedFactory
 public final class PresenterPool implements IStateful {
 
     private static final String FORMAT_PRESENTER_ID = "%s-%s";
